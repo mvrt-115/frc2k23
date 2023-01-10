@@ -11,11 +11,15 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -34,14 +38,14 @@ public final class Constants {
 
     // Important locations for swerve
     // consider swapping corners
-    public static final Translation2d m_standardCenterLocation = new Translation2d(0,0);
-    public static final Translation2d m_frontLeftLocation = new Translation2d(chassisWidth/2.0, -chassisHeight/2.0);
-    public static final Translation2d m_frontRightLocation = new Translation2d(chassisWidth/2.0, chassisHeight/2.0);
-    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth/2.0, -chassisHeight/2.0);
-    public static final Translation2d m_backRightLocation = new Translation2d(-chassisWidth/2.0, chassisHeight/2.0);
+    public static final Translation2d m_standardCenterLocation = new Translation2d(0, 0);
+    public static final Translation2d m_frontLeftLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_frontRightLocation = new Translation2d(chassisWidth / 2.0, chassisHeight / 2.0);
+    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_backRightLocation = new Translation2d(-chassisWidth / 2.0, chassisHeight / 2.0);
     public static final Translation2d[] rotatePoints = {
         m_standardCenterLocation,
-        m_frontLeftLocation, 
+        m_frontLeftLocation,
         m_frontRightLocation,
         m_backLeftLocation,
         m_backRightLocation
@@ -52,7 +56,7 @@ public final class Constants {
     public static final int m_frontRightDriveID = 7;
     public static final int m_backLeftDriveID = 3;
     public static final int m_backRightDriveID = 5;
-    
+
     public static final int m_frontLeftTurnID = 2;
     public static final int m_frontRightTurnID = 8;
     public static final int m_backLeftTurnID = 4;
@@ -65,10 +69,10 @@ public final class Constants {
     public static final int m_backRightEncoderID = 11;
 
     // Abs Encoder Offsets
-    public static final double m_frontLeftEncoderOffset = Units.degreesToRadians(314.7);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset = Units.degreesToRadians(4.3);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset = Units.degreesToRadians(3);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset = Units.degreesToRadians(33);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset = Units.degreesToRadians(227);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset = Units.degreesToRadians(273);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset = Units.degreesToRadians(264);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset = Units.degreesToRadians(302);// + Math.PI/2.0;
 
     // Position PID
     public static final double m_x_control_P = 0.1;
@@ -92,51 +96,53 @@ public final class Constants {
     public static final double kWheelNonlinearity = 0.05;
     public static final double kMaxSpeedMPS = 5; // optimize max speed to prioritize translation
     public static final double kDriveMaxAcceleration = 3;
-    public static final double kTurnMaxAcceleration = 1*Math.PI;
+    public static final double kTurnMaxAcceleration = 1 * Math.PI;
     public static final double kDriveMaxSpeedMPS = 3;
-    public static final double kTurnMaxSpeedRPS = 1 *Math.PI;
+    public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
     public static final int kDriveYAxis = 1;
     public static final int kDriveWAxis = 2;
     public static final int kDriveFieldOrientButtonIdx = 1;
 
-    //values to be determined after the robot is characterized
-    public static final double kS = 0; //0.69382 //units: Volts
+    // values to be determined after the robot is characterized
+    public static final double kS = 0; // 0.69382 //units: Volts
     public static final double kV = 0; // 1.30485 //2.6097 //units: Volts * Seconds / Meters
-    public static final double kA = 0; //0.35228 //units: Volts * Seconds^2 / Meters
+    public static final double kA = 0; // 0.35228 //units: Volts * Seconds^2 / Meters
 
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(kTurnMaxSpeedRPS, kTurnMaxAcceleration);
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+        kTurnMaxSpeedRPS, kTurnMaxAcceleration);
   }
 
   public static class Talon {
-      public static final int talonFXTicks = 2048;
-      public static final int talonSRXTicks = 4096;
+    public static final int talonFXTicks = 2048;
+    public static final int talonSRXTicks = 4096;
 
-      public static final double MAX_VOLTAGE = 10.0;
+    public static final double MAX_VOLTAGE = 10.0;
 
-      public static final int kPIDIdx = 0;
-      public static final int kTimeoutMs = 10;
-      public static final boolean kIsPracticeBot = false;
-      public static final double kVoltageComp = 10.0;
-      public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(true, 40, 50, 3.8);
+    public static final int kPIDIdx = 0;
+    public static final int kTimeoutMs = 10;
+    public static final boolean kIsPracticeBot = false;
+    public static final double kVoltageComp = 10.0;
+    public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(true, 40,
+        50, 3.8);
   }
 
   public static class SwerveModule {
-      public static final double gear_ratio_turn = 1.0/16.0/1.3;
-      public static final double gear_ratio_drive = 6.75/1.0;
-      public static final double radius = 0.05; // meters
-      public static final double kwheelCircumference = 2*Math.PI*radius; // meters
-      
-      // PID Constants
-      public static final double kP = 0.2; //3.2364;
-      public static final double kI = 0;
-      public static final double kD = 0;
-      public static final double kFF = 0;
-                                                          
-      public static final double kPTurn = 0.05;
-      public static final double kITurn = 0.0;
-      public static final double kDTurn = 0.0;
-      public static final double kFTurn = 0.0;
+    public static final double gear_ratio_turn = 1.0 / 16.0 / 1.3;
+    public static final double gear_ratio_drive = 6.75 / 1.0;
+    public static final double radius = 0.05; // meters
+    public static final double kwheelCircumference = 2 * Math.PI * radius; // meters
+
+    // PID Constants
+    public static final double kP = 0.2; // 3.2364;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kFF = 0;
+
+    public static final double kPTurn = 0.05;
+    public static final double kITurn = 0.0;
+    public static final double kDTurn = 0.0;
+    public static final double kFTurn = 0.0;
   }
 }
