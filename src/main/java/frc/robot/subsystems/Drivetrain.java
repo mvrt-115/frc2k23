@@ -12,38 +12,7 @@ import frc.robot.TalonFactory;
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
 
-  public CANSparkMax leftMotor, rightMotor;
-
-  public Drivetrain() {
-    leftMotor = TalonFactory.createSparkMax(0, false);
-    rightMotor = TalonFactory.createSparkMax(0, true);
-
-    rightMotor.follow(leftMotor);
-  }
-
-  public CommandBase intakeHold() {
-    return this.runOnce(() -> leftMotor.set(0.3));
-  }
-
-  public CommandBase outtakeHold() {
-    return this.runOnce(() -> leftMotor.set(0.3));
-  }
-
-  public CommandBase intakePneumaticHold() {
-
-  }
-
-  public CommandBase outtakePneumaticHold() {
-    
-  }
-
-  public CommandBase intakeWheels() {
-
-  }
-
-  public CommandBase outtakeWheels() {
-
-  }
+  public Drivetrain() {}
 
   @Override
   public void periodic() {
