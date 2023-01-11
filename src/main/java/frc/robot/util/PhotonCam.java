@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.ComputerVisionUtil;
@@ -18,27 +19,48 @@ public class PhotonCam extends SubsystemBase {
   /** Creates a new PhotonCam. */
   private PhotonCamera photonCamera;
 
-  public PhotonCam() {
-    photonCamera = new PhotonCamera(Constants.VisionConstants.kCameraName);
+  public PhotonCam(PhotonCamera photonCamera) {
+    // photonCamera = new PhotonCamera(Constants.VisionConstants.kCameraName);
+    this.photonCamera = photonCamera;
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    var result = photonCamera.getLatestResult();
+    Pose3d pose = getEstimatedPose();
 
+    SmartDashboard.putNumber("Pose X", pose.getX());
+    SmartDashboard.putNumber("Pose Y", pose.getY());
+    SmartDashboard.putNumber("Pose Z", pose.getZ());
+  }
+
+  /**
+   *  _____
+   * |_____|
+   * Origin at bottom left corner of rectangle facing towards the right with CCW
+   * being positive
+   *
+   * @return Estimated pose of robot based on closest detected AprilTag
+   */
+  public Pose3d getEstimatedPose() {
+    PhotonPipelineResult result = photonCamera.getLatestResult();
+
+    Pose3d pose = null;
+
+    double minDist = Double.MAX_VALUE;
     for (PhotonTrackedTarget i : result.getTargets()) { // Assume one target for now
+      Transform3d relLoc = i.getAlternateCameraToTarget();
+      Pose3d tag = Constants.VisionConstants.aprilTags.get(i.getFiducialId());
 
-      Pose3d roboLocation = ComputerVisionUtil.objectToRobotPose(
-          Constants.VisionConstants.aprilTags.get(i.getFiducialId()), i.getAlternateCameraToTarget(),
-          new Transform3d());
-      //  _____
-      // |_____|
-      // Origin at bottom left corner of rectangle facing towards the right with CCW
-      // being positive
-      SmartDashboard.putNumber("x:", roboLocation.getX());
-      SmartDashboard.putNumber("y:", roboLocation.getY());
-      SmartDashboard.putNumber("z:", roboLocation.getZ());
+      double dist = Math.sqrt((relLoc.getX() - tag.getX()) * (relLoc.getX() - tag.getX()) + 
+        (relLoc.getY() - tag.getY()) * (relLoc.getY() - tag.getY()));
+
+      if(dist < minDist) {
+        minDist = dist;
+
+        pose = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
+      }
     }
+
+    return pose;
   }
 }
