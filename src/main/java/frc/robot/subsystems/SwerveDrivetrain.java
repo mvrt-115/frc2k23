@@ -165,6 +165,16 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   /**
+   * Gets the angle the robot is tilted
+   *
+   * @return the pitch degree
+   */
+  public double getPitchAngle(){
+    return gyro.getPitch();
+
+  }
+
+  /**
    * get the gyro angle as rotation2d
    * @return Rotation2d heading
    */

@@ -51,6 +51,14 @@ public final class Constants {
         m_backRightLocation
     };
 
+    // Leveling PID
+    public static final double levelkP = 0;
+    public static final double levelkI = 0;
+    public static final double levelkD = 0;
+    public static final double angleTolerance = 5;
+    public static final double speedTolerance = 0.5;
+
+
     // Motor ID
     public static final int m_frontLeftDriveID = 3;
     public static final int m_frontRightDriveID = 1;
