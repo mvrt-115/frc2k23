@@ -144,5 +144,23 @@ public final class Constants {
     public static final double kITurn = 0.0;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
+  public static class Elevator
+  {
+    public static final int MOTOR_ID = 0;
+    
+    public static final int kPIDIdx = 0;
+    public static final int P = 0;
+    public static final int I = 0;
+    public static final int D = 0;
+    public static final int F = 0;
+
+    // Wtvr it is
+    public static final int METERS_PER_TICK = 0;
+    public static final int INCHES_PER_TICK = 0;
+
+    // Min/Max heights for the elevator (in inches)
+    public static final double MAX_HEIGHT = 20;
+    public static final double MIN_HEIGHT = 0;
   }
+}
 }
