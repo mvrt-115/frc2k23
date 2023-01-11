@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
+
 public class Elevator extends SubsystemBase
 {
   private ElevatorState currState;
@@ -28,6 +31,8 @@ public class Elevator extends SubsystemBase
   /** Creates a new Elevator. */
   public Elevator()
   {
+    currState = ElevatorState.ZEROED;
+    
     elev_motor = new TalonFX(Constants.Elevator.MOTOR_ID);
 
     elev_motor.configFactoryDefault();
@@ -46,7 +51,8 @@ public class Elevator extends SubsystemBase
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition()*Constants.Elevator.INCHES_PER_TICK);
+    SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity()*Constants.Elevator.INCHES_PER_TICK);
   }
 
   public void setHeightRaw(double targetHeightRaw)
