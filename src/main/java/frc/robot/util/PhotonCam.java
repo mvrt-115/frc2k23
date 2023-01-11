@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class PhotonCam {
  
@@ -20,8 +19,6 @@ public class PhotonCam {
     }
 
     public void logXYZ(){
-        CommandScheduler.getInstance().run();
-
         // This method will be called once per scheduler run
         var result = photonCamera.getLatestResult();
 
