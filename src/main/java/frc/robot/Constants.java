@@ -144,7 +144,9 @@ public final class Constants {
     public static final double kITurn = 0.0;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
-  public static class Elevator
+}
+
+public static class Elevator
   {
     public static final int MOTOR_ID = 0;
     
@@ -161,6 +163,23 @@ public final class Constants {
     // Min/Max heights for the elevator (in inches)
     public static final double MAX_HEIGHT = 20;
     public static final double MIN_HEIGHT = 0;
+
+    public static final double ZERO_HEIGHT = 0;
+    public static final double SHELF_HEIGHT = 0;
+
+    // MID, HIGH heights parwa cone
+    public static final double MID_HEIGHT = 0;
+    public static final double HIGH_HEIGHT = 0;
+
+    // TrapezoidProfile State constants
+    public static final TrapezoidProfile.State ZERO_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State MID_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State HIGH_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State SHEL_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+
+    // Game Object Heights
+    public static final double CONE_HEIGHT = 6;
+    public static final double CUBE_HIEGHT = 8;
   }
-}
+
 }
