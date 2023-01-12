@@ -27,6 +27,7 @@ public class PhotonCam extends SubsystemBase {
   @Override
   public void periodic() {
     System.out.println("in periodic");
+    SmartDashboard.putString("test", "lilja is here");
 
     PhotonPipelineResult result = photonCamera.getLatestResult();
 
