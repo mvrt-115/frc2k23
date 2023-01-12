@@ -17,19 +17,27 @@ import frc.robot.Constants;
 
 public class PhotonCam extends SubsystemBase {
   private PhotonCamera photonCamera;
+  private Pose3d roboPose;
 
   public PhotonCam(PhotonCamera photonCamera) {
     // photonCamera = new PhotonCamera(Constants.VisionConstants.kCameraName);
     this.photonCamera = photonCamera;
+    roboPose = new Pose3d();
   }
 
   @Override
   public void periodic() {
     Pose3d pose = getEstimatedPose();
+    log(pose);
 
-    SmartDashboard.putNumber("Pose X", pose.getX());
-    SmartDashboard.putNumber("Pose Y", pose.getY());
-    SmartDashboard.putNumber("Pose Z", pose.getZ());
+    PhotonPipelineResult result = photonCamera.getLatestResult();
+
+    //Tags exist
+    if (result.hasTargets()){
+      //Update robo pose
+      roboPose = getEstimatedPose();
+    }
+
   }
 
   /** _____
@@ -42,26 +50,13 @@ public class PhotonCam extends SubsystemBase {
   public Pose3d getEstimatedPose() {
     PhotonPipelineResult result = photonCamera.getLatestResult();
 
-    Pose3d pose = null;
-    double minDist = Double.MAX_VALUE;
-    
-    for (PhotonTrackedTarget i : result.getTargets()) {
-      //Target
-      Transform3d relLoc = i.getAlternateCameraToTarget();
-      
-      //Pos on field
-      Pose3d tag = Constants.VisionConstants.aprilTags.get(i.getFiducialId());
+    //Best target
+    PhotonTrackedTarget target = result.getBestTarget();
 
-      //Get distance from tag
-      double dist = distFromTag(relLoc, tag);
+    Transform3d relLoc = target.getAlternateCameraToTarget();
+    Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
 
-      if(dist < minDist) {
-        minDist = dist;
-        pose = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
-      }
-    }
-
-    return pose;
+    return ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
   }
 
   /**
@@ -70,9 +65,18 @@ public class PhotonCam extends SubsystemBase {
    * @param tag the position of target on field
    * @return distance from target
    */
-
   public double distFromTag(Transform3d relLoc, Pose3d tag){
     return Math.sqrt(Math.pow((relLoc.getX() - tag.getX()), 2) + 
                       Math.pow((relLoc.getX() - tag.getX()), 2));
+  }
+
+  /**
+   * Log stuff
+   * @param pose the pose of target
+   */
+  public void log(Pose3d pose){
+    SmartDashboard.putNumber("Pose X", pose.getX());
+    SmartDashboard.putNumber("Pose Y", pose.getY());
+    SmartDashboard.putNumber("Pose Z", pose.getZ());
   }
 }
