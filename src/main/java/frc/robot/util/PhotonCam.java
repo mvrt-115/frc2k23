@@ -27,8 +27,6 @@ public class PhotonCam extends SubsystemBase {
   @Override
   public void periodic() {
     System.out.println("in periodic");
-    Pose3d pose = getEstimatedPose();
-    log(pose);
 
     PhotonPipelineResult result = photonCamera.getLatestResult();
 
@@ -36,6 +34,7 @@ public class PhotonCam extends SubsystemBase {
     if (result.hasTargets()){
       //Update robo pose
       roboPose = getEstimatedPose();
+      log();
     }
   }
 
@@ -52,11 +51,13 @@ public class PhotonCam extends SubsystemBase {
     //Best target
     PhotonTrackedTarget target = result.getBestTarget();
 
-    Transform3d relLoc = target.getAlternateCameraToTarget();
-    Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
-
-    return ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
-  }
+    if (target != null){
+      Transform3d relLoc = target.getAlternateCameraToTarget();
+      Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
+      return ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
+    }
+    return null;
+   }
 
   /**
    * 
@@ -73,10 +74,7 @@ public class PhotonCam extends SubsystemBase {
    * Log stuff
    * @param pose the pose of target
    */
-  public void log(Pose3d pose){
-    SmartDashboard.putNumber("Target X", pose.getX());
-    SmartDashboard.putNumber("Target Y", pose.getY());
-    SmartDashboard.putNumber("Target Z", pose.getZ());
+  public void log(){
     SmartDashboard.putNumber("Robo X", roboPose.getX());
     SmartDashboard.putNumber("Robo Y", roboPose.getY());
     SmartDashboard.putNumber("Robo Z", roboPose.getZ());
