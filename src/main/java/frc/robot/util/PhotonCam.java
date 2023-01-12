@@ -55,6 +55,8 @@ public class PhotonCam extends SubsystemBase {
     if (target != null){
       Transform3d relLoc = target.getBestCameraToTarget();
       Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
+
+      SmartDashboard.putNumber("Tag Distance", distFromTag(relLoc));
       
       return ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
     }
@@ -65,12 +67,12 @@ public class PhotonCam extends SubsystemBase {
   /**
    * 
    * @param relLoc the target
-   * @param tag the position of target on field
    * @return distance from target
    */
-  public double distFromTag(Transform3d relLoc, Pose3d tag) {
-    return Math.sqrt(Math.pow((relLoc.getX() - tag.getX()), 2) + 
-        Math.pow((relLoc.getX() - tag.getX()), 2));
+  public double distFromTag(Transform3d relLoc) {
+    return Math.sqrt(relLoc.getX() * relLoc.getX() + 
+        relLoc.getY() * relLoc.getY() + 
+        relLoc.getZ() * relLoc.getZ());
   }
 
   /**
@@ -78,9 +80,8 @@ public class PhotonCam extends SubsystemBase {
    * @param pose the pose of target
    */
   public void log(){
-   
-    SmartDashboard.putNumber("Robo X", roboPose.getX());
-    SmartDashboard.putNumber("Robo Y", roboPose.getY());
-    SmartDashboard.putNumber("Robo Z", roboPose.getZ());
+    SmartDashboard.putNumber("Tag Robo X", roboPose.getX());
+    SmartDashboard.putNumber("Tag Robo Y", roboPose.getY());
+    SmartDashboard.putNumber("Tag Robo Z", roboPose.getZ());
   }
 }
