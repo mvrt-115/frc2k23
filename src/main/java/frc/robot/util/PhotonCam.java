@@ -32,10 +32,10 @@ public class PhotonCam extends SubsystemBase {
     if (result.hasTargets()){
       roboPose = getEstimatedPose();
       log();
-      SmartDashboard.putBoolean("connected", true);
+      SmartDashboard.putBoolean("Found Tag(s)", true);
 
     } else {
-      SmartDashboard.putBoolean("connected", false);
+      SmartDashboard.putBoolean("Found Tag(s)", false);
     }
   }
 
@@ -77,11 +77,10 @@ public class PhotonCam extends SubsystemBase {
 
   /**
    * Log stuff
-   * @param pose the pose of target
    */
   public void log(){
-    SmartDashboard.putNumber("Tag Robo X", roboPose.getX());
-    SmartDashboard.putNumber("Tag Robo Y", roboPose.getY());
-    SmartDashboard.putNumber("Tag Robo Z", roboPose.getZ());
+    SmartDashboard.putNumber("Robo X", roboPose.getX());
+    SmartDashboard.putNumber("Robo Y", roboPose.getY());
+    SmartDashboard.putNumber("Robo Z", roboPose.getZ());
   }
 }
