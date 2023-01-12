@@ -26,16 +26,16 @@ public class PhotonCam extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println("in periodic");
-    SmartDashboard.putString("test", "lilja is here");
-
     PhotonPipelineResult result = photonCamera.getLatestResult();
 
     //Tags exist
     if (result.hasTargets()){
-      //Update robo pose
       roboPose = getEstimatedPose();
       log();
+      SmartDashboard.putBoolean("connected", true);
+
+    } else {
+      SmartDashboard.putBoolean("connected", false);
     }
   }
 
@@ -48,15 +48,17 @@ public class PhotonCam extends SubsystemBase {
    */
   public Pose3d getEstimatedPose() {
     PhotonPipelineResult result = photonCamera.getLatestResult();
-
+   
     //Best target
     PhotonTrackedTarget target = result.getBestTarget();
-
+   
     if (target != null){
-      Transform3d relLoc = target.getAlternateCameraToTarget();
+      Transform3d relLoc = target.getBestCameraToTarget();
       Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
+      
       return ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
     }
+
     return null;
    }
 
@@ -66,9 +68,9 @@ public class PhotonCam extends SubsystemBase {
    * @param tag the position of target on field
    * @return distance from target
    */
-  public double distFromTag(Transform3d relLoc, Pose3d tag){
+  public double distFromTag(Transform3d relLoc, Pose3d tag) {
     return Math.sqrt(Math.pow((relLoc.getX() - tag.getX()), 2) + 
-                      Math.pow((relLoc.getX() - tag.getX()), 2));
+        Math.pow((relLoc.getX() - tag.getX()), 2));
   }
 
   /**
@@ -76,6 +78,7 @@ public class PhotonCam extends SubsystemBase {
    * @param pose the pose of target
    */
   public void log(){
+   
     SmartDashboard.putNumber("Robo X", roboPose.getX());
     SmartDashboard.putNumber("Robo Y", roboPose.getY());
     SmartDashboard.putNumber("Robo Z", roboPose.getZ());
