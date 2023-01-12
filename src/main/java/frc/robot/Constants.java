@@ -25,6 +25,9 @@ public final class Constants {
 
   public static class VisionConstants{
     public static final String kCameraName = "sheeshcam";
+
+    public static final double minDistFromTag = 40; //Min dist necessary from tag to automate (1 meter aprox)
+
     public static final Map<Integer, Pose3d> aprilTags = //relative to corner closest to tag 8
     Map.of(
         1,
