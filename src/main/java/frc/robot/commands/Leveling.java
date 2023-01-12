@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.Constants;
@@ -30,7 +32,16 @@ public class Leveling extends CommandBase {
   @Override
   public void execute() {
     SmartDashboard.putNumber("pitch", swerveDt.getPitchAngle());
-    SmartDashboard.putNumber("pitch", swerveDt.getLinearVelocity().getNorm());
+    SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
+
+    double vX;
+    double vY = 0;
+
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0, swerveDt.getRotation2d());
+
+    // convert to module states and apply to each wheel
+    SwerveModuleState[] moduleStates = swerveDt.getKinematics().toSwerveModuleStates(chassisSpeeds);
+    swerveDt.setModuleStates(moduleStates);
 
     pid.calculate(swerveDt.getPitchAngle(), 0);
 
