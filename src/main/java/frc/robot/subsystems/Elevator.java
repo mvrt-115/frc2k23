@@ -7,36 +7,45 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+// import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
-import edu.wpi.first.wpilibj.Timer;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 
 public class Elevator extends SubsystemBase
 {
   private ElevatorState currState;
-  private SupplyCurrentLimitConfiguration currentConfig;
-  private double lastError, lastTime;
+  // private SupplyCurrentLimitConfiguration currentConfig;
 
   public enum ElevatorState {
     ZEROED, ZEROING, AT_SETPOINT, MOVING
   };
   
   private TalonFX elev_motor;
-  
+  private PIDController pid;
+  ElevatorFeedforward eFeedforward;
+  private TrapezoidProfile.Constraints constraints;
+  private TrapezoidProfile.State goal;
+  private TrapezoidProfile.State setpoint;
+
   /** Creates a new Elevator. */
   public Elevator()
   {
     currState = ElevatorState.ZEROED;
+
+    eFeedforward = new ElevatorFeedforward(Constants.Elevator.kS, Constants.Elevator.kG, Constants.Elevator.kV, Constants.Elevator.kA);
     
     elev_motor = new TalonFX(Constants.Elevator.MOTOR_ID);
+
+    pid = new PIDController(Constants.Elevator.P, Constants.Elevator.I, Constants.Elevator.D);
 
     elev_motor.configFactoryDefault();
 
@@ -70,10 +79,17 @@ public class Elevator extends SubsystemBase
 
   public void setHeightRaw(double targetHeightRaw)
   {
-    ElevatorFeedforward feedForward = new ElevatorFeedforward(Constants.Elevator.kS, Constants.Elevator.kG, Constants.Elevator.kV, Constants.Elevator.kA);
-    double velocity = elev_motor.getSelectedSensorVelocity() * Constants.Elevator.INCHES_PER_TICK;
-    feedForward.calculate(velocity);
-    elev_motor.set(ControlMode.Position, targetHeightRaw, DemandType.ArbitraryFeedForward, Constants.Elevator.F);
+    
+    constraints = new TrapezoidProfile.Constraints(Constants.Elevator.MAX_VELOCITY, Constants.Elevator.MAX_ACCELERATION);
+    goal = new TrapezoidProfile.State(targetHeightRaw, 0);
+    setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition(), elev_motor.getSelectedSensorVelocity());
+    TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, setpoint);
+    setpoint = profile.calculate(0.02);
+    double velocity = elev_motor.getSelectedSensorVelocity(); 
+    double feedforward = eFeedforward.calculate(setpoint.velocity);
+    elev_motor.set(ControlMode.Position, setpoint.position, DemandType.Neutral, (feedforward+pid.calculate(setpoint.velocity))/12);
+    
+    // elev_motor.set(ControlMode.PercentOutput, ((pid.calculate(getHeight(), targetHeightRaw)) + feedforward) / 10);
   }
 
   public void setHeight(double targetHeight)
