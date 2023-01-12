@@ -19,14 +19,14 @@ public class PhotonCam extends SubsystemBase {
   private PhotonCamera photonCamera;
   private Pose3d roboPose;
 
-  public PhotonCam(PhotonCamera photonCamera) {
-    // photonCamera = new PhotonCamera(Constants.VisionConstants.kCameraName);
-    this.photonCamera = photonCamera;
+  public PhotonCam() {
+    photonCamera = new PhotonCamera(Constants.VisionConstants.kCameraName);
     roboPose = new Pose3d();
   }
 
   @Override
   public void periodic() {
+    System.out.println("in periodic");
     Pose3d pose = getEstimatedPose();
     log(pose);
 
@@ -37,7 +37,6 @@ public class PhotonCam extends SubsystemBase {
       //Update robo pose
       roboPose = getEstimatedPose();
     }
-
   }
 
   /** _____
@@ -75,8 +74,11 @@ public class PhotonCam extends SubsystemBase {
    * @param pose the pose of target
    */
   public void log(Pose3d pose){
-    SmartDashboard.putNumber("Pose X", pose.getX());
-    SmartDashboard.putNumber("Pose Y", pose.getY());
-    SmartDashboard.putNumber("Pose Z", pose.getZ());
+    SmartDashboard.putNumber("Target X", pose.getX());
+    SmartDashboard.putNumber("Target Y", pose.getY());
+    SmartDashboard.putNumber("Target Z", pose.getZ());
+    SmartDashboard.putNumber("Robo X", roboPose.getX());
+    SmartDashboard.putNumber("Robo Y", roboPose.getY());
+    SmartDashboard.putNumber("Robo Z", roboPose.getZ());
   }
 }

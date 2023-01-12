@@ -24,7 +24,7 @@ public final class Constants {
     }
 
   public static class VisionConstants{
-    public static final String kCameraName = "sheeshcam";
+    public static final String kCameraName = "OV9281-1"; //SHEESHCAM!!!
 
     public static final double minDistFromTag = 40; //Min dist necessary from tag to automate (1 meter aprox)
 
