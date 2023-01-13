@@ -31,8 +31,6 @@ public class RobotContainer {
   private final PhotonCam photonCamera;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    photonCamera = new PhotonCam();
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -44,6 +42,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    photonCamera = new PhotonCam();
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
