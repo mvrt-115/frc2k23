@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 /**
@@ -34,13 +33,6 @@ public final class Constants {
     public static final int METERS_PER_TICK = 0;
     public static final int INCHES_PER_TICK = 0;
 
-    // Min/Max Velocities for the elevator (in inches/second)
-    public static final double MAX_VELOCITY = 2;
-    public static final double MIN_VELOCITY = 0;
-
-    // Max Acceleration for the elevator (in inches/second^2)
-    public static final double MAX_ACCELERATION = 2;
-
     // Min/Max heights for the elevator (in inches)
     public static final double MAX_HEIGHT = 20;
     public static final double MIN_HEIGHT = 0;
@@ -49,30 +41,21 @@ public final class Constants {
     public static final double SHELF_HEIGHT = 0;
 
     // MID, HIGH heights parwa cone
-    public static final double CONE_MID_HEIGHT = 0;
-    public static final double CONE_HIGH_HEIGHT = 0;
+    public static final double MID_HEIGHT = 0;
+    public static final double HIGH_HEIGHT = 0;
 
     // MID, HIGH heights para cube
-    public static final double CUBE_MID_HEIGHT = 0;
-    public static final double CUBE_HIGH_HEIGHT = 0;
+    public static final double MID_HEIGHT = 0;
+    public static final double HIGH_HEIGHT = 0;
 
     // TrapezoidProfile State constants
-    public static final TrapezoidProfile.State ZERO_STATE = new TrapezoidProfile.State(Constants.Elevator.ZERO_HEIGHT, 0);
-    public static final TrapezoidProfile.State CUBE_MID_STATE = new TrapezoidProfile.State(Constants.Elevator.CUBE_MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State CUBE_HIGH_STATE = new TrapezoidProfile.State(Constants.Elevator.CUBE_HIGH_HEIGHT, 0);
-    public static final TrapezoidProfile.State CONE_MID_STATE = new TrapezoidProfile.State(Constants.Elevator.CONE_MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State CONE_HIGH_STATE = new TrapezoidProfile.State(Constants.Elevator.CONE_HIGH_HEIGHT, 0);
-    public static final TrapezoidProfile.State SHELF_STATE = new TrapezoidProfile.State(Constants.Elevator.SHELF_HEIGHT, 0);
+    public static final TrapezoidProfile.State ZERO_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State MID_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State HIGH_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State SHEL_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
 
     // Game Object Heights
     public static final double CONE_HEIGHT = 6;
     public static final double CUBE_HIEGHT = 8;
-
-    // Displacement time to update Trapezoid Profile Calculations
-    public final static double kDt = 0.02;
-
-    // Feed Forward calculation for Trapezoid Profile Calculations
-    public final static SimpleMotorFeedforward kFF = new SimpleMotorFeedforward(1, 1.5);
-
   }
 }
