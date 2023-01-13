@@ -30,7 +30,7 @@ public class Intake extends SubsystemBase {
     motor = TalonFactory.createSparkMax(0, false);
     encoder = motor.getEncoder();
     motor.setIdleMode(IdleMode.kBrake); 
-    encoder.setPosition(Constants.Intake.kCompressedTicks);
+    encoder.setPosition(Constants.Intake.kCompressedTicks); // initial position to when its preloaded
         //leftSolenoid = new DoubleSolenoid(0, null, 0, 0)
   }
 
@@ -43,6 +43,9 @@ public class Intake extends SubsystemBase {
     return new RunCommand(() -> this.expand());
    }
 
+   /**
+    * sets constant speed to claw until it reaches the limit of expansion
+    */
    public void expand() {
       motor.setIdleMode(IdleMode.kCoast); // change to the correct methd
       motor.set(0);

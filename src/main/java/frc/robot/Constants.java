@@ -32,9 +32,9 @@ public final class Constants {
 
     public static class Intake {
         public static final double kCompressedTicks = 50; // find the ticks it is at when holding the preloaded piece
-        public static final double kExpandedTicks = 50;
-        public static final int kGearRatio = 2;
-        public static final int kTicksPerRotation = 42;
+        public static final double kExpandedTicks = 50; // find the ticks when expanded at the most
+        public static final int kGearRatio = 2; //temp
+        public static final int kTicksPerRotation = 42; 
         public static final int kLengthIntake = 7;
         public static final int kMarginOfError = 20;
     }
