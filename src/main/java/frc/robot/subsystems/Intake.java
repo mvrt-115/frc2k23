@@ -4,26 +4,67 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.TalonFactory;
 
 /*
  * design: one neo to run motor
  */
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  public CANSparkMax leftMotor, rightMotor;
-  public DoubleSolenoid leftSolenoid, rightSolenoid;
+  private CANSparkMax motor;
+  private DoubleSolenoid leftSolenoid, rightSolenoid; //only if using pistons
+  private RelativeEncoder encoder;
 
   public Intake() {
-    leftMotor = TalonFactory.createSparkMax(0, false);
-    rightMotor = TalonFactory.createSparkMax(0, true);
-
-    rightMotor.follow(leftMotor);
-
-    leftSolenoid = new DoubleSolenoid()
+    motor = TalonFactory.createSparkMax(0, false);
+    encoder = motor.getEncoder();
+    motor.setIdleMode(IdleMode.kBrake); 
+    encoder.setPosition(Constants.Intake.kCompressedTicks);
+        //leftSolenoid = new DoubleSolenoid(0, null, 0, 0)
   }
 
-  public CommandBase intakeHold() {
+   public CommandBase intakeElement() {
+    motor.setIdleMode(IdleMode.kCoast); // change to the correct method
+    return this.runOnce(() -> motor.set(0.3));
+   }
+
+   public CommandBase outtakeElement() {
+    return new RunCommand(() -> this.expand());
+   }
+
+   public void expand() {
+      motor.setIdleMode(IdleMode.kCoast); // change to the correct methd
+      motor.set(0);
+      while(!(encoder.getPosition() <= Constants.Intake.kExpandedTicks + Constants.Intake.kMarginOfError && encoder.getPosition() >= Constants.Intake.kExpandedTicks - Constants.Intake.kMarginOfError ))
+      {
+        motor.set(-0.3);
+      }
+   }
+
+   // unused method
+   public double ticksToAngleInDegrees(double ticks){
+      return (ticks/Constants.Intake.kTicksPerRotation)*360;
+       // convert ticks to angle turned
+   }
+
+   @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("current ticks", encoder.getPosition());
+  }
+
+  /*public CommandBase intakeHold() {
     return this.runOnce(() -> leftMotor.set(0.3));
   }
 
@@ -45,10 +86,7 @@ public class Intake extends SubsystemBase {
 
   public CommandBase outtakeWheels() {
 
-  }
+  }*/
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  
 }
