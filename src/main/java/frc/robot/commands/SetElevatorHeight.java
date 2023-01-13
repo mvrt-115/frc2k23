@@ -14,11 +14,12 @@ public class SetElevatorHeight extends CommandBase
   private double height;
 
   /** Creates a new SetElevatorHeight. */
-  public SetElevatorHeight(Elevator elevator)
+  public SetElevatorHeight(Elevator elevator, double height)
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
-    height = 0;
+    this.height = height; 
+    addRequirements(this.elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -29,8 +30,7 @@ public class SetElevatorHeight extends CommandBase
   @Override
   public void execute()
   {
-    height = SmartDashboard.getNumber("Elevator Height Input", 0);
-    elevator.setHeight(0);
+    elevator.setTargetHeight(height);
   }
 
   // Called once the command ends or is interrupted.
@@ -42,6 +42,6 @@ public class SetElevatorHeight extends CommandBase
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return (elevator.currentIsWithinError());
   }
 }

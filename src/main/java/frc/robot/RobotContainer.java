@@ -34,7 +34,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     elevator = new Elevator();
-    elevator.setDefaultCommand(new SetElevatorHeight(elevator));
+    elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
   }
 
   /**

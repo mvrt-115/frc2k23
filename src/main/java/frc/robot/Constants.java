@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.subsystems.Elevator.ElevatorState;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -58,8 +59,16 @@ public final class Constants {
     public static final double CONE_HEIGHT = 6;
     public static final double CUBE_HIEGHT = 8;
 
+    public static final int SENSOR_PORT = 0;
+    public static final double KDt = 0.01;
+
     // constraints
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
+
+    // initial elevator stages
+    public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
+
+	public static final double ERROR = 0; 
   }
 }
