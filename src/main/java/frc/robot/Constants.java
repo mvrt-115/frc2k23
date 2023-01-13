@@ -86,6 +86,10 @@ public final class Constants {
             Units.inchesToMeters(42.19),
             Units.inchesToMeters(18.22),
             new Rotation3d()));
+
+    public static final Map<Integer, Pose3d> kBlueScoreCols = Map.of(
+        //  todo
+    );
   }
 
   public static class JoystickControls {
