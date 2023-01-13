@@ -34,7 +34,10 @@ public final class Constants {
   public static class VisionConstants{
     public static final String kCameraName = "OV9281-1"; //SHEESHCAM!!!
 
-    public static final double minDistFromTag = 40; //Min dist necessary from tag to automate (1 meter aprox)
+    public static final double minDistFromTag = 1; //Min dist necessary from tag to automate (1 meter aprox)
+
+    public static final double xyTolerance = 0.05;
+    public static final double thetaTolerance = 0.01;
 
     public static final Map<Integer, Pose3d> aprilTags = //relative to corner closest to tag 8
     Map.of(

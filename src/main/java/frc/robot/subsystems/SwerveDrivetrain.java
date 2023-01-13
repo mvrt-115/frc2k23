@@ -49,11 +49,6 @@ public class SwerveDrivetrain extends SubsystemBase {
   public ProfiledPIDController thetaController;
   private TrajectoryConfig trajectoryConfig;
 
-  // Alignment automation
-  private PIDController pidx;
-  private PIDController pidy;
-  private PIDController pidt;
-
   // sensors
   private AHRS gyro;
   // private PigeonIMU gyro;
@@ -153,12 +148,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS, 
       Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     trajectoryConfig.setKinematics(swerveKinematics);
-    state = DrivetrainState.JOYSTICK_DRIVE;
-
-    // alignment automation
-    pidx = new PIDController(0, 0, 0); // pid x-coor
-    pidy = new PIDController(0, 0, 0); // pid y-coor
-    pidt = new PIDController(0, 0, 0); // pid t-coor
+    state = DrivetrainState.JOYSTICK_DRIVE;   
   }
 
   /**
@@ -219,22 +209,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     for (SwerveModule m : motors) {
       m.disableModule();
     }
-  }
-
-  /**
-   * Moves to the scoring column using PID
-   * @param robotPose The current robotPose
-   * @param scorePose The pose of the scoring column
-   */
-  public void moveToScoringPos(Pose3d robotPose, Pose3d scorePose) {
-    double outX = pidx.calculate(robotPose.getX(), scorePose.getX()); // pos, setpoint
-    double outY = pidy.calculate(robotPose.getY(), scorePose.getY()); // pos, setpoint
-    double outT = pidt.calculate(robotPose.getRotation().getAngle(), scorePose.getRotation().getAngle()); // pos, setpoint
-
-    ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, outT);
-    SwerveModuleState[] states = getKinematics().toSwerveModuleStates(speeds);
-
-    setModuleStates(states);
   }
 
   /**
