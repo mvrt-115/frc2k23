@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 // licene deez nuts
 
-package frc.robot.util;
+package frc.robot.utils;
 
 import java.util.HashMap;
 import java.util.Iterator;

@@ -12,7 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.util.PhotonCam;
+import frc.robot.utils.PhotonCam;
 
 public class Align extends CommandBase {
   private SwerveDrivetrain swerve;

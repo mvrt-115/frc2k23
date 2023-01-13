@@ -10,7 +10,6 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.util.PhotonCam;
 import frc.robot.subsystems.SwerveDrivetrain;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final PhotonCam photonCamera;
+  private final frc.robot.utils.PhotonCam photonCamera;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
@@ -42,7 +41,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    photonCamera = new PhotonCam();
+    photonCamera = new frc.robot.utils.PhotonCam();
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
