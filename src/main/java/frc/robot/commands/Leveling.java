@@ -31,37 +31,40 @@ public class Leveling extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("pitch", swerveDt.getPitchAngle());
+    double currentPitch = swerveDt.getPitchAngle();
+
+    SmartDashboard.putNumber("pitch", currentPitch);
     SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
 
-    double vX;
+    double vX = -Math.min(-currentPitch*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
     double vY = 0;
 
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0, swerveDt.getRotation2d());
+    swerveDt.setSpeeds(vX, vY, 0, null);
+    //ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0, swerveDt.getRotation2d());
 
     // convert to module states and apply to each wheel
-    SwerveModuleState[] moduleStates = swerveDt.getKinematics().toSwerveModuleStates(chassisSpeeds);
-    swerveDt.setModuleStates(moduleStates);
+    //SwerveModuleState[] moduleStates = swerveDt.getKinematics().toSwerveModuleStates(chassisSpeeds);
+    //swerveDt.setModuleStates(moduleStates);
 
-    pid.calculate(swerveDt.getPitchAngle(), 0);
+    //pid.calculate(swerveDt.getPitchAngle(), 0);
 
     // Use setSpeeds to set the speed of the swerve, would set angle and rotation point as 0 and Translation2D(0, 0)
     // might need to change the result of the pid.calculate into an acceptable speed input
-    if (Math.abs(swerveDt.getPitchAngle()) < Constants.SwerveDrivetrain.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.SwerveDrivetrain.speedTolerance){
-      level = true;
-    }
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     // call a command that locks the wheels
+    swerveDt.setSpeeds(0, 0, 0, null);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (Math.abs(swerveDt.getPitchAngle()) < Constants.SwerveDrivetrain.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.SwerveDrivetrain.speedTolerance){
+      level = true; 
+    }
     return level; // once the speed of the robot is low enough and the angle is small enough, the command will end 
   }
 }
