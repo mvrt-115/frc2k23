@@ -11,12 +11,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.utils.PhotonCam;
 
 public class Align extends CommandBase {
   private SwerveDrivetrain swerve;
-  private PhotonCam cam;
+  private Localization localization;
 
   private Pose3d scorePose;
 
@@ -25,12 +25,11 @@ public class Align extends CommandBase {
   private PIDController pidt;
 
   /** Creates a new Align. */
-  public Align(SwerveDrivetrain swerve, PhotonCam cam, Pose3d scorePose) {
+  public Align(SwerveDrivetrain swerve, Localization localization, Pose3d scorePose) {
     addRequirements(swerve);
 
     this.swerve = swerve;
-    this.cam = cam;
-
+    this.localization = localization;
     this.scorePose = scorePose;
 
     pidx = new PIDController(0, 0, 0); // pid x-coor
@@ -47,9 +46,9 @@ public class Align extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose3d robotPose = cam.getEstimatedPose();
+    Pose3d robotPose = localization.getEstimatedPose();
 
-    moveToScoringPos(robotPose, cam.getClosestScoringLoc(robotPose));
+    moveToScoringPos(robotPose, localization.getClosestScoringLoc(robotPose));
   }
 
     /**
@@ -75,7 +74,7 @@ public class Align extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    Pose3d robotPose = cam.getEstimatedPose();
+    Pose3d robotPose = localization.getEstimatedPose();
 
     return Math.abs(robotPose.getX() - scorePose.getX()) < Constants.VisionConstants.xyTolerance && 
       Math.abs(robotPose.getY() - scorePose.getY()) < Constants.VisionConstants.xyTolerance && 
