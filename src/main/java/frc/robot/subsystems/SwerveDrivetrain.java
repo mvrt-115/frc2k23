@@ -348,7 +348,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   /**
    * get the trajectory config of the robot for autonomous
-   * @return TrajactoryConfig trajectoryConfig
+   * @return TrajaetoryConfig trajectoryConfig
    */
   public TrajectoryConfig getTrajectoryConfig() {
     return trajectoryConfig;
