@@ -6,7 +6,9 @@ package frc.robot;
 
 import java.util.Map;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
@@ -30,82 +32,6 @@ public final class Constants {
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
     }
-
-  public static class VisionConstants{
-    public static final String kCameraName = "OV9281-1"; //SHEESHCAM!!!
-
-    public static final double minDistFromTag = 1; //Min dist necessary from tag to automate (1 meter aprox)
-
-    public static final double xyTolerance = 0.05;
-    public static final double thetaTolerance = 0.01;
-
-    public static final Map<Integer, Pose3d> kBlueScoreCols = Map.of(
-        //  todo
-    );
-
-    public static final Map<Integer, Pose3d> kRedScoreCols = Map.of(
-        //  todo
-    );
-
-    /**
-     * Key:
-     * 
-     * Red Alliance Community (right to left) – IDs 1, 2, 3
-     * Blue Alliance Double Substation – ID 4
-     * Red Alliance Double Substation – ID 5
-     * Blue Alliance Community (right to left) – IDs 6, 7, 8 
-     */
-    public static final Map<Integer, Pose3d> aprilTags = //relative to corner closest to tag 8
-    Map.of(
-        1,
-        new Pose3d(
-            Units.inchesToMeters(610.77),
-            Units.inchesToMeters(42.19),
-            Units.inchesToMeters(18.22),
-            new Rotation3d(0.0, 0.0, Math.PI)),
-        2,
-        new Pose3d(
-            Units.inchesToMeters(610.77),
-            Units.inchesToMeters(108.19),
-            Units.inchesToMeters(18.22),
-            new Rotation3d(0.0, 0.0, Math.PI)),
-        3,
-        new Pose3d(
-            Units.inchesToMeters(610.77),
-            Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
-            Units.inchesToMeters(18.22),
-            new Rotation3d(0.0, 0.0, Math.PI)),
-        4,
-        new Pose3d(
-            Units.inchesToMeters(636.96),
-            Units.inchesToMeters(265.74),
-            Units.inchesToMeters(27.38),
-            new Rotation3d(0.0, 0.0, Math.PI)),
-        5,
-        new Pose3d(
-            Units.inchesToMeters(14.25),
-            Units.inchesToMeters(265.74),
-            Units.inchesToMeters(27.38),
-            new Rotation3d()),
-        6,
-        new Pose3d(
-            Units.inchesToMeters(40.45),
-            Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
-            Units.inchesToMeters(18.22),
-            new Rotation3d()),
-        7,
-        new Pose3d(
-            Units.inchesToMeters(40.45),
-            Units.inchesToMeters(108.19),
-            Units.inchesToMeters(18.22),
-            new Rotation3d()),
-        8,
-        new Pose3d(
-            Units.inchesToMeters(40.45),
-            Units.inchesToMeters(42.19),
-            Units.inchesToMeters(18.22),
-            new Rotation3d()));
-  }
 
   public static class JoystickControls {
     public static final boolean xBoxControl = false;
@@ -224,5 +150,174 @@ public final class Constants {
     public static final double kITurn = 0.0;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
+  }
+  public static class VisionConstants{
+    public static final String kCameraName = "OV9281-1"; //SHEESHCAM!!!
+
+    public static final double minDistFromTag = 1; //Min dist necessary from tag to automate (1 meter aprox)
+
+    public static final double xyTolerance = 0.05;
+    public static final double thetaTolerance = 0.01;
+    /**
+     * Key:
+     * Orientation: facing red community from blue community 
+     * https://cdn.discordapp.com/attachments/453058111893405727/1062210473900126238/Screen_Shot_2023-01-09_at_7.25.00_PM.png
+     * Red Alliance Scoring Locations (right to left) – IDs 1, 2, ...9
+     * Blue Alliance Scoring Locations (left to right) – IDs 10, 11, ...18
+     */
+    public static final Map<Integer, Pose3d> kScoreCols = Map.of(
+        1,
+        new Pose2d(
+            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(20.6),
+            new Rotation2d(Math.PI)),
+        2,
+        new Pose2d(
+            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(41.9),
+            new Rotation2d(Math.PI)),
+        3,
+        new Pose2d(
+            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(64.6),
+            new Rotation2d(Math.PI)),
+        4,
+        new Pose2d(
+            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(86.5),
+            new Rotation2d(Math.PI)),
+        5,
+        new Pose2d(
+            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(108.9),
+            new Rotation2d(Math.PI)),
+        6,
+        new Pose2d(
+            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(130.6),
+            new Rotation2d(Math.PI)),
+        7,
+        new Pose2d(
+            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(157.6),
+            new Rotation2d(Math.PI)),
+        8,
+        new Pose2d(
+            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(174.9),
+            new Rotation2d(Math.PI)),
+        9,
+        new Pose2d(
+            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(196.6),
+            new Rotation2d(Math.PI)),
+        10,
+        new Pose2d(
+            Units.inchesToMeters(56.4),
+            Units.inchesToMeters(196.6),
+            new Rotation2d(0)),
+        11,
+        new Pose2d(
+            Units.inchesToMeters(56.4),
+            Units.inchesToMeters(174.9),
+            new Rotation2d(0)),
+        12,
+        new Pose2d(
+            Units.inchesToMeters(56.4),
+            Units.inchesToMeters(157.6),
+            new Rotation2d(0)),
+        13,
+        new Pose2d(
+            Units.inchesToMeters(56.4),
+            Units.inchesToMeters(130.6),
+            new Rotation2d(0)),
+        14,
+        new Pose2d(
+            Units.inchesToMeters(56.4),
+            Units.inchesToMeters(108.9),
+            new Rotation2d(0)),
+        15,
+        new Pose2d(
+            Units.inchesToMeters(56.4),
+            Units.inchesToMeters(86.5),
+            new Rotation2d(0)),
+        16,
+        new Pose2d(
+            Units.inchesToMeters(56.4),
+            Units.inchesToMeters(64.6),
+            new Rotation2d(0)),
+        17,
+        new Pose2d(
+            Units.inchesToMeters(56.4),
+            Units.inchesToMeters(41.9),
+            new Rotation2d(0)),
+        18,
+        new Pose2d(
+            Units.inchesToMeters(56.4),
+            Units.inchesToMeters(20.6),
+            new Rotation2d(0))
+
+
+    );
+
+    /**
+     * Key:
+     * Orientation: Facing red community from blue community
+     * https://cdn.discordapp.com/attachments/453058111893405727/1062210473900126238/Screen_Shot_2023-01-09_at_7.25.00_PM.png
+     * Red Alliance Community (right to left) – IDs 1, 2, 3
+     * Blue Alliance Double Substation – ID 4
+     * Red Alliance Double Substation – ID 5
+     * Blue Alliance Community (left to right) – IDs 6, 7, 8 
+     */
+    public static final Map<Integer, Pose3d> aprilTags = //relative to corner closest to tag 8
+    Map.of(
+        1,
+        new Pose3d(
+            Units.inchesToMeters(610.77),
+            Units.inchesToMeters(42.19),
+            Units.inchesToMeters(18.22),
+            new Rotation3d(0.0, 0.0, Math.PI)),
+        2,
+        new Pose3d(
+            Units.inchesToMeters(610.77),
+            Units.inchesToMeters(108.19),
+            Units.inchesToMeters(18.22),
+            new Rotation3d(0.0, 0.0, Math.PI)),
+        3,
+        new Pose3d(
+            Units.inchesToMeters(610.77),
+            Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
+            Units.inchesToMeters(18.22),
+            new Rotation3d(0.0, 0.0, Math.PI)),
+        4,
+        new Pose3d(
+            Units.inchesToMeters(636.96),
+            Units.inchesToMeters(265.74),
+            Units.inchesToMeters(27.38),
+            new Rotation3d(0.0, 0.0, Math.PI)),
+        5,
+        new Pose3d(
+            Units.inchesToMeters(14.25),
+            Units.inchesToMeters(265.74),
+            Units.inchesToMeters(27.38),
+            new Rotation3d()),
+        6,
+        new Pose3d(
+            Units.inchesToMeters(40.45),
+            Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
+            Units.inchesToMeters(18.22),
+            new Rotation3d()),
+        7,
+        new Pose3d(
+            Units.inchesToMeters(40.45),
+            Units.inchesToMeters(108.19),
+            Units.inchesToMeters(18.22),
+            new Rotation3d()),
+        8,
+        new Pose3d(
+            Units.inchesToMeters(40.45),
+            Units.inchesToMeters(42.19),
+            Units.inchesToMeters(18.22),
+            new Rotation3d()));
   }
 }
