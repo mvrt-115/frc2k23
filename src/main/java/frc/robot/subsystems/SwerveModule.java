@@ -212,7 +212,6 @@ public class SwerveModule {
    * @return optimal state
    */
   public SwerveModuleState optimize(SwerveModuleState state) {
-    /**
       double targetAngle = state.angle.getDegrees();
       targetAngle %= 360.0;
       double currentAngle = getRawEncoderRad() * 180.0 / Math.PI;
@@ -240,40 +239,6 @@ public class SwerveModule {
       setVelocity(velocity);
       SwerveModuleState newState = new SwerveModuleState(velocity, new Rotation2d(targetAngle));
       return newState;
-    */
-
-    // Get the current angle of the module in degrees
-    double currentAngle = getRawEncoderRad() * 180.0 / Math.PI;
-
-    // Get the target angle in degrees
-    double targetAngle = state.angle.getDegrees();
-
-    // Calculate the difference between the current and target angles
-    double diff = targetAngle - currentAngle;
-
-    // Normalize the difference to the range of -180 to 180
-    if (diff > 180) {
-        diff -= 360;
-    } else if (diff < -180) {
-        diff += 360;
-    }
-
-    // Get the velocity in meters per second
-    double velocity = state.speedMetersPerSecond;
-
-    // Check if the shortest path to the target angle is clockwise or counterclockwise
-    if (diff < 0) {
-        velocity *= -1;
-    }
-
-    // Set the angle and velocity of the module
-    setAngle(targetAngle * Math.PI / 180.0);
-    setVelocity(velocity);
-
-    SmartDashboard.putNumber("Target Angle" + absEncoder.getDeviceID(), targetAngle);
-    // Create a new SwerveModuleState with the updated angle and velocity
-    SwerveModuleState newState = new SwerveModuleState(velocity, new Rotation2d(targetAngle));
-    return newState;
   }
 
   /**
