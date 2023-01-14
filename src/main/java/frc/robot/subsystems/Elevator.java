@@ -40,10 +40,10 @@ public class Elevator extends SubsystemBase {
   private DigitalInput inductiveSensor;
 
   /** Creates a new Elevator. */
-  public Elevator() {
+  public Elevator(TalonFX elevatorMotor) {
     eFeedforward = new ElevatorFeedforward(Constants.Elevator.kS, Constants.Elevator.kG, Constants.Elevator.kV, Constants.Elevator.kA);
     
-    elev_motor = new TalonFX(Constants.Elevator.MOTOR_ID);
+    elev_motor = elevatorMotor;
 
     pid = new PIDController(Constants.Elevator.P, Constants.Elevator.I, Constants.Elevator.D);
 
@@ -119,7 +119,8 @@ public class Elevator extends SubsystemBase {
     setpoint = profile.calculate(Constants.Elevator.KDt);
     
     double feedforward = eFeedforward.calculate(setpoint.velocity);
-    elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);    currentHeight = getHeight();
+    elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);    
+    currentHeight = getHeight();
     // double velocity = elev_motor.getSelectedSensorVelocity(); 
     // elev_motor.set(ControlMode.PercentOutput, ((pid.calculate(getHeight(), targetHeightRaw)) + feedforward) / 10);
   }
