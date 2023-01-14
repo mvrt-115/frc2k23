@@ -13,8 +13,11 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.ComputerVisionUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,14 +25,15 @@ import frc.robot.Constants;
 
 public class Localization extends SubsystemBase {
   private PhotonCamera camera;
-  private SwerveDrivetrain swerve;
+  private SwerveDrivetrain swerveDrivetrain;
   private Pose3d roboPose;
 
-  private final Field2d field2d;
+  private final Field2d field;
 
-  public Localization(SweriveDrivetrain swerve, PhotonCamera camera) {
-    this.swerve = swerve;
-    this.camera = camera;
+  public Localization(SwerveDrivetrain swerveDrivetrain) {
+    this.camera = new PhotonCamera(Constants.VisionConstants.kCameraName);
+    this.swerveDrivetrain = swerveDrivetrain;
+    this.field = swerveDrivetrain.getField();
     roboPose = new Pose3d();
   }
 
@@ -68,16 +72,21 @@ public class Localization extends SubsystemBase {
           Pose2d camPose = targetPose.transformBy(transform.inverse());
 
           var visionMeasurement = camPose.transformBy(CAMERA_TO_ROBOT);
-          field2d.getObject("MyRobot" + fiducialId).setPose(visionMeasurement);
+          field.getObject("MyRobot" + fiducialId).setPose(visionMeasurement);
           poseEstimator.addVisionMeasurement(visionMeasurement, imageCaptureTime);
         }
       }
           // Update pose estimator with drivetrain sensors
     }
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), drivetrainSubsystem.getGyroscopeRotation(), drivetrainSubsystem.getModuleStates());
+    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getGyroscopeRotation(), swerveDrivetrain.getModuleStates());
 
-    field2d.setRobotPose(getCurrentPose());
+    field.setRobotPose(getCurrentPose());
   }
+
+  public Pose2d getCurrentPose() {
+    return poseEstimator.getEstimatedPosition();
+  }
+
 
   /** _____
    * |_____|

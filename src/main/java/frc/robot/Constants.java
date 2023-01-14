@@ -256,8 +256,6 @@ public final class Constants {
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(20.6),
             new Rotation2d(0))
-
-
     );
 
     /**
