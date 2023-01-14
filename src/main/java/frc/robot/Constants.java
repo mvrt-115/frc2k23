@@ -57,6 +57,7 @@ public final class Constants {
     public static final double levelkD = 0;
     public static final double angleTolerance = 5;
     public static final double speedTolerance = 0.5;
+    public static final double levelVelocityMPS = 0; // TBD
 
 
     // Motor ID
