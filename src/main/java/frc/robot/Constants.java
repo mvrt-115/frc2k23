@@ -93,6 +93,11 @@ public final class Constants {
     public static final Map<Integer, Pose3d> kBlueScoreCols = Map.of(
         //  todo
     );
+
+    public static final Map<Integer, Pose3d> kRedScoreCols = Map.of(
+        //  todo
+    );
+
   }
 
   public static class JoystickControls {
