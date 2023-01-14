@@ -8,7 +8,6 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -34,7 +33,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   // kinematics stuff
   private SwerveDriveKinematics swerveKinematics;
-  private SwerveDrivePoseEstimator poseEstimator;
   private SwerveModuleState[] desiredStates = new SwerveModuleState[4];
   private SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
   private SwerveModule[] motors;
@@ -42,7 +40,6 @@ public class SwerveDrivetrain extends SubsystemBase {
   public boolean fieldOriented = false;
 
   // Auton Stuff
-  private Pose2d pose;
   private SwerveDriveOdometry odometry;
   private Field2d field;
   public PIDController xController;
@@ -125,7 +122,6 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_backRightEncoderOffset,
       modulePositions[3]);
 
-    pose = new Pose2d();
     odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
     field = new Field2d();
 
@@ -148,11 +144,12 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     trajectoryConfig.setKinematics(swerveKinematics);
     state = DrivetrainState.JOYSTICK_DRIVE;   
-
-    //Measure this pose before initializing the class
-    poseEstimator = new SwerveDrivePoseEstimator(swerveKinematics, getRotation2d(), modulePositions, pose);
   }
 
+  public SwerveModulePosition[] getModulePositions(){
+    return modulePositions;
+  }
+  
   /**
    * Zero the physical gyro
    */
@@ -203,10 +200,6 @@ public class SwerveDrivetrain extends SubsystemBase {
       odometry.getPoseMeters().getY(),
       getRotation2d()
     );
-  }
-
-  public Pose2d getCurrentPose() {
-    return poseEstimator.getEstimatedPosition();
   }
 
   /**

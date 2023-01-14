@@ -13,8 +13,10 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.ComputerVisionUtil;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Timer;
@@ -27,6 +29,7 @@ public class Localization extends SubsystemBase {
   private PhotonCamera camera;
   private SwerveDrivetrain swerveDrivetrain;
   private Pose3d roboPose;
+  private final SwerveDrivePoseEstimator poseEstimator;
 
   private final Field2d field;
 
@@ -35,6 +38,12 @@ public class Localization extends SubsystemBase {
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
     roboPose = new Pose3d();
+
+    //Measure this pose before initializing the class
+    poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
+                                                  swerveDrivetrain.getRotation2d(), 
+                                                  swerveDrivetrain.getModulePositions(), 
+                                                  swerveDrivetrain.getPose());
   }
 
   @Override
