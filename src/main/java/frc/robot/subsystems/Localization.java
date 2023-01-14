@@ -98,7 +98,6 @@ public class Localization extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-
   /** _____
    * |_____|
    * Origin at bottom left corner of rectangle facing towards the right with CCW
@@ -134,7 +133,6 @@ public class Localization extends SubsystemBase {
         relLoc.getY() * relLoc.getY() + 
         relLoc.getZ() * relLoc.getZ());
   }
-
 
   /**
    * Gets the closest scoring col from the robot's pose (centered at the camera)
