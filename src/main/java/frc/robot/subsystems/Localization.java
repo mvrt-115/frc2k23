@@ -19,6 +19,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,7 +32,7 @@ public class Localization extends SubsystemBase {
   private SwerveDrivetrain swerveDrivetrain;
   private Pose3d roboPose;
   private final SwerveDrivePoseEstimator poseEstimator;
-
+  
   private final Field2d field;
 
   public Localization(SwerveDrivetrain swerveDrivetrain) {
@@ -68,26 +70,26 @@ public class Localization extends SubsystemBase {
       double imageCaptureTime = Timer.getFPGATimestamp() - (res.getLatencyMillis() / 1000d);
 
       for (PhotonTrackedTarget target : res.getTargets()) {
-        var fiducialId = target.getFiducialId();
+        int fiducialId = target.getFiducialId();
 
         if (fiducialId >= 0 && fiducialId < targetPoses.size()) {
-          var targetPose = targetPoses.get(fiducialId);
+          Pose3d targetPose = targetPoses.get(fiducialId);
 
           Transform3d camToTarget = target.getBestCameraToTarget();
-          var transform = new Transform2d(
+          Transform2d transform = new Transform2d(
               camToTarget.getTranslation().toTranslation2d(),
               camToTarget.getRotation().toRotation2d().minus(Rotation2d.fromDegrees(90)));
 
           Pose2d camPose = targetPose.transformBy(transform.inverse());
 
-          var visionMeasurement = camPose.transformBy(CAMERA_TO_ROBOT);
+          var visionMeasurement = camPose.transformBy(Constants.VisionConstants.CAMERA_ON_ROBOT);
           field.getObject("MyRobot" + fiducialId).setPose(visionMeasurement);
           poseEstimator.addVisionMeasurement(visionMeasurement, imageCaptureTime);
         }
       }
           // Update pose estimator with drivetrain sensors
     }
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getGyroscopeRotation(), swerveDrivetrain.getModuleStates());
+    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
 
     field.setRobotPose(getCurrentPose());
   }

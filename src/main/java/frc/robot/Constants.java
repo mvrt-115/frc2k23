@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -154,6 +156,11 @@ public final class Constants {
   public static class VisionConstants{
     public static final String kCameraName = "OV9281-1"; //SHEESHCAM!!!
 
+    // Physical location of the camera on the robot, relative to the center of bot
+    public static final Transform2d CAMERA_ON_ROBOT = 
+      new Transform2d(new Translation2d(Units.inchesToMeters(12.75), 0.0), new Rotation2d(0.0));
+
+
     public static final double minDistFromTag = 1; //Min dist necessary from tag to automate (1 meter aprox)
 
     public static final double xyTolerance = 0.05;
@@ -165,7 +172,8 @@ public final class Constants {
      * Red Alliance Scoring Locations (right to left) – IDs 1, 2, ...9
      * Blue Alliance Scoring Locations (left to right) – IDs 10, 11, ...18
      */
-    public static final Map<Integer, Pose3d> kScoreCols = Map.of(
+
+    public static final Map<Integer, Pose2d> kScoreCols = Map.of(
         1,
         new Pose2d(
             Units.inchesToMeters(597.1),

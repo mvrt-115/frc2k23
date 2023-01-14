@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 import org.photonvision.PhotonCamera;
@@ -25,20 +26,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Localization photonCamera; //Utils camera
+  private final Localization localization; //Utils camera
   private PhotonCamera camera; //Actual camera
 
-  private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(camera);
+  private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final CommandJoystick driveJoystick = new CommandJoystick(Constants.SwerveDrivetrain.kDriveJoystickPort);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    camera = new PhotonCamera(Constants.VisionConstants.kCameraName);
-
-    photonCamera = new frc.robot.utils.Localization(camera);
-
-
+    localization = new Localization(swerveDrivetrain);
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
