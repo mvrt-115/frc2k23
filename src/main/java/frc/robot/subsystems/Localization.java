@@ -69,25 +69,25 @@ public class Localization extends SubsystemBase {
     if (res.hasTargets()) {
       double imageCaptureTime = Timer.getFPGATimestamp() - (res.getLatencyMillis() / 1000d);
 
+      //Loop through received objects
       for (PhotonTrackedTarget target : res.getTargets()) {
         int fiducialId = target.getFiducialId();
 
         if (fiducialId >= 0 && fiducialId < targetPoses.size()) {
           Pose3d targetPose = targetPoses.get(fiducialId);
 
-          Transform3d camToTarget = target.getBestCameraToTarget();
-          Transform2d transform = new Transform2d(
-              camToTarget.getTranslation().toTranslation2d(),
-              camToTarget.getRotation().toRotation2d().minus(Rotation2d.fromDegrees(90)));
+          Transform3d relLoc = target.getBestCameraToTarget();
+          Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
 
-          Pose2d camPose = targetPose.transformBy(transform.inverse());
+          roboPose = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
 
-          var visionMeasurement = camPose.transformBy(Constants.VisionConstants.CAMERA_ON_ROBOT);
-          field.getObject("MyRobot" + fiducialId).setPose(visionMeasurement);
-          poseEstimator.addVisionMeasurement(visionMeasurement, imageCaptureTime);
+          Pose2d roboOnField = new Pose2d(roboPose.getX(), roboPose.getY(), swerveDrivetrain.getRotation2d());
+          //This may be sketchy
+
+          field.getObject("MyRobot" + fiducialId).setPose(roboOnField);
+          poseEstimator.addVisionMeasurement(roboOnField, imageCaptureTime);
         }
       }
-          // Update pose estimator with drivetrain sensors
     }
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
 

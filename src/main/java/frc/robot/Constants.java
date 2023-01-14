@@ -165,6 +165,7 @@ public final class Constants {
 
     public static final double xyTolerance = 0.05;
     public static final double thetaTolerance = 0.01;
+
     /**
      * Key:
      * Orientation: facing red community from blue community 
@@ -172,7 +173,6 @@ public final class Constants {
      * Red Alliance Scoring Locations (right to left) – IDs 1, 2, ...9
      * Blue Alliance Scoring Locations (left to right) – IDs 10, 11, ...18
      */
-
     public static final Map<Integer, Pose2d> kRedScoreCols = Map.of(
         1,
         new Pose2d(
