@@ -173,7 +173,7 @@ public final class Constants {
      * Blue Alliance Scoring Locations (left to right) – IDs 10, 11, ...18
      */
 
-    public static final Map<Integer, Pose2d> kScoreCols = Map.of(
+    public static final Map<Integer, Pose2d> kRedScoreCols = Map.of(
         1,
         new Pose2d(
             Units.inchesToMeters(597.1),
@@ -218,48 +218,51 @@ public final class Constants {
         new Pose2d(
             Units.inchesToMeters(597.1),
             Units.inchesToMeters(196.6),
-            new Rotation2d(Math.PI)),
-        10,
+            new Rotation2d(Math.PI))
+    );
+
+    public static final Map<Integer, Pose2d> kBlueScoreCols = Map.of(
+        1,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(196.6),
             new Rotation2d(0)),
-        11,
+        2,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(174.9),
             new Rotation2d(0)),
-        12,
+        3,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(157.6),
             new Rotation2d(0)),
-        13,
+        4,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(130.6),
             new Rotation2d(0)),
-        14,
+        5,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(108.9),
             new Rotation2d(0)),
-        15,
+        6,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(86.5),
             new Rotation2d(0)),
-        16,
+        7,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(64.6),
             new Rotation2d(0)),
-        17,
+        8,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(41.9),
             new Rotation2d(0)),
-        18,
+        9,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(20.6),
