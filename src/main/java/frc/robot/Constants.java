@@ -39,6 +39,22 @@ public final class Constants {
     public static final double xyTolerance = 0.05;
     public static final double thetaTolerance = 0.01;
 
+    public static final Map<Integer, Pose3d> kBlueScoreCols = Map.of(
+        //  todo
+    );
+
+    public static final Map<Integer, Pose3d> kRedScoreCols = Map.of(
+        //  todo
+    );
+
+    /**
+     * Key:
+     * 
+     * Red Alliance Community (right to left) – IDs 1, 2, 3
+     * Blue Alliance Double Substation – ID 4
+     * Red Alliance Double Substation – ID 5
+     * Blue Alliance Community (right to left) – IDs 6, 7, 8 
+     */
     public static final Map<Integer, Pose3d> aprilTags = //relative to corner closest to tag 8
     Map.of(
         1,
@@ -89,15 +105,6 @@ public final class Constants {
             Units.inchesToMeters(42.19),
             Units.inchesToMeters(18.22),
             new Rotation3d()));
-
-    public static final Map<Integer, Pose3d> kBlueScoreCols = Map.of(
-        //  todo
-    );
-
-    public static final Map<Integer, Pose3d> kRedScoreCols = Map.of(
-        //  todo
-    );
-
   }
 
   public static class JoystickControls {
