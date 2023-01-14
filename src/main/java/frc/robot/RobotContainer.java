@@ -6,8 +6,10 @@ package frc.robot;
 
 import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.SwerveJoystickCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
+
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,16 +25,20 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final frc.robot.utils.PhotonCam photonCamera;
+  private final Localization photonCamera; //Utils camera
+  private PhotonCamera camera; //Actual camera
 
-  private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+  private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(camera);
   private final CommandJoystick driveJoystick = new CommandJoystick(Constants.SwerveDrivetrain.kDriveJoystickPort);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    photonCamera = new frc.robot.utils.PhotonCam();
+    camera = new PhotonCamera(Constants.VisionConstants.kCameraName);
+
+    photonCamera = new frc.robot.utils.Localization(camera);
+
+
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
@@ -63,10 +69,6 @@ public class RobotContainer {
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
     driveJoystick.button(2).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-
     autonSelector.setDefaultOption("Example", new AutonPathExample(swerveDrivetrain));
     SmartDashboard.putData("Auton Selector", autonSelector);
   }
@@ -77,8 +79,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    // return Autos.exampleAuto(m_exampleSubsystem);
     return autonSelector.getSelected();
   }
 }

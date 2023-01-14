@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 // licene deez nuts
 
-package frc.robot.utils;
+package frc.robot.subsystems;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,22 +15,27 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.ComputerVisionUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class PhotonCam extends SubsystemBase {
-  private PhotonCamera photonCamera;
+public class Localization extends SubsystemBase {
+  private PhotonCamera camera;
+  private SwerveDrivetrain swerve;
   private Pose3d roboPose;
 
-  public PhotonCam() {
-    photonCamera = new PhotonCamera(Constants.VisionConstants.kCameraName);
+  private final Field2d field2d;
+
+  public Localization(SweriveDrivetrain swerve, PhotonCamera camera) {
+    this.swerve = swerve;
+    this.camera = camera;
     roboPose = new Pose3d();
   }
 
   @Override
   public void periodic() {
-    PhotonPipelineResult result = photonCamera.getLatestResult();
+    PhotonPipelineResult result = camera.getLatestResult();
 
     //Tags exist
     if (result.hasTargets()){
@@ -41,6 +46,37 @@ public class PhotonCam extends SubsystemBase {
     } else {
       SmartDashboard.putBoolean("Found Tag(s)", false);
     }
+
+    var res = camera.getLatestResult();
+
+    Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
+
+    if (res.hasTargets()) {
+      double imageCaptureTime = Timer.getFPGATimestamp() - (res.getLatencyMillis() / 1000d);
+
+      for (PhotonTrackedTarget target : res.getTargets()) {
+        var fiducialId = target.getFiducialId();
+
+        if (fiducialId >= 0 && fiducialId < targetPoses.size()) {
+          var targetPose = targetPoses.get(fiducialId);
+
+          Transform3d camToTarget = target.getBestCameraToTarget();
+          var transform = new Transform2d(
+              camToTarget.getTranslation().toTranslation2d(),
+              camToTarget.getRotation().toRotation2d().minus(Rotation2d.fromDegrees(90)));
+
+          Pose2d camPose = targetPose.transformBy(transform.inverse());
+
+          var visionMeasurement = camPose.transformBy(CAMERA_TO_ROBOT);
+          field2d.getObject("MyRobot" + fiducialId).setPose(visionMeasurement);
+          poseEstimator.addVisionMeasurement(visionMeasurement, imageCaptureTime);
+        }
+      }
+          // Update pose estimator with drivetrain sensors
+    }
+    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), drivetrainSubsystem.getGyroscopeRotation(), drivetrainSubsystem.getModuleStates());
+
+    field2d.setRobotPose(getCurrentPose());
   }
 
   /** _____
@@ -51,7 +87,7 @@ public class PhotonCam extends SubsystemBase {
    * @return Estimated pose of robot based on closest detected AprilTag
    */
   public Pose3d getEstimatedPose() {
-    PhotonPipelineResult result = photonCamera.getLatestResult();
+    PhotonPipelineResult result = camera.getLatestResult();
    
     //Best target
     PhotonTrackedTarget target = result.getBestTarget();

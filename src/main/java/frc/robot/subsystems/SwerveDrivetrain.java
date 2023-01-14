@@ -8,8 +8,8 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -34,6 +34,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   // kinematics stuff
   private SwerveDriveKinematics swerveKinematics;
+  private SwerveDrivePoseEstimator poseEstimator;
   private SwerveModuleState[] desiredStates = new SwerveModuleState[4];
   private SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
   private SwerveModule[] motors;
@@ -53,11 +54,9 @@ public class SwerveDrivetrain extends SubsystemBase {
   private AHRS gyro;
   // private PigeonIMU gyro;
   private double gyroOffset = 0; // degrees
-
   
   /** Creates a new SwerveDrive. */
   public SwerveDrivetrain() {
-    // gyro = new PigeonIMU(Constants.SwerveDrivetrain.pigeon_id);
     gyro = new AHRS(SPI.Port.kMXP);
 
     // reset in new thread since gyro needs some time to boot up and we don't 
@@ -149,6 +148,9 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     trajectoryConfig.setKinematics(swerveKinematics);
     state = DrivetrainState.JOYSTICK_DRIVE;   
+
+    //Measure this pose before initializing the class
+    poseEstimator = new SwerveDrivePoseEstimator(swerveKinematics, getRotation2d(), modulePositions, pose);
   }
 
   /**
@@ -165,6 +167,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   public double getHeading() {
     return Math.IEEEremainder(gyro.getYaw() - gyroOffset, 360);
     //.getAngle()
+
     /**
      * use IEEEremainder because it uses formula:
      * dividend - (divisor x Math.Round(dividend / divisor))
@@ -200,6 +203,10 @@ public class SwerveDrivetrain extends SubsystemBase {
       odometry.getPoseMeters().getY(),
       getRotation2d()
     );
+  }
+
+  public Pose2d getCurrentPose() {
+    return poseEstimator.getEstimatedPosition();
   }
 
   /**
