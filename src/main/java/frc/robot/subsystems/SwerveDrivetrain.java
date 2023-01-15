@@ -39,7 +39,6 @@ public class SwerveDrivetrain extends SubsystemBase {
   public boolean fieldOriented = false;
 
   // Auton Stuff
-  private Pose2d pose;
   private SwerveDriveOdometry odometry;
   private Field2d field;
   public PIDController xController;
@@ -124,7 +123,6 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_backRightEncoderOffset,
       modulePositions[3]);
 
-    pose = new Pose2d();
     odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
     field = new Field2d();
 
