@@ -75,10 +75,10 @@ public final class Constants {
     public static final double m_backRightEncoderOffset = Units.degreesToRadians(302);// + Math.PI/2.0;
 
     // Position PID
-    public static final double m_x_control_P = 0.1;
+    public static final double m_x_control_P = 0.5;
     public static final double m_x_control_I = 0;
     public static final double m_x_control_D = 0;
-    public static final double m_y_control_P = 0.1;
+    public static final double m_y_control_P = 0.5;
     public static final double m_y_control_I = 0;
     public static final double m_y_control_D = 0;
     public static final double m_r_control_P = 1;
