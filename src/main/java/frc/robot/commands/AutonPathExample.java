@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -29,13 +30,15 @@ public class AutonPathExample extends SequentialCommandGroup {
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
 
+    SmartDashboard.putString("i'm", "i'm");
+
     trajectory = TrajectoryGenerator.generateTrajectory(
       new Pose2d(0, 0, new Rotation2d(0)),
       List.of(
-        new Translation2d(1, 0),
-        new Translation2d(1, 0.5)
+        new Translation2d(2, 0)
+        //new Translation2d(0, 1)
       ), 
-      new Pose2d(1, 0.5, Rotation2d.fromDegrees(180.0)),
+      new Pose2d(2, 0, Rotation2d.fromDegrees(180.0)),
       swerveDrivetrain.getTrajectoryConfig());
     
     // swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
@@ -56,5 +59,7 @@ public class AutonPathExample extends SequentialCommandGroup {
       swerveControllerCommand,
       new InstantCommand(() -> swerveDrivetrain.stopModules()),
       new InstantCommand(() -> swerveDrivetrain.setDisabled()));
+
+    SmartDashboard.putString("daisy", "daisy");
   }
 }
