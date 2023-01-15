@@ -51,31 +51,18 @@ public class Localization extends SubsystemBase {
   @Override
   public void periodic() {
     PhotonPipelineResult result = camera.getLatestResult();
-
-    //Tags exist
-    if (result.hasTargets()){
-      roboPose = getCurrentPose();
-      log();
-      SmartDashboard.putBoolean("Found Tag(s)", true);
-
-    } else {
-      SmartDashboard.putBoolean("Found Tag(s)", false);
-    }
-
-    var res = camera.getLatestResult();
-
     Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
-
-    if (res.hasTargets()) {
-      double imageCaptureTime = Timer.getFPGATimestamp() - (res.getLatencyMillis() / 1000d);
+    if (result.hasTargets()) {
+      SmartDashboard.putBoolean("Found Tag(s)", true);
+      double imageCaptureTime = Timer.getFPGATimestamp() - (result.getLatencyMillis() / 1000d);
 
       //Loop through seen tags
-      for (PhotonTrackedTarget target : res.getTargets()) {
+      for (PhotonTrackedTarget target : result.getTargets()) {
         int fiducialId = target.getFiducialId();
 
         if (fiducialId >= 1 && fiducialId <= targetPoses.size()) {
           Transform3d relLoc = target.getBestCameraToTarget();
-          Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
+          Pose3d tag = targetPoses.get(target.getFiducialId());
 
           roboPose = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
           Pose2d roboOnField = new Pose2d(roboPose.getX(), roboPose.getY(), roboPose.getRotation());
@@ -83,6 +70,10 @@ public class Localization extends SubsystemBase {
           poseEstimator.addVisionMeasurement(roboOnField, imageCaptureTime);
         }
       }
+      log();
+    }
+    else{
+      SmartDashboard.putBoolean("Found Tag(s)", false);
     }
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
 
