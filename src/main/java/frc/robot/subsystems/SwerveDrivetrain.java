@@ -33,7 +33,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   // kinematics stuff
   private SwerveDriveKinematics swerveKinematics;
-  private SwerveModuleState[] desiredStates = new SwerveModuleState[4];
   private SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
   private SwerveModule[] motors;
   private int rotationPoint = 0;
@@ -129,11 +128,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
     field = new Field2d();
 
-    desiredStates[0] = new SwerveModuleState();
-    desiredStates[1] = new SwerveModuleState();
-    desiredStates[2] = new SwerveModuleState();
-    desiredStates[3] = new SwerveModuleState();
-
     xController = new PIDController(Constants.SwerveDrivetrain.m_x_control_P, Constants.SwerveDrivetrain.m_x_control_I, Constants.SwerveDrivetrain.m_x_control_D);
     yController = new PIDController(Constants.SwerveDrivetrain.m_y_control_P, Constants.SwerveDrivetrain.m_y_control_I, Constants.SwerveDrivetrain.m_y_control_D);
     thetaController = new ProfiledPIDController(
@@ -219,7 +213,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     for (int i = 0; i < motors.length; i++)
     {
       motors[i].setDesiredState(states[i]);
-      desiredStates[i] = states[i];
     }
   }
 
