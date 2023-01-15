@@ -16,11 +16,7 @@ import edu.wpi.first.math.ComputerVisionUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -52,6 +48,7 @@ public class Localization extends SubsystemBase {
   public void periodic() {
     PhotonPipelineResult result = camera.getLatestResult();
     Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
+
     if (result.hasTargets()) {
       SmartDashboard.putBoolean("Found Tag(s)", true);
       double imageCaptureTime = Timer.getFPGATimestamp() - (result.getLatencyMillis() / 1000d);
