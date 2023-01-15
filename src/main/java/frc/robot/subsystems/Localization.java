@@ -30,7 +30,7 @@ import frc.robot.Constants;
 public class Localization extends SubsystemBase {
   private PhotonCamera camera;
   private SwerveDrivetrain swerveDrivetrain;
-  private Pose3d roboPose;
+  private Pose2d roboPose;
   private final SwerveDrivePoseEstimator poseEstimator;
   
   private final Field2d field;
@@ -39,7 +39,7 @@ public class Localization extends SubsystemBase {
     this.camera = new PhotonCamera(Constants.VisionConstants.kCameraName);
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
-    roboPose = new Pose3d();
+    roboPose = new Pose2d();
 
     //Measure this pose before initializing the class
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
@@ -54,7 +54,7 @@ public class Localization extends SubsystemBase {
 
     //Tags exist
     if (result.hasTargets()){
-      roboPose = getEstimatedPose();
+      roboPose = getCurrentPose();
       log();
       SmartDashboard.putBoolean("Found Tag(s)", true);
 
@@ -105,7 +105,7 @@ public class Localization extends SubsystemBase {
    *
    * @return Estimated pose of robot based on closest detected AprilTag
    */
-  public Pose3d getEstimatedPose() {
+  public Pose3d getEstimatedPose() { // TODO: change to Pose2d
     PhotonPipelineResult result = camera.getLatestResult();
    
     //Best target
@@ -139,14 +139,14 @@ public class Localization extends SubsystemBase {
    * @param robotPose The robot pose
    * @return Returns the Pose3d of the scoring col
    */
-  public Pose3d getClosestScoringLoc(Pose3d robotPose) {
-    Map<Integer, Pose3d> scoreCols = new HashMap<Integer, Pose3d>();
+  public Pose2d getClosestScoringLoc(Pose2d robotPose) {
+    Map<Integer, Pose2d> scoreCols = new HashMap<Integer, Pose2d>();
 
-    Pose3d minCol = null;
+    Pose2d minCol = null;
     double minDist = Double.MAX_VALUE;
 
     for(int i : scoreCols.keySet()) {
-      Pose3d pose = scoreCols.get(i);
+      Pose2d pose = scoreCols.get(i);
 
       double dy = Math.abs(robotPose.getY() - pose.getY());
 
@@ -165,6 +165,5 @@ public class Localization extends SubsystemBase {
   public void log() {
     SmartDashboard.putNumber("Robo X", roboPose.getX());
     SmartDashboard.putNumber("Robo Y", roboPose.getY());
-    SmartDashboard.putNumber("Robo Z", roboPose.getZ());
   }
 }

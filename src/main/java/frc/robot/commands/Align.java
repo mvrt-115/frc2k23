@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -18,14 +19,14 @@ public class Align extends CommandBase {
   private SwerveDrivetrain swerve;
   private Localization localization;
 
-  private Pose3d scorePose;
+  private Pose2d scorePose;
 
   private PIDController pidx;
   private PIDController pidy;
   private PIDController pidt;
 
   /** Creates a new Align. */
-  public Align(SwerveDrivetrain swerve, Localization localization, Pose3d scorePose) {
+  public Align(SwerveDrivetrain swerve, Localization localization, Pose2d scorePose) {
     addRequirements(swerve);
 
     this.swerve = swerve;
@@ -46,7 +47,7 @@ public class Align extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose3d robotPose = localization.getEstimatedPose();
+    Pose2d robotPose = localization.getCurrentPose();
 
     moveToScoringPos(robotPose, localization.getClosestScoringLoc(robotPose));
   }
@@ -56,10 +57,10 @@ public class Align extends CommandBase {
    * @param robotPose The current robotPose
    * @param scorePose The pose of the scoring column
    */
-  public void moveToScoringPos(Pose3d robotPose, Pose3d scorePose) {
+  public void moveToScoringPos(Pose2d robotPose, Pose2d scorePose) {
     double outX = pidx.calculate(robotPose.getX(), scorePose.getX()); // pos, setpoint
     double outY = pidy.calculate(robotPose.getY(), scorePose.getY()); // pos, setpoint
-    double outT = pidt.calculate(robotPose.getRotation().getAngle(), scorePose.getRotation().getAngle()); // pos, setpoint
+    double outT = pidt.calculate(robotPose.getRotation().getDegrees(), scorePose.getRotation().getDegrees()); // pos, setpoint
 
     ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, outT);
     SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
@@ -74,10 +75,10 @@ public class Align extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    Pose3d robotPose = localization.getEstimatedPose();
+    Pose2d robotPose = localization.getCurrentPose();
 
     return Math.abs(robotPose.getX() - scorePose.getX()) < Constants.VisionConstants.xyTolerance && 
       Math.abs(robotPose.getY() - scorePose.getY()) < Constants.VisionConstants.xyTolerance && 
-      Math.abs(robotPose.getRotation().getAngle() - scorePose.getRotation().getAngle()) < Constants.VisionConstants.thetaTolerance;
+      Math.abs(robotPose.getRotation().getDegrees() - scorePose.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;
   }
 }

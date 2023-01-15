@@ -164,7 +164,7 @@ public final class Constants {
     public static final double minDistFromTag = 1; //Min dist necessary from tag to automate (1 meter aprox)
 
     public static final double xyTolerance = 0.05;
-    public static final double thetaTolerance = 0.01;
+    public static final double thetaTolerance = 5;
 
     /**
      * Key:
