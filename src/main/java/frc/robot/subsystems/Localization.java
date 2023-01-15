@@ -69,22 +69,17 @@ public class Localization extends SubsystemBase {
     if (res.hasTargets()) {
       double imageCaptureTime = Timer.getFPGATimestamp() - (res.getLatencyMillis() / 1000d);
 
-      //Loop through received objects
+      //Loop through seen tags
       for (PhotonTrackedTarget target : res.getTargets()) {
         int fiducialId = target.getFiducialId();
 
-        if (fiducialId >= 0 && fiducialId < targetPoses.size()) {
-          Pose3d targetPose = targetPoses.get(fiducialId);
-
+        if (fiducialId >= 1 && fiducialId <= targetPoses.size()) {
           Transform3d relLoc = target.getBestCameraToTarget();
           Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
 
-          roboPose = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
-
-          Pose2d roboOnField = new Pose2d(roboPose.getX(), roboPose.getY(), swerveDrivetrain.getRotation2d());
-          //This may be sketchy
-
-          field.getObject("MyRobot" + fiducialId).setPose(roboOnField);
+          roboPose = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
+          Pose2d roboOnField = new Pose2d(roboPose.getX(), roboPose.getY(), roboPose.getRotation());
+          field.getObject("VisionRobot" + fiducialId).setPose(roboOnField); //Robot pose according to apriltags
           poseEstimator.addVisionMeasurement(roboOnField, imageCaptureTime);
         }
       }
