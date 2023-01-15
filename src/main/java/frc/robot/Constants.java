@@ -31,8 +31,8 @@ public final class Constants {
     public static final double F = 0;
 
     // Wtvr it is
-    public static final int METERS_PER_TICK = 0;
-    public static final int INCHES_PER_TICK = 0;
+    public static final double METERS_PER_TICK = .500;
+    public static final double INCHES_PER_TICK = .500;
 
     // Min/Max heights for the elevator (in inches)
     public static final double MAX_HEIGHT = 55;
@@ -69,6 +69,6 @@ public final class Constants {
     // initial elevator stages
     public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
 
-	public static final double ERROR = 0; 
+	public static final double ERROR = 0.2; 
   }
 }

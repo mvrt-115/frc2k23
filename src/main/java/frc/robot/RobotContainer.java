@@ -13,6 +13,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -35,9 +36,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    configureBindings();
     elevator = new Elevator(new TalonFX(Constants.Elevator.MOTOR_ID));
-    elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
+    configureBindings();
   }
 
   /**
@@ -51,12 +51,17 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    m_driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+    m_driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+
+    SmartDashboard.putData("go to mid", new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+    SmartDashboard.putData("go to high", new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
   }
 
   /**

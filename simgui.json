@@ -1,0 +1,25 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Go to high": "Command",
+      "/SmartDashboard/Go to mid": "Command",
+      "/SmartDashboard/Go to shelf": "Command",
+      "/SmartDashboard/go to high": "Command",
+      "/SmartDashboard/go to mid": "Command"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Go to high": {
+          "open": true
+        },
+        "Go to mid": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  }
+}

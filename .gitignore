@@ -156,7 +156,7 @@ gradle-app.setting
 .classpath
 .project
 .settings/
-.test/
+src/test/
 bin/
 
 # Simulation GUI and other tools window save file

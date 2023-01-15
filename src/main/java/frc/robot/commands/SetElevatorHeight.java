@@ -16,21 +16,29 @@ public class SetElevatorHeight extends CommandBase
   /** Creates a new SetElevatorHeight. */
   public SetElevatorHeight(Elevator elevator, double height)
   {
+    addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
     this.height = height; 
-    addRequirements(this.elevator);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    elevator.setTargetHeight(height);
+    // if(elevator.getLevel() == 3) {
+    //   elevator.setTargetHeight(0);
+    // }
+    // else {
+      elevator.setTargetHeight(height);
+    //  System.out.println("target height: " + height);
+    // }
+    
   }
 
   // Called once the command ends or is interrupted.

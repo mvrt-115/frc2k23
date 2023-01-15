@@ -69,6 +69,10 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
     updateState();
     updateHeight();
+
+    // SmartDashboard.putNumber("Elevator Level", getLevel());
+    // SmartDashboard.putNumber("Elevator Target Heighr", targetHeight);
+   // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
     SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition()*Constants.Elevator.INCHES_PER_TICK);
     SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity()*Constants.Elevator.INCHES_PER_TICK);
   }
@@ -106,6 +110,8 @@ public class Elevator extends SubsystemBase {
     // Checks bounds
     targetHeight = targetHeight > Constants.Elevator.MAX_HEIGHT ? Constants.Elevator.MAX_HEIGHT:targetHeight;
     targetHeight = targetHeight < Constants.Elevator.MIN_HEIGHT ? Constants.Elevator.MIN_HEIGHT:targetHeight;
+
+    SmartDashboard.putNumber("Elevator target height", targetHeight);
     
     setHeightRaw(targetHeight);
   }
@@ -119,7 +125,9 @@ public class Elevator extends SubsystemBase {
     setpoint = profile.calculate(Constants.Elevator.KDt);
     
     double feedforward = eFeedforward.calculate(setpoint.velocity);
-    elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);    
+    // elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);    
+    
+    elev_motor.set(ControlMode.PercentOutput, 1);
     currentHeight = getHeight();
     // double velocity = elev_motor.getSelectedSensorVelocity(); 
     // elev_motor.set(ControlMode.PercentOutput, ((pid.calculate(getHeight(), targetHeightRaw)) + feedforward) / 10);
@@ -195,4 +203,15 @@ public class Elevator extends SubsystemBase {
   {
     return Math.abs(current-target) <= Constants.Elevator.ERROR;
   }
+
+  // public void simulationPeriodic() {
+  //   super.simulationPeriodic();
+
+  //   updateHeight();
+  //   updateState();
+    
+  //   SmartDashboard.putNumber("Elevator Level", getLevel());
+  //   SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition()*Constants.Elevator.INCHES_PER_TICK);
+  //   SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity()*Constants.Elevator.INCHES_PER_TICK);
+  // }
 }
