@@ -25,29 +25,29 @@ public final class Constants {
     public static final int MOTOR_ID = 0;
     
     public static final int kPIDIdx = 0;
-    public static final int P = 0;
-    public static final int I = 0;
-    public static final int D = 0;
-    public static final int F = 0;
+    public static final double P = 0.3;
+    public static final double I = 0;
+    public static final double D = 0;
+    public static final double F = 0;
 
     // Wtvr it is
     public static final int METERS_PER_TICK = 0;
     public static final int INCHES_PER_TICK = 0;
 
     // Min/Max heights for the elevator (in inches)
-    public static final double MAX_HEIGHT = 20;
+    public static final double MAX_HEIGHT = 55;
     public static final double MIN_HEIGHT = 0;
 
     public static final double ZERO_HEIGHT = 0;
     public static final double SHELF_HEIGHT = 0;
 
     // MID, HIGH heights parwa cone (in inches)
-    public static final double CONE_MID_HEIGHT = 46;
-    public static final double CONE_HIGH_HEIGHT = 34;
+    public static final double CONE_MID_HEIGHT = 34;
+    public static final double CONE_HIGH_HEIGHT = 46;
 
     // MID, HIGH heights para cube (in inches)
-    public static final double CUBE_MID_HEIGHT = 35.5;
-    public static final double CUBE_HIGH_HEIGHT = 23.5;
+    public static final double CUBE_MID_HEIGHT = 23.5;
+    public static final double CUBE_HIGH_HEIGHT = 35.5;
 
     // feed forward constants
     public static final double kS = 0.0;
@@ -63,8 +63,8 @@ public final class Constants {
     public static final double KDt = 0.01;
 
     // constraints
-    public static final double MAX_VELOCITY = 0;
-    public static final double MAX_ACCELERATION = 0;
+    public static final double MAX_VELOCITY = 10;
+    public static final double MAX_ACCELERATION = 5;
 
     // initial elevator stages
     public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
