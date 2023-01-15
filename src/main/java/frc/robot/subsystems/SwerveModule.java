@@ -4,25 +4,13 @@
 
 package frc.robot.subsystems;
 
-import java.sql.Time;
-
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.Logger;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.utils.MathUtils;
@@ -224,33 +212,33 @@ public class SwerveModule {
    * @return optimal state
    */
   public SwerveModuleState optimize(SwerveModuleState state) {
-    double targetAngle = state.angle.getDegrees();
-    targetAngle %= 360.0;
-    double currentAngle = getRawEncoderRad() * 180.0 / Math.PI;
-    double currentAngleNormalized = currentAngle % 360.0;
-    double diff = targetAngle - currentAngleNormalized;
-    double velocity = state.speedMetersPerSecond;
+      double targetAngle = state.angle.getDegrees();
+      targetAngle %= 360.0;
+      double currentAngle = getRawEncoderRad() * 180.0 / Math.PI;
+      double currentAngleNormalized = currentAngle % 360.0;
+      double diff = targetAngle - currentAngleNormalized;
+      double velocity = state.speedMetersPerSecond;
 
-    if (90.0 < Math.abs(diff) && Math.abs(diff) < 270.0) {
-      double beta = 180.0 - diff;
-      targetAngle = currentAngle - beta;
-      velocity *= -1;
-    }
-    else if (Math.abs(diff) >= 270.0) {
-      if (diff < 0)
-        targetAngle = currentAngle + (360.0 + diff);
-      else
-        targetAngle = currentAngle - (360.0 - diff);
-    }
-    else {
-      targetAngle = currentAngle + diff;
-    }
-    
-    SmartDashboard.putNumber("Target Angle " + absEncoder.getDeviceID(), targetAngle);
-    setAngle(targetAngle* Math.PI / 180.0);
-    setVelocity(velocity);
-    SwerveModuleState newState = new SwerveModuleState(velocity, new Rotation2d(targetAngle));
-    return newState;
+      if (90.0 < Math.abs(diff) && Math.abs(diff) < 270.0) {
+        double beta = 180.0 - diff;
+        targetAngle = currentAngle - beta;
+        velocity *= -1;
+      }
+      else if (Math.abs(diff) >= 270.0) {
+        if (diff < 0)
+          targetAngle = currentAngle + (360.0 + diff);
+        else
+          targetAngle = currentAngle - (360.0 - diff);
+      }
+      else {
+        targetAngle = currentAngle + diff;
+      }
+      
+      SmartDashboard.putNumber("Target Angle " + absEncoder.getDeviceID(), targetAngle);
+      setAngle(targetAngle* Math.PI / 180.0);
+      setVelocity(velocity);
+      SwerveModuleState newState = new SwerveModuleState(velocity, new Rotation2d(targetAngle));
+      return newState;
   }
 
   /**
