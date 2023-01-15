@@ -222,22 +222,22 @@ public final class Constants {
     );
 
     public static final Map<Integer, Pose2d> kBlueScoreCols = Map.of(
-        1,
+        9,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(196.6),
             new Rotation2d(0)),
-        2,
+        8,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(174.9),
             new Rotation2d(0)),
-        3,
+        7,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(157.6),
             new Rotation2d(0)),
-        4,
+        6,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(130.6),
@@ -247,22 +247,22 @@ public final class Constants {
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(108.9),
             new Rotation2d(0)),
-        6,
+        4,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(86.5),
             new Rotation2d(0)),
-        7,
+        3,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(64.6),
             new Rotation2d(0)),
-        8,
+        2,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(41.9),
             new Rotation2d(0)),
-        9,
+        1,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(20.6),
