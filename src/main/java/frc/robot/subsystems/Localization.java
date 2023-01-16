@@ -91,7 +91,7 @@ public class Localization extends SubsystemBase {
    *
    * @return Estimated pose of robot based on closest detected AprilTag
    */
-  public Pose3d getEstimatedPose() { // TODO: change to Pose2d
+  public Pose2d getEstimatedPose() { // TODO: change to Pose2d
     PhotonPipelineResult result = camera.getLatestResult();
    
     //Best target
@@ -103,7 +103,7 @@ public class Localization extends SubsystemBase {
 
       SmartDashboard.putNumber("Tag Distance", distFromTag(relLoc));
       
-      return ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d());
+      return ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
     }
 
     return null;
@@ -141,7 +141,6 @@ public class Localization extends SubsystemBase {
         minCol = pose;
       }
     }
-
     return minCol;
   }
 
