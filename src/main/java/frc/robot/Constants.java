@@ -37,5 +37,8 @@ public final class Constants {
         public static final int kTicksPerRotation = 42; 
         public static final int kLengthIntake = 7;
         public static final int kMarginOfError = 20;
+
+        public static final int kProximityPort = 0; //port number for element proximity sensor
+        public static final int kProximityClawPort = 0; //port number for element proximity sensor
     }
 }
