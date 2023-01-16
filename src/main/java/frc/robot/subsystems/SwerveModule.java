@@ -220,7 +220,8 @@ public class SwerveModule {
       double velocity = state.speedMetersPerSecond;
 
       if (90.0 < Math.abs(diff) && Math.abs(diff) < 270.0) {
-        double beta = 180.0 - diff;
+        double beta = 180.0 - Math.abs(diff);
+        beta *= Math.signum(diff);
         targetAngle = currentAngle - beta;
         velocity *= -1;
       }
@@ -235,9 +236,9 @@ public class SwerveModule {
       }
       
       SmartDashboard.putNumber("Target Angle " + absEncoder.getDeviceID(), targetAngle);
-      setAngle(targetAngle* Math.PI / 180.0);
+      setAngle(targetAngle * Math.PI / 180.0);
       setVelocity(velocity);
-      SwerveModuleState newState = new SwerveModuleState(velocity, new Rotation2d(targetAngle));
+      SwerveModuleState newState = new SwerveModuleState(velocity, new Rotation2d(targetAngle * Math.PI / 180.0));
       return newState;
   }
 
