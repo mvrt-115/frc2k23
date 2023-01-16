@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -59,13 +60,19 @@ public class Intake extends SubsystemBase {
 
   /////////////////////////////////////////COMMANDS//////////////////////////////////////////////
 
+  /*
+   * Decides which intake method based on the type of intake system
+   */
   public CommandBase intakeElement() {
     if(type == INTAKE_TYPE.wheeled)
       return intakeWheeled();
     else 
       return intakeClaw();
   }
-
+  
+  /*
+   * Decides which outtake method based on the type of intake system
+   */
   public CommandBase outtakeElement() {
     if(type == INTAKE_TYPE.wheeled)
       return outtakeWheeled();
@@ -73,21 +80,39 @@ public class Intake extends SubsystemBase {
       return outtakeClaw();
   }
 
+  /*
+   * Runs claw inwards constantly
+   */
   public CommandBase intakeClaw() {
     motor.setIdleMode(IdleMode.kCoast); // change to the correct method
     return this.runOnce(() -> motor.set(0.3));
    }
 
+  /*
+   * Runs claw outwards using expand()
+   */
    public CommandBase outtakeClaw() {
     return new RunCommand(() -> this.expand());
    }
 
-   public CommandBase intakeWheeled() { //needs to be worked on
-    return null;
+   /*
+    * Runs wheels inward and stops when the element is detected within the intake
+    */
+   public CommandBase intakeWheeled() {
+    while(!proximityElement.get()) {
+      setMotorSpeed(0.3);
+    }
+
+    return new RunCommand(() -> zeroMotorSpeed());
    }
 
-   public CommandBase outtakeWheeled() { //needs to be worked on
-    return null;
+   /*
+    * Runs wheels outward for a given period of time and then stops to outtake element
+    */
+   public CommandBase outtakeWheeled() {
+    setMotorSpeed(-0.3);
+    Timer.delay(1.5);
+    return new RunCommand(() -> zeroMotorSpeed());
    }
 
    ////////////////////////////////////////METHODS////////////////////////////////////////////////
@@ -96,12 +121,12 @@ public class Intake extends SubsystemBase {
     * sets constant speed to claw until it reaches the limit of expansion as dictated by an encoder
     */
    public void expand() {
-      motor.setIdleMode(IdleMode.kCoast); // change to the correct method
-      motor.set(0);
-      while(!(encoder.getPosition() <= Constants.Intake.kExpandedTicks + Constants.Intake.kMarginOfError && encoder.getPosition() >= Constants.Intake.kExpandedTicks - Constants.Intake.kMarginOfError ))
+      while(!proximityClaw.get()) //if we have proximity sensor in place
+        //!(encoder.getPosition() <= Constants.Intake.kExpandedTicks + Constants.Intake.kMarginOfError && encoder.getPosition() >= Constants.Intake.kExpandedTicks - Constants.Intake.kMarginOfError ))
       {
-        motor.set(-0.3);
+        setMotorSpeed(-0.3);
       }
+      zeroMotorSpeed();
    }
 
   /*
