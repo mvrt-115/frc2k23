@@ -47,8 +47,10 @@ public class Align extends CommandBase {
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
+    Pose2d scoringPose = localization.getClosestScoringLoc(robotPose);
 
-    moveToScoringPos(robotPose, localization.getClosestScoringLoc(robotPose));
+    if(dist(robotPose, scoringPose) <= Constants.VisionConstants.minDistFromTag)
+      moveToScoringPos(robotPose, scoringPose);
   }
 
     /**
@@ -80,5 +82,10 @@ public class Align extends CommandBase {
     return Math.abs(robotPose.getX() - scorePose.getX()) < Constants.VisionConstants.xyTolerance && 
       Math.abs(robotPose.getY() - scorePose.getY()) < Constants.VisionConstants.xyTolerance && 
       Math.abs(robotPose.getRotation().getDegrees() - scorePose.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;
+  }
+
+  private double dist(Pose2d p1, Pose2d p2) {
+    return Math.sqrt((p1.getX() - p2.getX()) * (p1.getX() - p2.getX()) + 
+        (p1.getY() - p2.getY()) * (p1.getY() - p2.getY()));
   }
 }

@@ -100,6 +100,7 @@ public class Localization extends SubsystemBase {
    
     //Best target
     PhotonTrackedTarget target = result.getBestTarget();
+
    
     if (target != null){
       Transform3d relLoc = target.getBestCameraToTarget();
@@ -113,32 +114,36 @@ public class Localization extends SubsystemBase {
     return null;
    }
 
-  /**
-   * 
-   * @param relLoc the target (from camera)
-   * @return distance from target
-   */
-  public double distFromTag(Transform3d relLoc) {
-    return Math.sqrt(relLoc.getX() * relLoc.getX() + 
-        relLoc.getY() * relLoc.getY() + 
-        relLoc.getZ() * relLoc.getZ());
-  }
+  //  private Pose2d weightTargets(PhotonTrackedTarget ...targets) {
+  //     double[] weights = new double[targets.length];
 
-  /**
-   * Get the best scoring location
-   * @return
-   */
+    
 
-  public Pose2d getScoreLoc(){
+  //     return null;
+  //  }
 
-  }
+  private PhotonTrackedTarget getBestTarget(PhotonTrackedTarget ...targets) {
+      double minDist = Double.MAX_VALUE;
+      PhotonTrackedTarget best = null;
+
+      for(PhotonTrackedTarget t : targets) {
+        double dist = distFromTag(t.getBestCameraToTarget());
+
+        if(dist < minDist) {
+          minDist = dist;
+          best = t;
+        }
+      }
+
+      return best;
+  } 
 
   /**
    * Gets the scoring locations in range
    * @param robotPose The robot pose
-   * @return Returns the Pose3d of the scoring col
+   * @return Returns the Pose2d of the scoring col
    */
-  public Pose2d[] getScoringLocations(Pose2d robotPose) {
+  public Pose2d getClosestScoringLoc(Pose2d robotPose) {
     Map<Integer, Pose2d> scoreCols = 
         alliance == DriverStation.Alliance.Blue ? Constants.VisionConstants.kBlueScoreCols : 
                                                   Constants.VisionConstants.kRedScoreCols;
@@ -157,6 +162,17 @@ public class Localization extends SubsystemBase {
       }
     }
     return minCol;
+  }
+
+   /**
+   * 
+   * @param relLoc the target (from camera)
+   * @return distance from target
+   */
+  public double distFromTag(Transform3d relLoc) {
+    return Math.sqrt(relLoc.getX() * relLoc.getX() + 
+        relLoc.getY() * relLoc.getY() + 
+        relLoc.getZ() * relLoc.getZ());
   }
 
   /**
