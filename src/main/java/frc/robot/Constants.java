@@ -39,10 +39,10 @@ public final class Constants {
     // Important locations for swerve
     // consider swapping corners
     public static final Translation2d m_standardCenterLocation = new Translation2d(0, 0);
-    public static final Translation2d m_frontLeftLocation = new Translation2d(chassisWidth / 2.0, chassisHeight / 2.0);
-    public static final Translation2d m_frontRightLocation = new Translation2d(-chassisWidth / 2.0, chassisHeight / 2.0);
-    public static final Translation2d m_backLeftLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
-    public static final Translation2d m_backRightLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_frontLeftLocation = new Translation2d(-chassisWidth / 2.0, chassisHeight / 2.0);
+    public static final Translation2d m_frontRightLocation = new Translation2d(chassisWidth / 2.0, chassisHeight / 2.0);
+    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_backRightLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
     public static final Translation2d[] rotatePoints = {
         m_standardCenterLocation,
         m_frontLeftLocation,
