@@ -17,6 +17,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,8 +31,9 @@ public class Localization extends SubsystemBase {
   private final SwerveDrivePoseEstimator poseEstimator;
   
   private final Field2d field;
+  private DriverStation.Alliance alliance;
 
-  public Localization(SwerveDrivetrain swerveDrivetrain) {
+  public Localization(SwerveDrivetrain swerveDrivetrain, DriverStation.Alliance alliance) {
     this.camera = new PhotonCamera(Constants.VisionConstants.kCameraName);
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
@@ -81,6 +83,11 @@ public class Localization extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
+  /**
+   * Pick alignment depending on closest tag and what robot is currently holding
+   * @return
+   */
+
   /** _____
    * |_____|
    * Origin at bottom left corner of rectangle facing towards the right with CCW
@@ -88,7 +95,7 @@ public class Localization extends SubsystemBase {
    *
    * @return Estimated pose of robot based on closest detected AprilTag
    */
-  public Pose2d getEstimatedPose() { // TODO: change to Pose2d
+  public Pose2d getEstimatedPose() {
     PhotonPipelineResult result = camera.getLatestResult();
    
     //Best target
@@ -118,12 +125,23 @@ public class Localization extends SubsystemBase {
   }
 
   /**
-   * Gets the closest scoring col from the robot's pose (centered at the camera)
+   * Get the best scoring location
+   * @return
+   */
+
+  public Pose2d getScoreLoc(){
+
+  }
+
+  /**
+   * Gets the scoring locations in range
    * @param robotPose The robot pose
    * @return Returns the Pose3d of the scoring col
    */
-  public Pose2d getClosestScoringLoc(Pose2d robotPose) {
-    Map<Integer, Pose2d> scoreCols = new HashMap<Integer, Pose2d>();
+  public Pose2d[] getScoringLocations(Pose2d robotPose) {
+    Map<Integer, Pose2d> scoreCols = 
+        alliance == DriverStation.Alliance.Blue ? Constants.VisionConstants.kBlueScoreCols : 
+                                                  Constants.VisionConstants.kRedScoreCols;
 
     Pose2d minCol = null;
     double minDist = Double.MAX_VALUE;

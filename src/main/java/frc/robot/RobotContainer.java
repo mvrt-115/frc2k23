@@ -11,6 +11,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
 
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,9 +34,13 @@ public class RobotContainer {
   private final CommandJoystick driveJoystick = new CommandJoystick(Constants.SwerveDrivetrain.kDriveJoystickPort);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
+  private DriverStation.Alliance alliance;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    localization = new Localization(swerveDrivetrain);
+    alliance = DriverStation.Alliance.Blue; //DriverStation.Alliance.getAlliance();
+
+    localization = new Localization(swerveDrivetrain, alliance);
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
