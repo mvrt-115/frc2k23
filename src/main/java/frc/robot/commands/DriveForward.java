@@ -25,6 +25,7 @@ public class DriveForward extends CommandBase {
     this.time = time;
     currentTime = 0;
     startTime = 0;
+    addRequirements(swerveDt);
   }
 
   // Called when the command is initially scheduled.
@@ -36,6 +37,7 @@ public class DriveForward extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    currentTime = Timer.getFPGATimestamp();
     swerveDt.setSpeeds(mps, 0, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
   }
 

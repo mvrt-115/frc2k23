@@ -16,7 +16,6 @@ public class Leveling extends CommandBase {
   private SwerveDrivetrain swerveDt;
   private PIDController pid; // Look into ProfilePIDContoller
   private boolean level;
-  private boolean isAlligned;
 
   /** Creates a new Leveling. */
   public Leveling(SwerveDrivetrain _swerveDt) {
@@ -48,13 +47,7 @@ public class Leveling extends CommandBase {
     double vX = -Math.min(-currentRoll*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
     double vY = 0;
 
-
-    //if(!isAlligned){
-      swerveDt.setSpeeds(vX, vY, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
-    //}
-    // else{
-    //   //swerveDt.setSpeeds(vX, vY, 0, null);
-    // }
+    swerveDt.setSpeeds(vX, vY, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
 
     //ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0, swerveDt.getRotation2d());
 
