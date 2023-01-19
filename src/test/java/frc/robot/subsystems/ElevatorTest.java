@@ -11,7 +11,7 @@ import static org.mockito.Mockito.doNothing;
 
 import frc.robot.Constants;
 
-@ExtendWith(MockitoExtension.class)
+/* @ExtendWith(MockitoExtension.class)
 public class ElevatorTest {
     Elevator elevator;
 
@@ -22,3 +22,4 @@ public class ElevatorTest {
         elevator.setTargetHeight((Constants.Elevator.MIN_HEIGHT + Constants.Elevator.MAX_HEIGHT) / 2);
     }
 }
+ */

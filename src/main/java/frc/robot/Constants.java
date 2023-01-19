@@ -70,5 +70,15 @@ public final class Constants {
     public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
 
 	public static final double ERROR = 0.2; 
+
+    public static final double GEAR_RATIO = 5;
+
+    public static final double MASS = 8;
+    public static final double BOTTOM = 0;
+    public static final double MIDDLE = 10;
+    public static final double TOP = 15;
+
+    public static final double PULLEY_RADIUS = 0.05;
+
   }
 }

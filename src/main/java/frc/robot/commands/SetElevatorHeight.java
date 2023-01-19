@@ -16,9 +16,9 @@ public class SetElevatorHeight extends CommandBase
   /** Creates a new SetElevatorHeight. */
   public SetElevatorHeight(Elevator elevator, double height)
   {
-    addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
+    addRequirements(elevator);
     this.height = height; 
   }
 
@@ -36,6 +36,7 @@ public class SetElevatorHeight extends CommandBase
     // }
     // else {
       elevator.setTargetHeight(height);
+//      System.out.println("executeeeee");
     //  System.out.println("target height: " + height);
     // }
     

@@ -58,7 +58,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     m_driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
-    m_driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+    m_driverController.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
 
     SmartDashboard.putData("go to mid", new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
     SmartDashboard.putData("go to high", new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
