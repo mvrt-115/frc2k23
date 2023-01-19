@@ -171,7 +171,22 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public double getPitchAngle(){
     return gyro.getPitch();
+  }
 
+  /**
+   * gets the current gyro yaw value
+   * @return yaw in degrees
+   */
+  public double getYaw(){
+    return gyro.getYaw();
+  }
+
+  /**
+   * gets the current gyro roll value
+   * @return roll in degrees
+   */
+  public double getRoll(){
+    return gyro.getRoll();
   }
 
   /**

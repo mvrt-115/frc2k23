@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Leveling;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
@@ -52,8 +53,10 @@ public class RobotContainer {
       driveJoystick));
     // Configure the trigger bindings
     configureBindings();
-    elevator = new Elevator();
-    elevator.setDefaultCommand(new SetElevatorHeight(elevator));
+    //elevator = new Elevator();
+    //elevator.setDefaultCommand(new SetElevatorHeight(elevator));
+
+    swerveDrivetrain.setDefaultCommand(new Leveling(swerveDrivetrain));
   }
 
   /**
