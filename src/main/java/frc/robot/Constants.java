@@ -41,16 +41,16 @@ public final class Constants {
 
   public static class SwerveDrivetrain {
     // Physical Constants
-    public static final double chassisWidth = Units.inchesToMeters(26);
-    public static final double chassisHeight = Units.inchesToMeters(28);
+    public static final double chassisWidth = Units.inchesToMeters(28);
+    public static final double chassisHeight = Units.inchesToMeters(26);
 
     // Important locations for swerve
     // consider swapping corners
     public static final Translation2d m_standardCenterLocation = new Translation2d(0, 0);
-    public static final Translation2d m_frontLeftLocation = new Translation2d(chassisWidth / 2.0, chassisHeight / 2.0);
-    public static final Translation2d m_frontRightLocation = new Translation2d(-chassisWidth / 2.0, chassisHeight / 2.0);
-    public static final Translation2d m_backLeftLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
-    public static final Translation2d m_backRightLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_frontLeftLocation = new Translation2d(-chassisWidth / 2.0, chassisHeight / 2.0);
+    public static final Translation2d m_frontRightLocation = new Translation2d(chassisWidth / 2.0, chassisHeight / 2.0);
+    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_backRightLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
     public static final Translation2d[] rotatePoints = {
         m_standardCenterLocation,
         m_frontLeftLocation,
@@ -60,33 +60,33 @@ public final class Constants {
     };
 
     // Motor ID
-    public static final int m_frontLeftDriveID = 1;
-    public static final int m_frontRightDriveID = 7;
-    public static final int m_backLeftDriveID = 3;
-    public static final int m_backRightDriveID = 5;
+    public static final int m_frontLeftDriveID = 3;
+    public static final int m_frontRightDriveID = 1;
+    public static final int m_backLeftDriveID = 5;
+    public static final int m_backRightDriveID = 7;
 
-    public static final int m_frontLeftTurnID = 2;
-    public static final int m_frontRightTurnID = 8;
-    public static final int m_backLeftTurnID = 4;
-    public static final int m_backRightTurnID = 6;
+    public static final int m_frontLeftTurnID = 4;
+    public static final int m_frontRightTurnID = 2;
+    public static final int m_backLeftTurnID = 6;
+    public static final int m_backRightTurnID = 8;
 
     // Abs Encoder ID
-    public static final int m_frontLeftEncoderID = 9;
-    public static final int m_frontRightEncoderID = 12;
-    public static final int m_backLeftEncoderID = 10;
-    public static final int m_backRightEncoderID = 11;
+    public static final int m_frontLeftEncoderID = 10;
+    public static final int m_frontRightEncoderID = 9;
+    public static final int m_backLeftEncoderID = 11;
+    public static final int m_backRightEncoderID = 12;
 
     // Abs Encoder Offsets
-    public static final double m_frontLeftEncoderOffset = Units.degreesToRadians(227);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset = Units.degreesToRadians(273);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset = Units.degreesToRadians(264);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset = Units.degreesToRadians(302);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset = Units.degreesToRadians(327);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset = Units.degreesToRadians(163);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset = Units.degreesToRadians(2);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset = Units.degreesToRadians(211);// + Math.PI/2.0;
 
     // Position PID
-    public static final double m_x_control_P = 0.1;
+    public static final double m_x_control_P = 0.5;
     public static final double m_x_control_I = 0;
     public static final double m_x_control_D = 0;
-    public static final double m_y_control_P = 0.1;
+    public static final double m_y_control_P = 0.5;
     public static final double m_y_control_I = 0;
     public static final double m_y_control_D = 0;
     public static final double m_r_control_P = 1;
@@ -148,7 +148,7 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kFF = 0;
 
-    public static final double kPTurn = 0.05;
+    public static final double kPTurn = 0.1;
     public static final double kITurn = 0.0;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
