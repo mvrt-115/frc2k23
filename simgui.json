@@ -18,6 +18,9 @@
         "Go to mid": {
           "open": true
         },
+        "go to high": {
+          "open": true
+        },
         "open": true
       }
     }

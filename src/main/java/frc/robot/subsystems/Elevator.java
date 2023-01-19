@@ -48,6 +48,7 @@ public class Elevator extends SubsystemBase {
   // sim fields
   private ElevatorSim sim;
   private EncoderSim encoderSim;
+  public static DCMotor gearbox;
   public static TalonFXSimCollection elevMotorSim;
 
 
@@ -72,16 +73,16 @@ public class Elevator extends SubsystemBase {
      elev_motor.config_kF(Constants.Elevator.kPIDIdx, Constants.Elevator.F);
 
     elev_motor.setNeutralMode(NeutralMode.Brake);
-
     elev_motor.setSelectedSensorPosition(0);
-
     encoder = new Encoder(1, 2);
+    encoder.reset();
+    encoder.setDistancePerPulse(2.0 * Math.PI * Constants.Elevator.PULLEY_RADIUS / Constants.Elevator.GEAR_RATIO / 4096);
 
-    
+    // sims
     encoderSim = new EncoderSim(encoder);
-    elevMotorSim = new TalonFXSimCollection(elev_motor)
-
-    sim = new ElevatorSim(elevMotorSim, Constants.Elevator.GEAR_RATIO, Constants.Elevator.MASS, Constants.Elevator.PULLEY_RADIUS, Constants.Elevator.BOTTOM, Constants.Elevator.TOP, true,
+    elevMotorSim = elev_motor.getSimCollection();
+    gearbox = DCMotor.getFalcon500(1);
+    sim = new ElevatorSim(gearbox, Constants.Elevator.GEAR_RATIO, Constants.Elevator.MASS, Constants.Elevator.PULLEY_RADIUS, Constants.Elevator.BOTTOM, Constants.Elevator.TOP, true,
     VecBuilder.fill(0.01));
   }
 
@@ -140,19 +141,19 @@ public class Elevator extends SubsystemBase {
   
   private void setHeightRaw(double targetHeightRaw)
   {
-    goal = new TrapezoidProfile.State(targetHeightRaw, 0);
-    setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition(), elev_motor.getSelectedSensorVelocity());
+    goal = new TrapezoidProfile.State(targetHeightRaw / Constants.Elevator.INCHES_PER_TICK, 0);
+    setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition() + 1, elev_motor.getSelectedSensorVelocity());
     profile = new TrapezoidProfile(constraints, goal, setpoint);
     setpoint = profile.calculate(Constants.Elevator.KDt);
     
     double feedforward = eFeedforward.calculate(setpoint.velocity);
-    // elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);    
-    
-    elev_motor.set(ControlMode.PercentOutput, 1);
+    elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);    
+    elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));
+    // elev_motor.set(ControlMode.PercentOutput, 1);
     currentHeight = getHeight();
 
     // double velocity = elev_motor.getSelectedSensorVelocity(); 
-    // elev_motor.set(ControlMode.PercentOutput, ((pid.calculate(getHeight(), targetHeightRaw)) + feedforward) / 10);
+    //elev_motor.set(ControlMode.PercentOutput, ((pid.calculate(getHeight(), targetHeightRaw)) + feedforward) / 10);
   }
 
   
@@ -229,13 +230,14 @@ public class Elevator extends SubsystemBase {
 public void simulationPeriodic() {
     super.simulationPeriodic();
 
-    sim.setInput(elev_motor.getMotorOutputVoltage());
     sim.update(0.020);
+
+    sim.setInput(elev_motor.getMotorOutputVoltage());
     encoderSim.setDistance(sim.getPositionMeters());
 
     
     SmartDashboard.putNumber("Elevator Level", getLevel());
-    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition()*Constants.Elevator.INCHES_PER_TICK);
-    SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity()*Constants.Elevator.INCHES_PER_TICK);
+    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition() * Constants.Elevator.INCHES_PER_TICK);
+    //SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
   }
 }
