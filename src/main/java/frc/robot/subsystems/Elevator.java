@@ -8,17 +8,22 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.math.system.plant.DCMotor;
 
 public class Elevator extends SubsystemBase {
   private ElevatorState currState;
@@ -38,6 +43,13 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.State setpoint;
   private TrapezoidProfile profile;
   private DigitalInput inductiveSensor;
+  private Encoder encoder;
+
+  // sim fields
+  private ElevatorSim sim;
+  private EncoderSim encoderSim;
+  public static TalonFXSimCollection elevMotorSim;
+
 
   /** Creates a new Elevator. */
   public Elevator(TalonFX elevatorMotor) {
@@ -62,6 +74,15 @@ public class Elevator extends SubsystemBase {
     elev_motor.setNeutralMode(NeutralMode.Brake);
 
     elev_motor.setSelectedSensorPosition(0);
+
+    encoder = new Encoder(1, 2);
+
+    
+    encoderSim = new EncoderSim(encoder);
+    elevMotorSim = new TalonFXSimCollection(elev_motor)
+
+    sim = new ElevatorSim(elevMotorSim, Constants.Elevator.GEAR_RATIO, Constants.Elevator.MASS, Constants.Elevator.PULLEY_RADIUS, Constants.Elevator.BOTTOM, Constants.Elevator.TOP, true,
+    VecBuilder.fill(0.01));
   }
 
   @Override
@@ -69,7 +90,6 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
     updateState();
     updateHeight();
-
     // SmartDashboard.putNumber("Elevator Level", getLevel());
     // SmartDashboard.putNumber("Elevator Target Heighr", targetHeight);
    // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
@@ -106,6 +126,7 @@ public class Elevator extends SubsystemBase {
   //to check that the height is in bounds
   public void setTargetHeight(double goal)
   {
+   // System.out.println("hi");
     targetHeight = goal;
     // Checks bounds
     targetHeight = targetHeight > Constants.Elevator.MAX_HEIGHT ? Constants.Elevator.MAX_HEIGHT:targetHeight;
@@ -129,6 +150,7 @@ public class Elevator extends SubsystemBase {
     
     elev_motor.set(ControlMode.PercentOutput, 1);
     currentHeight = getHeight();
+
     // double velocity = elev_motor.getSelectedSensorVelocity(); 
     // elev_motor.set(ControlMode.PercentOutput, ((pid.calculate(getHeight(), targetHeightRaw)) + feedforward) / 10);
   }
@@ -204,14 +226,16 @@ public class Elevator extends SubsystemBase {
     return Math.abs(current-target) <= Constants.Elevator.ERROR;
   }
 
-  // public void simulationPeriodic() {
-  //   super.simulationPeriodic();
+public void simulationPeriodic() {
+    super.simulationPeriodic();
 
-  //   updateHeight();
-  //   updateState();
+    sim.setInput(elev_motor.getMotorOutputVoltage());
+    sim.update(0.020);
+    encoderSim.setDistance(sim.getPositionMeters());
+
     
-  //   SmartDashboard.putNumber("Elevator Level", getLevel());
-  //   SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition()*Constants.Elevator.INCHES_PER_TICK);
-  //   SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity()*Constants.Elevator.INCHES_PER_TICK);
-  // }
+    SmartDashboard.putNumber("Elevator Level", getLevel());
+    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition()*Constants.Elevator.INCHES_PER_TICK);
+    SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity()*Constants.Elevator.INCHES_PER_TICK);
+  }
 }
