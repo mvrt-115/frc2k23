@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveForward;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Leveling;
 import frc.robot.commands.SwerveJoystickCommand;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -38,12 +40,12 @@ public class RobotContainer {
   // private final CommandXboxController m_driverController =
   //     new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private final CommandJoystick driveJoystick = new CommandJoystick(Constants.SwerveDrivetrain.kDriveJoystickPort);
-
+  private final Trigger levelTrigger;
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    driveJoystick.button(0);
+    driveJoystick.button(1);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
       () -> -driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveXAxis), 
@@ -56,7 +58,9 @@ public class RobotContainer {
     //elevator = new Elevator();
     //elevator.setDefaultCommand(new SetElevatorHeight(elevator));
 
-    swerveDrivetrain.setDefaultCommand(new Leveling(swerveDrivetrain));
+    levelTrigger = driveJoystick.button(2);
+    levelTrigger.onTrue( new DriveForward(swerveDrivetrain, 1, 0.5).andThen(new Leveling(swerveDrivetrain)) );
+    
   }
 
   /**

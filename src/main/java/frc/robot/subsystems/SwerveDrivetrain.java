@@ -20,6 +20,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -143,6 +144,14 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   /**
+   * drive robo forward
+   * @param mps velocity
+   */
+  public void driveForward(double mps){
+    setSpeeds(mps, 0, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
+  }
+
+  /**
    * Zero the physical gyro
    */
   public void zeroHeading() {
@@ -216,6 +225,10 @@ public class SwerveDrivetrain extends SubsystemBase {
       odometry.getPoseMeters().getY(),
       getRotation2d()
     );
+
+    SmartDashboard.putNumber("pitch1", getPitchAngle());
+    SmartDashboard.putNumber("yaw1", getYaw());
+    SmartDashboard.putNumber("roll1", getRoll());
   }
 
   /**

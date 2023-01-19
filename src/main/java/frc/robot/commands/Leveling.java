@@ -36,22 +36,25 @@ public class Leveling extends CommandBase {
   public void execute() {
 
     double currentPitch = swerveDt.getPitchAngle();
+    double currentYaw = swerveDt.getYaw();
+    double currentRoll = swerveDt.getRoll();
 
-    SmartDashboard.putNumber("pitch", currentPitch);
-    SmartDashboard.putNumber("yaw", swerveDt.getYaw());
-    SmartDashboard.putNumber("roll", swerveDt.getRoll());
+    // SmartDashboard.putNumber("pitch", currentPitch);
+    // SmartDashboard.putNumber("yaw", currentYaw);
+    // SmartDashboard.putNumber("roll", currentRoll);
 
     SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
 
-    double vX = -Math.min(-currentPitch*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
+    double vX = -Math.min(-currentRoll*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
     double vY = 0;
 
-    if(!isAlligned){
-      swerveDt.setSpeeds(currentPitch, vX, vY, null);
-    }
-    else{
-      swerveDt.setSpeeds(vX, vY, 0, null);
-    }
+
+    //if(!isAlligned){
+      swerveDt.setSpeeds(vX, vY, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
+    //}
+    // else{
+    //   //swerveDt.setSpeeds(vX, vY, 0, null);
+    // }
 
     //ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0, swerveDt.getRotation2d());
 
@@ -69,14 +72,14 @@ public class Leveling extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     // call a command that locks the wheels
-    swerveDt.setSpeeds(0, 0, 0, null);
+    swerveDt.setSpeeds(0, 0, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(swerveDt.getPitchAngle()) < Constants.SwerveDrivetrain.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.SwerveDrivetrain.speedTolerance){
-      level = true; 
+    if (Math.abs(swerveDt.getRoll()) < Constants.SwerveDrivetrain.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.SwerveDrivetrain.speedTolerance){
+      level = false; //true;
     }
     return level; // once the speed of the robot is low enough and the angle is small enough, the command will end 
   }
