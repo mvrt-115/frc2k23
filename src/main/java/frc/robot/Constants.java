@@ -59,6 +59,8 @@ public final class Constants {
     public static final double speedTolerance = 0.5;
     public static final double levelVelocityMPS = 0; // TBD
     public static final double yawAlligned = 0; // TBD
+    public static final double pitchAlligned = 0; // TBD
+    public static final double rollAlligned = 0; // TBD
 
 
     // Motor ID
