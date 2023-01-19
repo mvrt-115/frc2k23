@@ -16,12 +16,15 @@ public class Leveling extends CommandBase {
   private SwerveDrivetrain swerveDt;
   private PIDController pid; // Look into ProfilePIDContoller
   private boolean level;
+  private boolean isAlligned;
 
   /** Creates a new Leveling. */
   public Leveling(SwerveDrivetrain _swerveDt) {
     this.swerveDt = _swerveDt;
     this.pid = new PIDController(Constants.SwerveDrivetrain.levelkP, Constants.SwerveDrivetrain.levelkI, Constants.SwerveDrivetrain.levelkD);
     this.level = false;
+
+    addRequirements(swerveDt);
   }
 
   // Called when the command is initially scheduled.
@@ -31,15 +34,25 @@ public class Leveling extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     double currentPitch = swerveDt.getPitchAngle();
 
     SmartDashboard.putNumber("pitch", currentPitch);
+    SmartDashboard.putNumber("yaw", swerveDt.getYaw());
+    SmartDashboard.putNumber("roll", swerveDt.getRoll());
+
     SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
 
     double vX = -Math.min(-currentPitch*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
     double vY = 0;
 
-    swerveDt.setSpeeds(vX, vY, 0, null);
+    if(!isAlligned){
+      swerveDt.setSpeeds(currentPitch, vX, vY, null);
+    }
+    else{
+      swerveDt.setSpeeds(vX, vY, 0, null);
+    }
+
     //ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0, swerveDt.getRotation2d());
 
     // convert to module states and apply to each wheel
