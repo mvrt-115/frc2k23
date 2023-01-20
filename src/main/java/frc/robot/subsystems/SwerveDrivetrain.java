@@ -93,7 +93,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_frontLeftEncoderOffset,
       modulePositions[0]);
 
-    motors[1] = new SwerveModule(
+    motors[2] = new SwerveModule(
       Constants.SwerveDrivetrain.m_frontRightDriveID,
       Constants.SwerveDrivetrain.m_frontRightTurnID,
       Constants.SwerveDrivetrain.m_frontRightEncoderID,
@@ -103,7 +103,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_frontRightEncoderOffset,
       modulePositions[1]);
 
-    motors[2] = new SwerveModule(
+    motors[1] = new SwerveModule(
       Constants.SwerveDrivetrain.m_backLeftDriveID,
       Constants.SwerveDrivetrain.m_backLeftTurnID,
       Constants.SwerveDrivetrain.m_backLeftEncoderID,

@@ -33,8 +33,8 @@ public final class Constants {
 
   public static class SwerveDrivetrain {
     // Physical Constants
-    public static final double chassisWidth = Units.inchesToMeters(28);
-    public static final double chassisHeight = Units.inchesToMeters(26);
+    public static final double chassisWidth = Units.inchesToMeters(26);
+    public static final double chassisHeight = Units.inchesToMeters(28);
 
     // Important locations for swerve
     // consider swapping corners
@@ -44,7 +44,7 @@ public final class Constants {
     public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
     public static final Translation2d m_backRightLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
     public static final Translation2d[] rotatePoints = {
-        m_standardCenterLocation,
+        m_standardCenterLocation, 
         m_frontLeftLocation,
         m_frontRightLocation,
         m_backLeftLocation,
@@ -94,11 +94,11 @@ public final class Constants {
     public static final double kThrottleDeadband = 0.2;
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
-    public static final double kMaxSpeedMPS = 2; // optimize max speed to prioritize translation
-    public static final double kDriveMaxAcceleration = 1;
-    public static final double kTurnMaxAcceleration = 1 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 2;
-    public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
+    public static final double kMaxSpeedMPS = 5; // optimize max speed to prioritize translation
+    public static final double kDriveMaxAcceleration = 2;
+    public static final double kTurnMaxAcceleration = 2 * Math.PI;
+    public static final double kDriveMaxSpeedMPS = 5;
+    public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
     public static final int kDriveYAxis = 1;
