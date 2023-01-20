@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -39,9 +40,10 @@ public class Elevator extends SubsystemBase {
   private PIDController pid;
   ElevatorFeedforward eFeedforward;
   private TrapezoidProfile.Constraints constraints;
-  private TrapezoidProfile.State goal;
-  private TrapezoidProfile.State setpoint;
-  private TrapezoidProfile profile;
+  private double startTime;
+ // private TrapezoidProfile.State goal;
+ // private TrapezoidProfile.State setpoint;
+  //private TrapezoidProfile profile;
   private DigitalInput inductiveSensor;
   private Encoder encoder;
 
@@ -125,8 +127,9 @@ public class Elevator extends SubsystemBase {
   }
 
   //to check that the height is in bounds
-  public void setTargetHeight(double goal)
+  public void setTargetHeight(double goal, double startTime)
   {
+    this.startTime = startTime;
    // System.out.println("hi");
     targetHeight = goal;
     // Checks bounds
@@ -141,10 +144,14 @@ public class Elevator extends SubsystemBase {
   
   private void setHeightRaw(double targetHeightRaw)
   {
-    goal = new TrapezoidProfile.State(targetHeightRaw / Constants.Elevator.INCHES_PER_TICK, 0);
-    setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition() + 1, elev_motor.getSelectedSensorVelocity());
-    profile = new TrapezoidProfile(constraints, goal, setpoint);
-    setpoint = profile.calculate(Constants.Elevator.KDt);
+     
+    TrapezoidProfile.State goal = new TrapezoidProfile.State(targetHeightRaw / Constants.Elevator.INCHES_PER_TICK, 0);
+    TrapezoidProfile.State setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition() + 1, elev_motor.getSelectedSensorVelocity());
+    TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, setpoint);
+    SmartDashboard.putNumber("goal position", goal.position);
+    //SmartDashboard.putNumber("profile info", profile);
+    setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime);
+    SmartDashboard.putNumber("setpoint position", setpoint.position);
     
     double feedforward = eFeedforward.calculate(setpoint.velocity);
     elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);    
@@ -167,7 +174,7 @@ public class Elevator extends SubsystemBase {
     if(isZeroed())
       elev_motor.setSelectedSensorPosition(0);
     else {
-      setTargetHeight(Constants.Elevator.MIN_HEIGHT);
+      setTargetHeight(Constants.Elevator.MIN_HEIGHT, startTime);
       elev_motor.setSelectedSensorPosition(0);
     }
   }

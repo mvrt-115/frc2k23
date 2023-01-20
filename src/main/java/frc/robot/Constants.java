@@ -78,7 +78,7 @@ public final class Constants {
     public static final double MIDDLE = 10;
     public static final double TOP = 15;
 
-    public static final double PULLEY_RADIUS = 0.05;
+    public static final double PULLEY_RADIUS = 2;
 
   }
 }

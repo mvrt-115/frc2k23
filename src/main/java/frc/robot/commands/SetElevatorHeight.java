@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Elevator;
@@ -12,14 +13,16 @@ public class SetElevatorHeight extends CommandBase
 {
   private Elevator elevator;
   private double height;
+  private double startTime;
 
   /** Creates a new SetElevatorHeight. */
   public SetElevatorHeight(Elevator elevator, double height)
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
-    addRequirements(elevator);
     this.height = height; 
+    startTime = Timer.getFPGATimestamp();
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -35,7 +38,7 @@ public class SetElevatorHeight extends CommandBase
     //   elevator.setTargetHeight(0);
     // }
     // else {
-      elevator.setTargetHeight(height);
+      elevator.setTargetHeight(height, startTime);
 //      System.out.println("executeeeee");
     //  System.out.println("target height: " + height);
     // }

@@ -51,7 +51,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
+    // elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
