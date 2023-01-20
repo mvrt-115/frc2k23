@@ -35,7 +35,7 @@ public final class Constants {
   public static class DataLogging {
     public static final Mode currMode = Mode.REAL;
 
-    public static enum Mode { REAL, REPLAY }
+    public static enum Mode { REAL, REPLAY, SIM }
 
   }
 

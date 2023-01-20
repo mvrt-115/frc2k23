@@ -8,6 +8,7 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -179,7 +180,12 @@ public class Localization extends SubsystemBase {
    * Log stuff
    */
   public void log() {
+    //Log to SmartDashboard
     SmartDashboard.putNumber("Robo X", roboPose.getX());
     SmartDashboard.putNumber("Robo Y", roboPose.getY());
+
+    //Log to AdvantageKit
+    Logger.getInstance().recordOutput("Robo X", roboPose.getX());
+    Logger.getInstance().recordOutput("Robo Y", roboPose.getY());
   }
 }
