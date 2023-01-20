@@ -49,6 +49,9 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println("?");
+    Logger.getInstance().recordOutput("Robo X", roboPose.getX());
+    System.out.println(".");
     PhotonPipelineResult result = camera.getLatestResult();
     Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
 
@@ -180,6 +183,7 @@ public class Localization extends SubsystemBase {
    * Log stuff
    */
   public void log() {
+    System.out.println("loggin'");
     //Log to SmartDashboard
     SmartDashboard.putNumber("Robo X", roboPose.getX());
     SmartDashboard.putNumber("Robo Y", roboPose.getY());
