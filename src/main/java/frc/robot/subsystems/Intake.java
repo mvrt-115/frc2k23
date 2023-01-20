@@ -4,19 +4,9 @@
 
 package frc.robot.subsystems;
 
-import javax.lang.model.util.ElementScanner14;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.IdleMode;
-
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.TalonFactory;
@@ -24,154 +14,69 @@ import frc.robot.TalonFactory;
 /*
  * design: one neo to run motor
  */
-public class Intake extends SubsystemBase {
-  /** Creates a new Intake. */
-  private CANSparkMax motor;
-  private DoubleSolenoid leftSolenoid, rightSolenoid; //only if using pistons
-  private RelativeEncoder encoder;
-  private DigitalInput proximityElement, 
-                        proximityClaw; //proximity sensor used for telling when claw is 
-  
-  public enum INTAKE_TYPE {wheeled, claw}; 
-  private INTAKE_TYPE type;
-
-  /*
-   * Initializes motor with encoder and proximity sensor, requiring the type of intake upon initialization
-   * @param type    type of intake prototype
-   */
-  public Intake(INTAKE_TYPE type) {
-    motor = TalonFactory.createSparkMax(0, false);
-    encoder = motor.getEncoder();
-    motor.setIdleMode(IdleMode.kBrake); 
-    encoder.setPosition(Constants.Intake.kCompressedTicks); // initial position to when its preloaded
-        //leftSolenoid = new DoubleSolenoid(0, null, 0, 0)
-
-    proximityElement = new DigitalInput(Constants.Intake.kProximityPort); //CHANGE CHANNEL NUMBER FOR TESTING AND USE
-    
-
-    this.type = type;
-
-    //
-    if(this.type == INTAKE_TYPE.claw)
-    {
-      proximityClaw = new DigitalInput(Constants.Intake.kProximityClawPort); //CHANGE CHANNEL NUMBER 
-    }
-  }
-
-  /////////////////////////////////////////COMMANDS//////////////////////////////////////////////
-
-  /*
-   * Decides which intake method based on the type of intake system
-   */
-  public CommandBase intakeElement() {
-    if(type == INTAKE_TYPE.wheeled)
-      return intakeWheeled();
-    else 
-      return intakeClaw();
-  }
-  
-  /*
-   * Decides which outtake method based on the type of intake system
-   */
-  public CommandBase outtakeElement() {
-    if(type == INTAKE_TYPE.wheeled)
-      return outtakeWheeled();
-    else 
-      return outtakeClaw();
-  }
-
-  /*
-   * Runs claw inwards constantly
-   */
-  public CommandBase intakeClaw() {
-    motor.setIdleMode(IdleMode.kCoast); // change to the correct method
-    return this.runOnce(() -> motor.set(0.3));
-   }
-
-  /*
-   * Runs claw outwards using expand()
-   */
-   public CommandBase outtakeClaw() {
-    return new RunCommand(() -> this.expand());
-   }
-
-   /*
-    * Runs wheels inward and stops when the element is detected within the intake
-    */
-   public CommandBase intakeWheeled() {
-    while(!proximityElement.get()) {
-      setMotorSpeed(0.3);
+public abstract class Intake extends SubsystemBase {
+    public enum Type {
+        WHEEL,
+        CLAW,
     }
 
-    return new RunCommand(() -> zeroMotorSpeed());
-   }
+    protected final CANSparkMax motor;
+    protected final RelativeEncoder encoder;
 
-   /*
-    * Runs wheels outward for a given period of time and then stops to outtake element
-    */
-   public CommandBase outtakeWheeled() {
-    setMotorSpeed(-0.3);
-    Timer.delay(1.5);
-    return new RunCommand(() -> zeroMotorSpeed());
-   }
+    public Intake(Type id) {
+        motor = TalonFactory.createSparkMax(id.ordinal(), false);
+        motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        encoder = motor.getEncoder();
+        encoder.setPosition(Constants.Intake.kCompressedTicks); // initial position to when its preloaded
+    }
 
-   ////////////////////////////////////////METHODS////////////////////////////////////////////////
+    public abstract void close();
 
-   /**
-    * sets constant speed to claw until it reaches the limit of expansion as dictated by an encoder
-    */
-   public void expand() {
-      while(!proximityClaw.get()) //if we have proximity sensor in place
-        //!(encoder.getPosition() <= Constants.Intake.kExpandedTicks + Constants.Intake.kMarginOfError && encoder.getPosition() >= Constants.Intake.kExpandedTicks - Constants.Intake.kMarginOfError ))
-      {
-        setMotorSpeed(-0.3);
-      }
-      zeroMotorSpeed();
-   }
+    /*
+     * Decides which intake method based on the type of intake system
+     */
+    public abstract CommandBase intakeElement();
 
-  /*
-   * Sets the motor to speed after entering coast mode
-   * @param speed   speed to run motor at
-   */
-  public void setMotorSpeed(double speed) {
-    motor.setIdleMode(IdleMode.kCoast);
-    motor.set(speed);
-  }
+    /*
+     * Decides which outtake method based on the type of intake system
+     */
+    public abstract CommandBase outtakeElement();
 
-  /*
-   * Sets the motor speed to zero and enter brake mode
-   */
-  public void zeroMotorSpeed() {
-    setMotorSpeed(0);
-    motor.setIdleMode(IdleMode.kBrake);
-  }
+    // unused method
+    public static double ticksToAngleInDegrees(double ticks) {
+        return (ticks / Constants.Intake.kTicksPerRotation) * 360;
+        // convert ticks to angle turned
+    }
 
-   // unused method
-   public double ticksToAngleInDegrees(double ticks){
-      return (ticks/Constants.Intake.kTicksPerRotation)*360;
-       // convert ticks to angle turned
-   }
+    /*
+     * Sets the motor to speed after entering coast mode
+     * @param speed   speed to run motor at
+     */
+    public void setMotorSpeed(double speed) {
+        motor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        motor.set(speed);
+    }
 
-   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("current ticks", encoder.getPosition());
-  }
+    /*
+     * Sets the motor speed to zero and enter brake mode
+     */
+    public void zeroMotorSpeed() {
+        setMotorSpeed(0);
+        motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    }
 
-  
+    /*
+     * Planning for intake actions:
+     *
+     *  consider which intake type: claw or wheeled
+     *
+     * if claw:
+     *  intake by running motor inwards and continue running to keep compression
+     *  outtake by running motor outwards and continue until max
+     *
+     * if wheeled:
+     *  intake by running wheels in after and setting to brake after proximity sensor detects element
+     *  outtake by running wheels out for a set period of time
+     */
 
-  /*
-   * Planning for intake actions:
-   * 
-   *  consider which intake type: claw or wheeled
-   * 
-   * if claw:
-   *  intake by running motor inwards and continue running to keep compression
-   *  outtake by running motor outwards and continue until max 
-   * 
-   * if wheeled:
-   *  intake by running wheels in after and setting to brake after proximity sensor detects element
-   *  outtake by running wheels out for a set period of time
-   */
-  
 }
