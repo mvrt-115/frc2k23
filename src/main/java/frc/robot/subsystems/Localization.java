@@ -64,7 +64,6 @@ public class Localization extends SubsystemBase {
           Transform3d relLoc = target.getBestCameraToTarget();
           Pose3d tag = targetPoses.get(target.getFiducialId());
 
-          roboPose = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
           Pose2d roboOnField = new Pose2d(roboPose.getX(), roboPose.getY(), roboPose.getRotation());
           field.getObject("VisionRobot" + fiducialId).setPose(roboOnField); //Robot pose according to apriltags
           poseEstimator.addVisionMeasurement(roboOnField, imageCaptureTime);
@@ -78,6 +77,7 @@ public class Localization extends SubsystemBase {
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
 
     field.setRobotPose(getCurrentPose());
+    roboPose = field.getRobotPose();
   }
 
   public Pose2d getCurrentPose() {
@@ -136,7 +136,7 @@ public class Localization extends SubsystemBase {
       }
 
       for(int i = 0; i < weights.length; i++) {
-        weights[i] = distFromTag(transforms[i]) / totalDist;
+        weights[i] = (totalDist - distFromTag(transforms[i])) / totalDist;
       }
 
       double weightedX = 0;
