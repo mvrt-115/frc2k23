@@ -49,6 +49,7 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println("local periodic");
     PhotonPipelineResult result = camera.getLatestResult();
     Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
 

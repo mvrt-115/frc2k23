@@ -33,7 +33,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static class DataLogging {
-    public static final Mode currMode = Mode.REAL;
+    public static final Mode currMode = Mode.SIM;
 
     public static enum Mode { REAL, REPLAY, SIM }
 

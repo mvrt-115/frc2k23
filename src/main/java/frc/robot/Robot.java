@@ -39,8 +39,6 @@ public class Robot extends LoggedRobot {
     logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
     logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
     
-    
-
     // Set up data receivers & replay source
     switch (Constants.DataLogging.currMode) {
       // Running on a real robot, log to a USB stick
