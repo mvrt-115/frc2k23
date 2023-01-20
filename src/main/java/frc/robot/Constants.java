@@ -31,9 +31,17 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static class OperatorConstants {
-        public static final int kDriverControllerPort = 0;
-    }
+
+  public static class DataLogging {
+    public static final Mode currMode = Mode.REAL;
+
+    public static enum Mode { REAL, REPLAY }
+
+  }
+
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+  }
 
   public static class JoystickControls {
     public static final boolean xBoxControl = false;
