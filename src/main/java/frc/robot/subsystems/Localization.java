@@ -16,6 +16,7 @@ import edu.wpi.first.math.ComputerVisionUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -114,14 +115,51 @@ public class Localization extends SubsystemBase {
     return null;
    }
 
-  //  private Pose2d weightTargets(PhotonTrackedTarget ...targets) {
-  //     double[] weights = new double[targets.length];
+   /**
+    * Weights multiple targets using distances (linear)
+    * @param targets The result.getBestTarget() targets from each camera
+    * @return Returns the weighted Pose2d
+    */
+   private static Pose2d weightTargets(PhotonTrackedTarget ...targets) {
+      double[] weights = new double[targets.length];
 
-    
+      Transform3d[] transforms = new Transform3d[targets.length];
+      for(int i = 0; i < transforms.length; i++) {
+        Transform3d relLoc = targets[i].getBestCameraToTarget();
 
-  //     return null;
-  //  }
+        transforms[i] = relLoc;
+      }
 
+      double totalDist = 0;
+      for(Transform3d p : transforms) {
+        totalDist += distFromTag(p);
+      }
+
+      for(int i = 0; i < weights.length; i++) {
+        weights[i] = distFromTag(transforms[i]) / totalDist;
+      }
+
+      double weightedX = 0;
+      double weightedY = 0;
+      double weightedRot = 0;
+
+      for(int i = 0; i < targets.length; i++) {
+        Pose3d tag = Constants.VisionConstants.aprilTags.get(targets[i].getFiducialId());
+        Pose2d robotPose = ComputerVisionUtil.objectToRobotPose(tag, transforms[i], new Transform3d()).toPose2d();
+        
+        weightedX += weights[i] * robotPose.getX();
+        weightedY += weights[i] * robotPose.getY();
+        weightedRot += weights[i] * robotPose.getRotation().getRadians();
+      }
+
+      return new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
+   }
+
+   /**
+    * Gets the best target out of those passed in
+    * @param targets The tracked targets
+    * @return The best target to use for localization
+    */
   private PhotonTrackedTarget getBestTarget(PhotonTrackedTarget ...targets) {
       double minDist = Double.MAX_VALUE;
       PhotonTrackedTarget best = null;
@@ -169,7 +207,7 @@ public class Localization extends SubsystemBase {
    * @param relLoc the target (from camera)
    * @return distance from target
    */
-  public double distFromTag(Transform3d relLoc) {
+  public static double distFromTag(Transform3d relLoc) {
     return Math.sqrt(relLoc.getX() * relLoc.getX() + 
         relLoc.getY() * relLoc.getY() + 
         relLoc.getZ() * relLoc.getZ());
