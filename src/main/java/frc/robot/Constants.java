@@ -31,9 +31,9 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static class OperatorConstants {
-        public static final int kDriverControllerPort = 0;
-    }
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+  }
 
   public static class JoystickControls {
     public static final boolean xBoxControl = false;
@@ -52,11 +52,11 @@ public final class Constants {
     public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
     public static final Translation2d m_backRightLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
     public static final Translation2d[] rotatePoints = {
-        m_standardCenterLocation,
-        m_frontLeftLocation,
-        m_frontRightLocation,
-        m_backLeftLocation,
-        m_backRightLocation
+      m_standardCenterLocation,
+      m_frontLeftLocation,
+      m_frontRightLocation,
+      m_backLeftLocation,
+      m_backRightLocation
     };
 
     // Motor ID

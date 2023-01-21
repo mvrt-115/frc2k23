@@ -60,12 +60,18 @@ public class Localization extends SubsystemBase {
       for (PhotonTrackedTarget target : result.getTargets()) {
         int fiducialId = target.getFiducialId();
 
+        //Extra precaution (who knows)
         if (fiducialId >= 1 && fiducialId <= targetPoses.size()) {
           Transform3d relLoc = target.getBestCameraToTarget();
           Pose3d tag = targetPoses.get(target.getFiducialId());
 
+          //Robot position on field (x/y)
           Pose2d roboOnField = new Pose2d(roboPose.getX(), roboPose.getY(), roboPose.getRotation());
-          field.getObject("VisionRobot" + fiducialId).setPose(roboOnField); //Robot pose according to apriltags
+
+          //Robot pose according to apriltags
+          field.getObject("VisionRobot" + fiducialId).setPose(roboOnField);
+
+          //Add vision estimator to pose estimator
           poseEstimator.addVisionMeasurement(roboOnField, imageCaptureTime);
         }
       }
@@ -76,20 +82,21 @@ public class Localization extends SubsystemBase {
     }
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
 
+    //Update robo Poses with pose estimator (which takes into account time & vision)
     field.setRobotPose(getCurrentPose());
     roboPose = field.getRobotPose();
   }
 
+  /**
+   * @return current pose according to pose estimator
+   */
   public Pose2d getCurrentPose() {
     return poseEstimator.getEstimatedPosition();
   }
 
   /**
-   * Pick alignment depending on closest tag and what robot is currently holding
-   * @return
-   */
-
-  /** _____
+   * NOTE: OLD METHOD, DOES NOT USE POSE ESTIMATOR
+   *  _____
    * |_____|
    * Origin at bottom left corner of rectangle facing towards the right with CCW
    * being positive
@@ -102,11 +109,12 @@ public class Localization extends SubsystemBase {
     //Best target
     PhotonTrackedTarget target = result.getBestTarget();
 
-   
+    //As long as target exists
     if (target != null){
       Transform3d relLoc = target.getBestCameraToTarget();
       Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
 
+      //Dist from tag
       SmartDashboard.putNumber("Tag Distance", distFromTag(relLoc));
       
       return ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
@@ -118,7 +126,7 @@ public class Localization extends SubsystemBase {
    /**
     * Weights multiple targets using distances (linear)
     * @param targets The result.getBestTarget() targets from each camera
-    * @return Returns the weighted Pose2d
+    * @return the weighted Pose2d
     */
    private static Pose2d weightTargets(PhotonTrackedTarget ...targets) {
       double[] weights = new double[targets.length];
@@ -155,33 +163,13 @@ public class Localization extends SubsystemBase {
       return new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
    }
 
-   /**
-    * Gets the best target out of those passed in
-    * @param targets The tracked targets
-    * @return The best target to use for localization
-    */
-  private PhotonTrackedTarget getBestTarget(PhotonTrackedTarget ...targets) {
-      double minDist = Double.MAX_VALUE;
-      PhotonTrackedTarget best = null;
-
-      for(PhotonTrackedTarget t : targets) {
-        double dist = distFromTag(t.getBestCameraToTarget());
-
-        if(dist < minDist) {
-          minDist = dist;
-          best = t;
-        }
-      }
-
-      return best;
-  } 
-
   /**
-   * Gets the scoring locations in range
+   * Gets the closest scoring location
    * @param robotPose The robot pose
    * @return Returns the Pose2d of the scoring col
    */
   public Pose2d getClosestScoringLoc(Pose2d robotPose) {
+    //Set the score cols depending on if blue/red
     Map<Integer, Pose2d> scoreCols = 
         alliance == DriverStation.Alliance.Blue ? Constants.VisionConstants.kBlueScoreCols : 
                                                   Constants.VisionConstants.kRedScoreCols;
@@ -189,11 +177,13 @@ public class Localization extends SubsystemBase {
     Pose2d minCol = null;
     double minDist = Double.MAX_VALUE;
 
+    //Loop through cols
     for(int i : scoreCols.keySet()) {
       Pose2d pose = scoreCols.get(i);
 
       double dy = Math.abs(robotPose.getY() - pose.getY());
 
+      //Shortest dist away
       if(dy < minDist) {
         minDist = dy;
         minCol = pose;
@@ -204,7 +194,7 @@ public class Localization extends SubsystemBase {
 
    /**
    * 
-   * @param relLoc the target (from camera)
+   * @param relLoc the target relative to camera which is (0, 0)
    * @return distance from target
    */
   public static double distFromTag(Transform3d relLoc) {

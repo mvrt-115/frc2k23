@@ -83,6 +83,11 @@ public class Align extends CommandBase {
       Math.abs(robotPose.getRotation().getDegrees() - scorePose.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;
   }
 
+  /**
+   * @param p1 pose 1
+   * @param p2 pose 2
+   * @return dist from pose 1 to pose 2
+   */
   private double dist(Pose2d p1, Pose2d p2) {
     return Math.sqrt((p1.getX() - p2.getX()) * (p1.getX() - p2.getX()) + 
         (p1.getY() - p2.getY()) * (p1.getY() - p2.getY()));
