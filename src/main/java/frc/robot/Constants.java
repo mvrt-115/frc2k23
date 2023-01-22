@@ -154,7 +154,7 @@ public final class Constants {
     public static final double kFTurn = 0.0;
   }
   public static class VisionConstants{
-    public static final String kCameraName = "OV9281-1"; //SHEESHCAM!!!
+    public static final String kCameraName = "sheeshcam"; //SHEESHCAM!!!
 
     // Physical location of the camera on the robot, relative to the center of bot
     public static final Transform2d CAMERA_ON_ROBOT = 
@@ -163,8 +163,8 @@ public final class Constants {
 
     public static final double minDistFromTag = 1; //Min dist necessary from tag to automate (1 meter aprox)
 
-    public static final double xyTolerance = 0.05;
-    public static final double thetaTolerance = 5;
+    public static final double xyTolerance = 0.0;
+    public static final double thetaTolerance = 0;
 
     /**
      * Key:

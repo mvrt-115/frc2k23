@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Localization;
@@ -32,8 +33,8 @@ public class Align extends CommandBase {
     this.scorePose = scorePose;
 
     pidx = new PIDController(0, 0, 0); // pid x-coor
-    pidy = new PIDController(0, 0, 0); // pid y-coor
-    pidt = new PIDController(0, 0, 0); // pid t-coor
+    pidy = new PIDController(0.5, 0, 0); // pid y-coor
+    // pidt = new PIDController(0.05, 0, 0); // pid t-coor
   }
 
   // Called when the command is initially scheduled.
@@ -48,8 +49,15 @@ public class Align extends CommandBase {
     Pose2d robotPose = localization.getEstimatedPose();
     Pose2d scoringPose = localization.getClosestScoringLoc(robotPose);
 
-    if(dist(robotPose, scoringPose) <= Constants.VisionConstants.minDistFromTag)
+    // SmartDashboard
+    SmartDashboard.putNumber("scoring x", scoringPose.getX());
+    SmartDashboard.putNumber("scoring y", scoringPose.getY());
+
+    //if(dist(robotPose, scoringPose) > Constants.VisionConstants.minDistFromTag)
       moveToScoringPos(robotPose, scoringPose);
+      SmartDashboard.putNumber("distance from final", dist(robotPose, scoringPose));
+      SmartDashboard.putNumber("error x", robotPose.getX() - scoringPose.getX());
+      SmartDashboard.putNumber("error y", robotPose.getY() - scoringPose.getY());
   }
 
     /**
@@ -58,11 +66,15 @@ public class Align extends CommandBase {
    * @param scorePose The pose of the scoring column
    */
   public void moveToScoringPos(Pose2d robotPose, Pose2d scorePose) {
-    double outX = pidx.calculate(robotPose.getX(), scorePose.getX()); // pos, setpoint
-    double outY = pidy.calculate(robotPose.getY(), scorePose.getY()); // pos, setpoint
-    double outT = pidt.calculate(robotPose.getRotation().getDegrees(), scorePose.getRotation().getDegrees()); // pos, setpoint
+    double outX = pidx.calculate(robotPose.getX(), scorePose.getX()-1); // pos, setpoint
+    double outY = -pidy.calculate(robotPose.getY(), scorePose.getY()); // pos, setpoint
+    // double outT = pidt.calculate(robotPose.getRotation().getDegrees(), scorePose.getRotation().getDegrees()); // pos, setpoint
 
-    ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, outT);
+    // SmartDashboard.putNumber("outx", outX);
+    // SmartDashboard.putNumber("outy", outY);
+    // SmartDashboard.putNumber("outz", outT);
+
+    ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, 0);
     SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
 
     swerve.setModuleStates(states);

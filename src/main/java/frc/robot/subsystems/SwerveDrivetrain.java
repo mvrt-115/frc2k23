@@ -187,6 +187,8 @@ public class SwerveDrivetrain extends SubsystemBase {
       SmartDashboard.putString(m.getName(), m.getStateSummary());
     }
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    SmartDashboard.putNumber("xvel", getLinearVelocity().getX());
+    SmartDashboard.putNumber("yvel", getLinearVelocity().getY());
 
     odometry.update(getRotation2d(), modulePositions);
     field.setRobotPose(

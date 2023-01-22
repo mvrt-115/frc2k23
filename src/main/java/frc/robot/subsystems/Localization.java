@@ -34,11 +34,14 @@ public class Localization extends SubsystemBase {
   private final Field2d field;
   private DriverStation.Alliance alliance;
 
+  private Pose2d lastPose;
+
   public Localization(SwerveDrivetrain swerveDrivetrain, DriverStation.Alliance alliance) {
     this.camera = new PhotonCamera(Constants.VisionConstants.kCameraName);
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
     roboPose = new Pose2d();
+    lastPose = new Pose2d();
 
     //Measure this pose before initializing the class
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
@@ -75,13 +78,14 @@ public class Localization extends SubsystemBase {
           poseEstimator.addVisionMeasurement(roboOnField, imageCaptureTime);
         }
       }
-      log();
+      //log();
     }
     else{
       SmartDashboard.putBoolean("Found Tag(s)", false);
     }
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
 
+    getEstimatedPose();
     //Update robo Poses with pose estimator (which takes into account time & vision)
     field.setRobotPose(getCurrentPose());
     roboPose = field.getRobotPose();
@@ -105,22 +109,30 @@ public class Localization extends SubsystemBase {
    */
   public Pose2d getEstimatedPose() {
     PhotonPipelineResult result = camera.getLatestResult();
-   
+
+    if(result == null)
+      return lastPose;
     //Best target
     PhotonTrackedTarget target = result.getBestTarget();
 
     //As long as target exists
-    if (target != null){
+    if (target != null && target.getPoseAmbiguity() < 0.5){
       Transform3d relLoc = target.getBestCameraToTarget();
-      Pose3d tag = Constants.VisionConstants.aprilTags.get(target.getFiducialId());
+      Pose3d tag = Constants.VisionConstants.aprilTags.get(2);
 
-      //Dist from tag
-      SmartDashboard.putNumber("Tag Distance", distFromTag(relLoc));
+      SmartDashboard.putString("relloc", relLoc.toString());
+      SmartDashboard.putString("tagtagtag", tag.toString());
       
-      return ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
+       Pose2d pose = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
+      //Pose2d pose = new Pose2d(tag.getX() + relLoc.getX(), tag.getY() + relLoc.getY(), new Rotation2d());
+      lastPose = pose;
+
+      SmartDashboard.putString("absLoc", pose.toString());
+
+      return pose;
     }
 
-    return null;
+    return lastPose;
    }
 
    /**
@@ -205,7 +217,7 @@ public class Localization extends SubsystemBase {
    * Log stuff
    */
   public void log() {
-    SmartDashboard.putNumber("Robo X", roboPose.getX());
-    SmartDashboard.putNumber("Robo Y", roboPose.getY());
+    SmartDashboard.putNumber("Robo X", lastPose.getX());
+    SmartDashboard.putNumber("Robo Y", lastPose .getY());
   }
 }
