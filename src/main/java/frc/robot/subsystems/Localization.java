@@ -8,6 +8,7 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -45,6 +46,9 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println("?");
+    Logger.getInstance().recordOutput("Robo X", lastPose.getX());
+    System.out.println(".");
     PhotonPipelineResult result = camera.getLatestResult();
     Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
 
@@ -226,7 +230,14 @@ public class Localization extends SubsystemBase {
    * Log stuff
    */
   public void log() {
+
+    System.out.println("loggin'");
+    //Log to SmartDashboard
     SmartDashboard.putNumber("Robo X", lastPose.getX());
-    SmartDashboard.putNumber("Robo Y", lastPose .getY());
+    SmartDashboard.putNumber("Robo Y", lastPose.getY());
+
+    //Log to AdvantageKit
+    Logger.getInstance().recordOutput("Robo X", lastPose.getX());
+    Logger.getInstance().recordOutput("Robo Y", lastPose.getY());
   }
 }
