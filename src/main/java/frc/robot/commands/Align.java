@@ -67,7 +67,7 @@ public class Align extends CommandBase {
    */
   public void moveToScoringPos(Pose2d robotPose, Pose2d scorePose) {
     double outX = pidx.calculate(robotPose.getX(), scorePose.getX()-1); // pos, setpoint
-    double outY = -pidy.calculate(robotPose.getY(), scorePose.getY()); // pos, setpoint
+    double outY = pidy.calculate(robotPose.getY(), scorePose.getY()); // pos, setpoint
     // double outT = pidt.calculate(robotPose.getRotation().getDegrees(), scorePose.getRotation().getDegrees()); // pos, setpoint
 
     // SmartDashboard.putNumber("outx", outX);

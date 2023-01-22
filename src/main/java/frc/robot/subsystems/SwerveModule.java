@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -44,6 +45,8 @@ public class SwerveModule {
     turnMotor.config_kI(Constants.Talon.kPIDIdx, Constants.SwerveModule.kITurn);
     turnMotor.config_kD(Constants.Talon.kPIDIdx, Constants.SwerveModule.kDTurn);
     turnMotor.config_kF(Constants.Talon.kPIDIdx, Constants.SwerveModule.kFTurn);
+
+    turnMotor.setNeutralMode(NeutralMode.Brake);
 
     absEncoderReversed = encoderReversed;
     absEncoderOffsetRad = encoderOffset;
