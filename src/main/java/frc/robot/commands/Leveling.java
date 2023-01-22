@@ -6,15 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.Constants;
 
 public class Leveling extends CommandBase {
   private SwerveDrivetrain swerveDt;
-  private PIDController pidLevel; // Look into ProfilePIDContoller
+  private PIDController pidLevel; 
   private PIDController pidRotate;
   private boolean level;
 
@@ -50,21 +48,10 @@ public class Leveling extends CommandBase {
 
     double vX = -Math.min(-currentRoll*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
     double vXpid = pidLevel.calculate(currentRoll, 0) * Constants.SwerveDrivetrain.levelVelocityMPS;
-    double angularSpeed = pidRotate.calculate(swerveDt.getYaw(), 0) * Constants.SwerveDrivetrain.maxAngularSpeed;
+    double angularSpeed = pidRotate.calculate(currentYaw, 0) * Constants.SwerveDrivetrain.maxAngularSpeed;
     double vY = 0;
 
     swerveDt.setSpeeds(vXpid, vY, angularSpeed, Constants.SwerveDrivetrain.rotatePoints[0]);
-
-    //ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0, swerveDt.getRotation2d());
-
-    // convert to module states and apply to each wheel
-    //SwerveModuleState[] moduleStates = swerveDt.getKinematics().toSwerveModuleStates(chassisSpeeds);
-    //swerveDt.setModuleStates(moduleStates);
-
-    //pid.calculate(swerveDt.getPitchAngle(), 0);
-
-    // Use setSpeeds to set the speed of the swerve, would set angle and rotation point as 0 and Translation2D(0, 0)
-    // might need to change the result of the pid.calculate into an acceptable speed input
   }
 
   // Called once the command ends or is interrupted.

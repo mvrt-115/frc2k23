@@ -58,7 +58,7 @@ public final class Constants {
     public static final double rotatekP = 0;
     public static final double rotatekI = 0;
     public static final double rotatekD = 0;
-    public static final double angleTolerance = 1;
+    public static final double angleTolerance = 1.5;
     public static final double speedTolerance = 0.5;
     public static final double levelVelocityMPS = 1;
     public static final double yawAlligned = 0; // TBD

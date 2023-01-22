@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -14,15 +13,14 @@ public class SetYaw extends CommandBase {
 
   SwerveDrivetrain swerveDt;
   double yawTarget;
-  private final double angleTolerance = 1.5;
   PIDController pid = new PIDController(Constants.SwerveDrivetrain.rotatekP, Constants.SwerveDrivetrain.rotatekI, Constants.SwerveDrivetrain.rotatekD);
 
   /** Creates a new SetYaw. */
   public SetYaw(SwerveDrivetrain swerveDt, double targetAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDt = swerveDt;
-    addRequirements(swerveDt);
     this.yawTarget = targetAngle;
+    addRequirements(swerveDt);
   }
 
   // Called when the command is initially scheduled.
@@ -40,11 +38,13 @@ public class SetYaw extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    swerveDt.setSpeeds(0, 0, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(swerveDt.getYaw() - yawTarget) <= angleTolerance);
+    return (Math.abs(swerveDt.getYaw() - yawTarget) <= Constants.SwerveDrivetrain.angleTolerance);
   }
 }
