@@ -55,6 +55,9 @@ public final class Constants {
     public static final double levelkP = 0.05;
     public static final double levelkI = 0;
     public static final double levelkD = 0;
+    public static final double rotatekP = 0;
+    public static final double rotatekI = 0;
+    public static final double rotatekD = 0;
     public static final double angleTolerance = 1;
     public static final double speedTolerance = 0.5;
     public static final double levelVelocityMPS = 1;
@@ -62,6 +65,7 @@ public final class Constants {
     public static final double pitchAlligned = 0; // TBD
     public static final double rollAlligned = 0; // TBD
 
+    public static final double maxAngularSpeed = 0;
 
     // Motor ID
     public static final int m_frontLeftDriveID = 3;

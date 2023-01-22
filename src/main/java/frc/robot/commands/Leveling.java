@@ -14,13 +14,15 @@ import frc.robot.Constants;
 
 public class Leveling extends CommandBase {
   private SwerveDrivetrain swerveDt;
-  private PIDController pid; // Look into ProfilePIDContoller
+  private PIDController pidLevel; // Look into ProfilePIDContoller
+  private PIDController pidRotate;
   private boolean level;
 
   /** Creates a new Leveling. */
   public Leveling(SwerveDrivetrain _swerveDt) {
     this.swerveDt = _swerveDt;
-    this.pid = new PIDController(Constants.SwerveDrivetrain.levelkP, Constants.SwerveDrivetrain.levelkI, Constants.SwerveDrivetrain.levelkD);
+    this.pidLevel = new PIDController(Constants.SwerveDrivetrain.levelkP, Constants.SwerveDrivetrain.levelkI, Constants.SwerveDrivetrain.levelkD);
+    this.pidRotate = new PIDController(Constants.SwerveDrivetrain.rotatekP, Constants.SwerveDrivetrain.rotatekI, Constants.SwerveDrivetrain.rotatekD);
     this.level = false;
 
     addRequirements(swerveDt);
@@ -28,7 +30,9 @@ public class Leveling extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    pidRotate.enableContinuousInput(-180, 180);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -45,9 +49,11 @@ public class Leveling extends CommandBase {
     SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
 
     double vX = -Math.min(-currentRoll*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
+    double vXpid = pidLevel.calculate(currentRoll, 0) * Constants.SwerveDrivetrain.levelVelocityMPS;
+    double angularSpeed = pidRotate.calculate(swerveDt.getYaw(), 0) * Constants.SwerveDrivetrain.maxAngularSpeed;
     double vY = 0;
 
-    swerveDt.setSpeeds(vX, vY, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
+    swerveDt.setSpeeds(vXpid, vY, angularSpeed, Constants.SwerveDrivetrain.rotatePoints[0]);
 
     //ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0, swerveDt.getRotation2d());
 
