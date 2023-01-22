@@ -28,8 +28,7 @@ import frc.robot.Constants;
 public class Localization extends SubsystemBase {
   private PhotonCamera camera;
   private SwerveDrivetrain swerveDrivetrain;
-  private Pose2d roboPose;
-  private final SwerveDrivePoseEstimator poseEstimator;
+  private SwerveDrivePoseEstimator poseEstimator;
   
   private final Field2d field;
   private DriverStation.Alliance alliance;
@@ -40,14 +39,8 @@ public class Localization extends SubsystemBase {
     this.camera = new PhotonCamera(Constants.VisionConstants.kCameraName);
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
-    roboPose = new Pose2d();
     lastPose = new Pose2d();
-
     //Measure this pose before initializing the class
-    poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
-                                                  swerveDrivetrain.getRotation2d(), 
-                                                  swerveDrivetrain.getModulePositions(), 
-                                                  swerveDrivetrain.getPose());
   }
 
   @Override
@@ -68,29 +61,38 @@ public class Localization extends SubsystemBase {
           Transform3d relLoc = target.getBestCameraToTarget();
           Pose3d tag = targetPoses.get(target.getFiducialId());
 
-          //Robot position on field (x/y)
-          Pose2d roboOnField = new Pose2d(roboPose.getX(), roboPose.getY(), roboPose.getRotation());
-
+          //Robot position on field (x/y) according to vision
+          Pose2d visionFieldRelative = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
+          if(poseEstimator==null){
+            initializePoseEstimator(visionFieldRelative);
+          }
           //Robot pose according to apriltags
-          field.getObject("VisionRobot" + fiducialId).setPose(roboOnField);
+          field.getObject("VisionRobot" + fiducialId).setPose(visionFieldRelative);
 
           //Add vision estimator to pose estimator
-          poseEstimator.addVisionMeasurement(roboOnField, imageCaptureTime);
+          poseEstimator.addVisionMeasurement(visionFieldRelative, imageCaptureTime);
         }
       }
-      //log();
+      log();
     }
     else{
       SmartDashboard.putBoolean("Found Tag(s)", false);
     }
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
-
-    getEstimatedPose();
     //Update robo Poses with pose estimator (which takes into account time & vision)
     field.setRobotPose(getCurrentPose());
-    roboPose = field.getRobotPose();
   }
+  /**
+   * Initializes pose estimator and configures stdevs
+   * @param pose
+   */
+  public void initializePoseEstimator(Pose2d pose){
+    poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
+                                                  swerveDrivetrain.getRotation2d(), 
+                                                  swerveDrivetrain.getModulePositions(), 
+                                                  pose);
 
+  }
   /**
    * @return current pose according to pose estimator
    */
@@ -176,11 +178,10 @@ public class Localization extends SubsystemBase {
    }
 
   /**
-   * Gets the closest scoring location
-   * @param robotPose The robot pose
+   * Gets the closest scoring location using SwerveDrivePoseEstimator
    * @return Returns the Pose2d of the scoring col
    */
-  public Pose2d getClosestScoringLoc(Pose2d robotPose) {
+  public Pose2d getClosestScoringLoc() {
     //Set the score cols depending on if blue/red
     Map<Integer, Pose2d> scoreCols = Constants.VisionConstants.kRedScoreCols;
 
@@ -191,7 +192,7 @@ public class Localization extends SubsystemBase {
     for(int i : scoreCols.keySet()) {
       Pose2d pose = scoreCols.get(i);
 
-      double dy = Math.abs(robotPose.getY() - pose.getY());
+      double dy = Math.abs(poseEstimator.getEstimatedPosition().getY() - pose.getY());
 
       //Shortest dist away
       if(dy < minDist) {
@@ -213,6 +214,14 @@ public class Localization extends SubsystemBase {
         relLoc.getZ() * relLoc.getZ());
   }
 
+  /**
+   * @param initialPose the initial pose
+   * @param finalPose the final pose
+   * @return the distance between the two poses
+   */
+  public double distFromTag(Pose2d initialPose, Pose2d finalPose){
+    return Math.sqrt(Math.pow(initialPose.getX()-finalPose.getX(),2)+Math.pow(initialPose.getY()-finalPose.getY(),2));
+  }
   /**
    * Log stuff
    */

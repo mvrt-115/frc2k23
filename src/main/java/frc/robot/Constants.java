@@ -161,11 +161,9 @@ public final class Constants {
     public static final Transform2d CAMERA_ON_ROBOT = 
       new Transform2d(new Translation2d(Units.inchesToMeters(12.75), 0.0), new Rotation2d(0.0));
 
-
-    public static final double minDistFromTag = 1; //Min dist necessary from tag to automate (1 meter aprox)
-
-    public static final double xyTolerance = 0.0;
-    public static final double thetaTolerance = 0;
+    public static final double maxDistFromTag = 3; //Min dist necessary from tag to automate (3 meter aprox)
+    public static final double xyTolerance = 0.05;
+    public static final double thetaTolerance = 0.05;
 
     /**
      * Key:
