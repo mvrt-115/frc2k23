@@ -45,7 +45,7 @@ public class Align extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose2d robotPose = localization.getCurrentPose();
+    Pose2d robotPose = localization.getEstimatedPose();
     Pose2d scoringPose = localization.getClosestScoringLoc(robotPose);
 
     if(dist(robotPose, scoringPose) <= Constants.VisionConstants.minDistFromTag)

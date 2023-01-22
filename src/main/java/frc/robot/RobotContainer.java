@@ -38,7 +38,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    alliance = DriverStation.Alliance.Blue; //DriverStation.Alliance.getAlliance();
+    alliance = DriverStation.Alliance.Red; //DriverStation.Alliance.getAlliance();
 
     localization = new Localization(swerveDrivetrain, alliance);
     driveJoystick.button(0);

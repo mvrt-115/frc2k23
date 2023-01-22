@@ -170,9 +170,7 @@ public class Localization extends SubsystemBase {
    */
   public Pose2d getClosestScoringLoc(Pose2d robotPose) {
     //Set the score cols depending on if blue/red
-    Map<Integer, Pose2d> scoreCols = 
-        alliance == DriverStation.Alliance.Blue ? Constants.VisionConstants.kBlueScoreCols : 
-                                                  Constants.VisionConstants.kRedScoreCols;
+    Map<Integer, Pose2d> scoreCols = Constants.VisionConstants.kRedScoreCols;
 
     Pose2d minCol = null;
     double minDist = Double.MAX_VALUE;
