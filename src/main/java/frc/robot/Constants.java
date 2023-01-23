@@ -31,6 +31,14 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static class DataLogging {
+    public static final Mode currMode = Mode.SIM;
+
+    public static enum Mode { REAL, REPLAY, SIM }
+
+  }
+  
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
