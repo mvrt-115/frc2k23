@@ -30,7 +30,11 @@ public class Intake extends SubsystemBase {
   private DoubleSolenoid leftSolenoid, rightSolenoid; //only if using pistons
   private RelativeEncoder encoder;
   private DigitalInput proximityElement, 
-                        proximityClaw; //proximity sensor used for telling when claw is 
+                        proximityClaw; //proximity sensor used for telling when claw is
+
+                        //potential options: potentiometer on or near shaft of motor for both sides (redundancy), 
+                        //                    limit switch with added mechanical component for both sides,
+                        //                    photoelectric proximity sensor above claw that works like breakbeam
   
   public enum INTAKE_TYPE {wheeled, claw}; 
   private INTAKE_TYPE type;
