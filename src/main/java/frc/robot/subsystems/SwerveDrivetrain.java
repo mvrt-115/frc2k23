@@ -168,6 +168,17 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   /**
+   * get the relative heading of the robot based off of the chassis speeds
+   * @return relative angle in degrees
+   */
+  public double getRelativeHeading() {
+    SwerveModuleState[] states = getOutputModuleStates();
+    ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(states);
+    double angle = Math.atan(speeds.vyMetersPerSecond/speeds.vxMetersPerSecond);
+    return Math.toDegrees(angle);
+  }
+
+  /**
    * get the gyro angle as rotation2d
    * @return Rotation2d heading
    */

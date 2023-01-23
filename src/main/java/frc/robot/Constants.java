@@ -121,6 +121,8 @@ public final class Constants {
 
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kTurnMaxSpeedRPS, kTurnMaxAcceleration);
+
+    public static final double kTeleopHeadingCorrectionScale = 0.1;
   }
 
   public static class Talon {
