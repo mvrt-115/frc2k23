@@ -28,8 +28,6 @@ public class AutonPathExample extends SequentialCommandGroup {
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
 
-    SmartDashboard.putString("i'm", "i'm");
-
     trajectory = TrajectoryGenerator.generateTrajectory(
       new Pose2d(0, 0, new Rotation2d(0)),
       List.of(
@@ -57,7 +55,5 @@ public class AutonPathExample extends SequentialCommandGroup {
       swerveControllerCommand,
       new InstantCommand(() -> swerveDrivetrain.stopModules()),
       new InstantCommand(() -> swerveDrivetrain.setDisabled()));
-
-    SmartDashboard.putString("daisy", "daisy");
   }
 }
