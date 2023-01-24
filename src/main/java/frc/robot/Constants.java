@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
@@ -162,13 +161,12 @@ public final class Constants {
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
   }
+
   public static class VisionConstants{
-    public static final String kCameraName = "sheeshcam"; //SHEESHCAM!!!
+    public static final String kCameraName = "sheeshcam";
+    public static final String kCamera2Name = "bohmcam";
 
-    // Physical location of the camera on the robot, relative to the center of bot
-    public static final Transform2d CAMERA_ON_ROBOT = 
-      new Transform2d(new Translation2d(Units.inchesToMeters(12.75), 0.0), new Rotation2d(0.0));
-
+    
     public static final double maxDistFromTag = 3; //Min dist necessary from tag to automate (3 meter aprox)
     public static final double xyTolerance = 0.05;
     public static final double thetaTolerance = 0.05;
