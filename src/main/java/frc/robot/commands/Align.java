@@ -40,7 +40,7 @@ public class Align extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    localization.setAligning(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,6 +57,7 @@ public class Align extends CommandBase {
       ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, outTheta);
       SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
       swerve.setModuleStates(states);
+      
       //Log random stuff
       SmartDashboard.putNumber("distance from final", localization.distFromTag(robotPose, scorePose));
       SmartDashboard.putNumber("error x", robotPose.getX() - scorePose.getX());
@@ -66,7 +67,9 @@ public class Align extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    localization.setAligning(true);
+  }
 
   // Returns true when the command should end.
   @Override

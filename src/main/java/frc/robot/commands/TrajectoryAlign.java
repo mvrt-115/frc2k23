@@ -4,20 +4,15 @@
 
 package frc.robot.commands;
 
-import java.util.ArrayList;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class TrajectoryAlign extends CommandBase {
+  
   /** Creates a new TrajectoryAlign. */
   private SwerveDrivetrain swerveDrivetrain;
   private Localization localization;

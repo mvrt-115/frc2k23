@@ -10,10 +10,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
@@ -165,14 +167,14 @@ public final class Constants {
   }
 
   public static class VisionConstants{
-    public static final String kCameraName = "sheeshcam";
+    public static final String kCamera1Name = "sheeshcam";
     public static final String kCamera2Name = "bohmcam";
-
     
     public static final double maxDistFromTag = 3; //Min dist necessary from tag to automate (3 meter aprox)
     public static final double xyTolerance = 0.05;
     public static final double thetaTolerance = 0.05;
-
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0.19, 0, 0), new Rotation3d());
+    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(-0.19, 0, 0), new Rotation3d());
     /**
      * Key:
      * Orientation: facing red community from blue community 
