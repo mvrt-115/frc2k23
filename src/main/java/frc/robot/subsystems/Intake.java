@@ -9,6 +9,7 @@ import javax.lang.model.util.ElementScanner14;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -27,10 +28,13 @@ import frc.robot.TalonFactory;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private CANSparkMax motor;
-  private DoubleSolenoid leftSolenoid, rightSolenoid; //only if using pistons
   private RelativeEncoder encoder;
-  private DigitalInput proximityElement, 
-                        proximityClaw; //proximity sensor used for telling when claw is 
+  private DigitalInput proximityElement; // infrared proximity sensor returns false when detecting object
+  //private DigitalInput proximityClaw; //proximity sensor used for telling when claw is 
+
+  private SparkMaxPIDController m_pidController;
+
+  //proximityElement distance detected does not need to be tuned (tested)
   
   public enum INTAKE_TYPE {wheeled, claw}; 
   private INTAKE_TYPE type;
@@ -41,21 +45,27 @@ public class Intake extends SubsystemBase {
    */
   public Intake(INTAKE_TYPE type) {
     motor = TalonFactory.createSparkMax(0, false);
-    encoder = motor.getEncoder();
+    encoder = motor.getEncoder(); // using encoder for claw prototype 
     motor.setIdleMode(IdleMode.kBrake); 
-    encoder.setPosition(Constants.Intake.kCompressedTicks); // initial position to when its preloaded
-        //leftSolenoid = new DoubleSolenoid(0, null, 0, 0)
+    encoder.setPosition(Constants.Intake.kCompressedTicks); // initial position of 0 to when its preloaded
+    //initial state must always be preloaded
 
-    proximityElement = new DigitalInput(Constants.Intake.kProximityPort); //CHANGE CHANNEL NUMBER FOR TESTING AND USE
-    
+    proximityElement = new DigitalInput(0); //CHANGE CHANNEL NUMBER FOR TESTING AND USE
+   // proximityClaw = new DigitalInput(1); // just for testing
 
     this.type = type;
 
-    //
-    if(this.type == INTAKE_TYPE.claw)
+    m_pidController = motor.getPIDController();
+    m_pidController.setP(Constants.Intake.kP);
+    m_pidController.setI(Constants.Intake.kI);
+    m_pidController.setD(Constants.Intake.kD);
+    m_pidController.setOutputRange(Constants.Intake.kMinOutput, Constants.Intake.kMaxOutput);
+
+    // not using proximity claw anymore; using PID loop and breakmode during compression
+    /*if(this.type == INTAKE_TYPE.claw)
     {
       proximityClaw = new DigitalInput(Constants.Intake.kProximityClawPort); //CHANGE CHANNEL NUMBER 
-    }
+    }*/
   }
 
   /////////////////////////////////////////COMMANDS//////////////////////////////////////////////
@@ -84,22 +94,23 @@ public class Intake extends SubsystemBase {
    * Runs claw inwards constantly
    */
   public CommandBase intakeClaw() {
-    motor.setIdleMode(IdleMode.kCoast); // change to the correct method
-    return this.runOnce(() -> motor.set(0.3));
+    motor.setIdleMode(IdleMode.kCoast); 
+    return new RunCommand(() -> this.moveClaw(true));
    }
 
   /*
    * Runs claw outwards using expand()
    */
    public CommandBase outtakeClaw() {
-    return new RunCommand(() -> this.expand());
+    return new RunCommand(() -> this.moveClaw(false)); 
+    // change to running command with two steps: make sure its in brake mode after
    }
 
    /*
     * Runs wheels inward and stops when the element is detected within the intake
     */
    public CommandBase intakeWheeled() {
-    while(!proximityElement.get()) {
+    while(proximityElement.get()) {
       setMotorSpeed(0.3);
     }
 
@@ -120,13 +131,41 @@ public class Intake extends SubsystemBase {
    /**
     * sets constant speed to claw until it reaches the limit of expansion as dictated by an encoder
     */
-   public void expand() {
-      while(!proximityClaw.get()) //if we have proximity sensor in place
-        //!(encoder.getPosition() <= Constants.Intake.kExpandedTicks + Constants.Intake.kMarginOfError && encoder.getPosition() >= Constants.Intake.kExpandedTicks - Constants.Intake.kMarginOfError ))
+  /*  public void expand() {
+      /*while(!(encoder.getPosition() <= Constants.Intake.kExpandedTicks + Constants.Intake.kMarginOfError && encoder.getPosition() >= Constants.Intake.kExpandedTicks - Constants.Intake.kMarginOfError))//(proximityClaw.get()) //if we have infrared proximity sensor in place 
       {
         setMotorSpeed(-0.3);
       }
-      zeroMotorSpeed();
+
+      // pid the expansion
+      motor.
+
+      //zeroMotorSpeed();
+   }
+   */
+
+   /**
+    * moves claw using PID control
+    * prerequisite: the zero position should be the compressed position
+    * @param isIntaking
+    */
+   public void moveClaw(boolean isIntaking)
+   {
+    double goalPos;
+    if(isIntaking)
+    {
+      goalPos = Constants.Intake.kCompressedTicks; //change to desired ticks value when compressed
+    }
+
+    else
+    {
+      goalPos = Constants.Intake.kExpandedTicks; //change to desired ticks value when expanded
+    }
+
+    double rotations = goalPos/Constants.Intake.kTicksPerRotation;
+
+    m_pidController.setReference(rotations, CANSparkMax.ControlType.kPosition);
+
    }
 
   /*
@@ -155,7 +194,8 @@ public class Intake extends SubsystemBase {
    @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("current ticks", encoder.getPosition());
+    SmartDashboard.putBoolean("sensing element in intake", proximityElement.get());
+   // SmartDashboard.putBoolean("sensing edge of elevator", proximityClaw.get());
   }
 
   
