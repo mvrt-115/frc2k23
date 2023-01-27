@@ -43,17 +43,39 @@ public class Localization extends SubsystemBase {
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
     lastPose = new Pose2d();
-    //Measure this pose before initializing the class
   }
 
   @Override
   public void periodic() {
+    Pose2d camPose = weightTargets();
+    if(camPose!=null){
+      if(aligning){
+        initializePoseEstimator(camPose);
+      }
+      else{
+        double latency = 0;
+        if(camera1.getLatestResult().hasTargets()){
+          latency = camera1.getLatestResult().getLatencyMillis();
+        }
+        if(camera2.getLatestResult().hasTargets()){
+          if(latency==0){
+            latency = camera2.getLatestResult().getLatencyMillis();
+          }
+          else{
+            latency+=camera2.getLatestResult().getLatencyMillis();
+            latency/=2;
+          }
+        }
+        poseEstimator.addVisionMeasurement(camPose, latency);
+      }
+    }
+    poseEstimator.update(null, null)
     /**
       periodic:
         getEstimeadPoe()
 
       getEstimatedPose()
-        weigthTargets on cameras + infuse dwith kalaman
+        weightTargets on cameras + infuse dwith kalaman
      */
     
     // PhotonPipelineResult result1 = camera1.getLatestResult();
@@ -95,7 +117,9 @@ public class Localization extends SubsystemBase {
     // field.setRobotPose(getCurrentPose());
 
     Pose2d estimatedPose = weightTargets();
-    SmartDashboard.putString("Estimatd Pose wooohoo", estimatedPose.toString());
+    if (estimatedPose != null){
+      SmartDashboard.putString("Estimatd Pose", estimatedPose.toString());
+    }
 
     log();
   }
@@ -118,53 +142,63 @@ public class Localization extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-   /**
-    * Weights multiple targets using distances (linear)
-    * @return the weighted Pose2d
-    */
-   private Pose2d weightTargets() {
-      Pose2d cam1Pose = weightTargets((ArrayList<PhotonTrackedTarget>) camera1.getLatestResult().targets, Constants.VisionConstants.cam1ToRobot);
-      Pose2d cam2Pose = weightTargets((ArrayList<PhotonTrackedTarget>) camera2.getLatestResult().targets, Constants.VisionConstants.cam2ToRobot);
+  /**
+  * Weights multiple targets using distances (linear)
+  * @return the weighted Pose2d
+  */
+  private Pose2d weightTargets() {
+    Pose2d cam1Pose = null;
+    Pose2d cam2Pose = null;
+    if (camera1.getLatestResult().hasTargets()){
+      cam1Pose = weightTargets((ArrayList<PhotonTrackedTarget>) camera1.getLatestResult().targets, Constants.VisionConstants.cam1ToRobot);
+    }
+    if(camera2.getLatestResult().hasTargets()){
+      cam2Pose = weightTargets((ArrayList<PhotonTrackedTarget>) camera2.getLatestResult().targets, Constants.VisionConstants.cam2ToRobot);
+    }
 
-      double xAvg = (cam1Pose.getX() + cam2Pose.getX()) / 2;
-      double yAvg = (cam1Pose.getY() + cam2Pose.getY()) / 2;
-      double tAvg = (cam1Pose.getRotation().getRadians() + cam2Pose.getRotation().getRadians()) / 2;
-      
-      return new Pose2d(xAvg, yAvg, new Rotation2d(tAvg));
-   }
+    if(cam1Pose == null && cam2Pose==null) return null;
+    if(cam1Pose == null) return cam2Pose;
+    if(cam2Pose==null) return cam1Pose;
+    
+    double xAvg = (cam1Pose.getX() + cam2Pose.getX()) / 2;
+    double yAvg = (cam1Pose.getY() + cam2Pose.getY()) / 2;
+    double tAvg = (cam1Pose.getRotation().getRadians() + cam2Pose.getRotation().getRadians()) / 2;
+    
+    return new Pose2d(xAvg, yAvg, new Rotation2d(tAvg));
+  }
 
 
-   private Pose2d weightTargets(ArrayList<PhotonTrackedTarget> targets, Transform3d camPose) {
-      double[] weights = new double[targets.size()];
-      //reciprical of all the distances
-      double totalSum = 0;
-      Transform3d[] transforms = new Transform3d[targets.size()];
-      
-      for(int i = 0; i < transforms.length; i++) {
-        Transform3d relLoc = targets.get(i).getBestCameraToTarget();
-        transforms[i] = relLoc;
-        weights[i] = 1/relLoc.getTranslation().getNorm();
-        totalSum += weights[i];
-      }
-      
-      double weightedX = 0;
-      double weightedY = 0;
-      double weightedRot = 0;
-      
-      for(int i = 0; i < targets.size(); i++) {
-        Pose3d tag = Constants.VisionConstants.aprilTags.get(targets.get(i).getFiducialId());
-        Pose3d robotPose = ComputerVisionUtil.objectToRobotPose(tag, transforms[i], camPose);
-        weightedX += weights[i] * robotPose.getX();
-        weightedY += weights[i] * robotPose.getY();
-        weightedRot += weights[i] * robotPose.getRotation().getAngle();
-      }
+  private Pose2d weightTargets(ArrayList<PhotonTrackedTarget> targets, Transform3d camPose) {
+    double[] weights = new double[targets.size()];
+    //reciprical of all the distances
+    double totalSum = 0;
+    Transform3d[] transforms = new Transform3d[targets.size()];
+    
+    for(int i = 0; i < transforms.length; i++) {
+      Transform3d relLoc = targets.get(i).getBestCameraToTarget();
+      transforms[i] = relLoc;
+      weights[i] = 1/relLoc.getTranslation().getNorm();
+      totalSum += weights[i];
+    }
+    
+    double weightedX = 0;
+    double weightedY = 0;
+    double weightedRot = 0;
+    
+    for(int i = 0; i < targets.size(); i++) {
+      Pose3d tag = Constants.VisionConstants.aprilTags.get(targets.get(i).getFiducialId());
+      Pose3d robotPose = ComputerVisionUtil.objectToRobotPose(tag, transforms[i], camPose);
+      weightedX += weights[i] * robotPose.getX();
+      weightedY += weights[i] * robotPose.getY();
+      weightedRot += weights[i] * robotPose.getRotation().getAngle();
+    }
 
-      weightedX /= totalSum;
-      weightedY /= totalSum;
-      weightedRot /= totalSum;
+    weightedX /= totalSum;
+    weightedY /= totalSum;
+    weightedRot /= totalSum;
 
-      return new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
-   }
+    return new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
+  }
 
   /**
    * Gets the closest scoring location using SwerveDrivePoseEstimator
@@ -227,7 +261,7 @@ public class Localization extends SubsystemBase {
     SmartDashboard.putNumber("Robo X", lastPose.getX());
     SmartDashboard.putNumber("Robo Y", lastPose.getY());
 
-    Logger.getInstance().recordOutput("Robo X", lastPose.getX());
-    Logger.getInstance().recordOutput("Robo Y", lastPose.getY());
+   // Logger.getInstance().recordOutput("Robo X", lastPose.getX());
+    //Logger.getInstance().recordOutput("Robo Y", lastPose.getY());
   }
 }
