@@ -43,16 +43,19 @@ public class Localization extends SubsystemBase {
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
     lastPose = new Pose2d();
-    initializePoseEstimator(new Pose2d());
+    poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
+      swerveDrivetrain.getRotation2d(), 
+      swerveDrivetrain.getModulePositions(), 
+      new Pose2d()); //Replace this with the starting pose in auton
   }
 
   @Override
   public void periodic() {
     Pose2d camPose = weightTargets();
-     // SmartDashboard.putString("camPose", camPose.toString());
-      if(camPose!=null){
-      if(aligning){
-        initializePoseEstimator(camPose);
+    if(camPose!=null){
+      SmartDashboard.putString("weightedCamPose", camPose.toString());
+      if(aligning){ // If aligning, reset pose to whatever camera gives us
+        resetPoseEstimator(camPose);
       }
       else{
         double latency = 0;
@@ -73,7 +76,9 @@ public class Localization extends SubsystemBase {
 
       log();
     }
-    //poseEstimator.update(null, null)
+    if(getCurrentPose()!=null)
+      field.setRobotPose(getCurrentPose()); 
+    //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions()); add this when testing on bot
     /**
       periodic:
         getEstimeadPoe()
@@ -119,8 +124,6 @@ public class Localization extends SubsystemBase {
 
     // poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     // field.setRobotPose(getCurrentPose());
-
-    Pose2d estimatedPose = weightTargets();
     // if (estimatedPose != null){
     //   SmartDashboard.putString("Estimatd Pose", estimatedPose.toString());
     // }
@@ -132,12 +135,8 @@ public class Localization extends SubsystemBase {
    * Initializes pose estimator and configures stdevs
    * @param pose
    */
-  public void initializePoseEstimator(Pose2d pose){
-    poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
-                                                  swerveDrivetrain.getRotation2d(), 
-                                                  swerveDrivetrain.getModulePositions(), 
-                                                  pose);
-
+  public void resetPoseEstimator(Pose2d pose){
+    poseEstimator.resetPosition(swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions(), pose);
   }
   /**
    * @return current pose according to pose estimator
@@ -212,8 +211,6 @@ public class Localization extends SubsystemBase {
     weightedX /= totalSum;
     weightedY /= totalSum;
     weightedRot /= totalSum;
-    Pose2d temp = new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
-
     return new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
   }
 
@@ -259,7 +256,7 @@ public class Localization extends SubsystemBase {
    * @param finalPose the final pose
    * @return the distance between the two poses
    */
-  public double distFromTag(Pose2d initialPose, Pose2d finalPose){
+  public static double distFromTag(Pose2d initialPose, Pose2d finalPose){
     return Math.sqrt(Math.pow(initialPose.getX()-finalPose.getX(),2)+Math.pow(initialPose.getY()-finalPose.getY(),2));
   }
 
@@ -275,9 +272,9 @@ public class Localization extends SubsystemBase {
    * Log stuff
    */
   public void log() {
-    SmartDashboard.putNumber("Robo X", lastPose.getX());
-    SmartDashboard.putNumber("Robo Y", lastPose.getY());
-
+    if(poseEstimator.getEstimatedPosition()!=null){
+      SmartDashboard.putString("Logged Estimated Position", poseEstimator.getEstimatedPosition().toString());
+    }
    // Logger.getInstance().recordOutput("Robo X", lastPose.getX());
     //Logger.getInstance().recordOutput("Robo Y", lastPose.getY());
   }
