@@ -86,11 +86,25 @@ public final class Constants {
     public static final int m_backLeftEncoderID = 11;
     public static final int m_backRightEncoderID = 12;
 
+    // Comp Bot Encoder Offsets
+    public static final boolean isCompBot = false;
+
+    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(227);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(273);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(264);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(302);// + Math.PI/2.0;
+
+    // Practice Bot Encoder Offsets
+    public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(227);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(273);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(264);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(302);// + Math.PI/2.0;
+
     // Abs Encoder Offsets
-    public static final double m_frontLeftEncoderOffset = Units.degreesToRadians(327);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset = Units.degreesToRadians(163);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset = Units.degreesToRadians(2);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset = Units.degreesToRadians(211);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset = isCompBot? m_frontLeftEncoderOffset_Comp:m_frontLeftEncoderOffset_P;// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset = isCompBot? m_frontRightEncoderOffset_Comp:m_frontRightEncoderOffset_P;// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset = isCompBot? m_backLeftEncoderOffset_Comp:m_backLeftEncoderOffset_P;// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset = isCompBot? m_backRightEncoderOffset_Comp:m_backRightEncoderOffset_P;// + Math.PI/2.0;
 
     // Position PID
     public static final double m_x_control_P = 0.5;
