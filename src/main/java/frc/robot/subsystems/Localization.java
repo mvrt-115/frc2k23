@@ -34,7 +34,7 @@ public class Localization extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator;
   
   private final Field2d field;
-  private boolean aligning;
+  private boolean aligning = true;
   private Pose2d lastPose;
 
   public Localization(SwerveDrivetrain swerveDrivetrain, DriverStation.Alliance alliance) {
@@ -43,12 +43,14 @@ public class Localization extends SubsystemBase {
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
     lastPose = new Pose2d();
+    initializePoseEstimator(new Pose2d());
   }
 
   @Override
   public void periodic() {
     Pose2d camPose = weightTargets();
-    if(camPose!=null){
+     // SmartDashboard.putString("camPose", camPose.toString());
+      if(camPose!=null){
       if(aligning){
         initializePoseEstimator(camPose);
       }
@@ -68,8 +70,10 @@ public class Localization extends SubsystemBase {
         }
         poseEstimator.addVisionMeasurement(camPose, latency);
       }
+
+      log();
     }
-    poseEstimator.update(null, null)
+    //poseEstimator.update(null, null)
     /**
       periodic:
         getEstimeadPoe()
@@ -117,11 +121,11 @@ public class Localization extends SubsystemBase {
     // field.setRobotPose(getCurrentPose());
 
     Pose2d estimatedPose = weightTargets();
-    if (estimatedPose != null){
-      SmartDashboard.putString("Estimatd Pose", estimatedPose.toString());
-    }
+    // if (estimatedPose != null){
+    //   SmartDashboard.putString("Estimatd Pose", estimatedPose.toString());
+    // }
 
-    log();
+    // log();
   }
 
   /**
@@ -147,13 +151,25 @@ public class Localization extends SubsystemBase {
   * @return the weighted Pose2d
   */
   private Pose2d weightTargets() {
+   // SmartDashboard.putString("cam1", camera1.getLatestResult());
+   // SmartDashboard.putString("cam2", camera2.getLatestResult().);
+
     Pose2d cam1Pose = null;
     Pose2d cam2Pose = null;
+
+    if(camera1.getLatestResult().hasTargets())
+      SmartDashboard.putString("raw cam 1", camera1.getLatestResult().getBestTarget().getBestCameraToTarget().toString());
+    if(camera2.getLatestResult().hasTargets())
+      SmartDashboard.putString("raw cam 2", camera2.getLatestResult().getBestTarget().getBestCameraToTarget().toString());
+
+
     if (camera1.getLatestResult().hasTargets()){
       cam1Pose = weightTargets((ArrayList<PhotonTrackedTarget>) camera1.getLatestResult().targets, Constants.VisionConstants.cam1ToRobot);
+      SmartDashboard.putString("Cam1", cam1Pose.toString());
     }
     if(camera2.getLatestResult().hasTargets()){
-      cam2Pose = weightTargets((ArrayList<PhotonTrackedTarget>) camera2.getLatestResult().targets, Constants.VisionConstants.cam2ToRobot);
+      cam2Pose = weightTargets((ArrayList<PhotonTrackedTarget>) camera2.getLatestResult().targets, Constants.VisionConstants.cam1ToRobot);
+      SmartDashboard.putString("Cam2", cam2Pose.toString());
     }
 
     if(cam1Pose == null && cam2Pose==null) return null;
@@ -196,6 +212,7 @@ public class Localization extends SubsystemBase {
     weightedX /= totalSum;
     weightedY /= totalSum;
     weightedRot /= totalSum;
+    Pose2d temp = new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
 
     return new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
   }

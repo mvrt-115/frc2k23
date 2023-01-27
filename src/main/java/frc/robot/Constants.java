@@ -187,8 +187,8 @@ public final class Constants {
     public static final double maxDistFromTag = 3; //Min dist necessary from tag to automate (3 meter aprox)
     public static final double xyTolerance = 0.05;
     public static final double thetaTolerance = 0.05;
-    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0.19, 0, 0), new Rotation3d());
-    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(-0.19, 0, 0), new Rotation3d());
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(-0.2032, 0, 0), new Rotation3d());
+    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0.2032, 0, 0), new Rotation3d());
     /**
      * Key:
      * Orientation: facing red community from blue community 
