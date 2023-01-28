@@ -181,14 +181,14 @@ public final class Constants {
   }
 
   public static class VisionConstants{
-    public static final String kCamera1Name = "chadcam";
-    public static final String kCamera2Name = "bohmcam";
+    public static final String kCamera1Name = "chadcam"; //neg offset
+    public static final String kCamera2Name = "bohmcam"; //pos offset
     
     public static final double maxDistFromTag = 3; //Min dist necessary from tag to automate (3 meter aprox)
     public static final double xyTolerance = 0.05;
     public static final double thetaTolerance = 0.05;
-    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, -0.2032, 0), new Rotation3d());
-    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0, 0.2032, 0), new Rotation3d());
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, -(3.5*2.54)/100.0-0.05, 0), new Rotation3d());
+    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0, (3.5*2.54)/100.0+0.05, 0), new Rotation3d());
     /**
      * Key:
      * Orientation: facing red community from blue community 

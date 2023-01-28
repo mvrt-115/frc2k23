@@ -59,15 +59,18 @@ public class Localization extends SubsystemBase {
       }
       else{
         double latency = 0;
-        if(camera1.getLatestResult().hasTargets()){
-          latency = camera1.getLatestResult().getLatencyMillis();
+        PhotonPipelineResult cam1Result = camera1.getLatestResult();
+        PhotonPipelineResult cam2Result = camera2.getLatestResult();
+
+        if(cam1Result.hasTargets()){
+          latency = cam1Result.getLatencyMillis();
         }
-        if(camera2.getLatestResult().hasTargets()){
+        if(cam2Result.hasTargets()){
           if(latency==0){
-            latency = camera2.getLatestResult().getLatencyMillis();
+            latency = cam2Result.getLatencyMillis();
           }
           else{
-            latency+=camera2.getLatestResult().getLatencyMillis();
+            latency+=cam2Result.getLatencyMillis();
             latency/=2;
           }
         }
@@ -150,24 +153,26 @@ public class Localization extends SubsystemBase {
   * @return the weighted Pose2d
   */
   private Pose2d weightTargets() {
+    SmartDashboard.putNumber("fuck this", Timer.getFPGATimestamp());
    // SmartDashboard.putString("cam1", camera1.getLatestResult());
    // SmartDashboard.putString("cam2", camera2.getLatestResult().);
-
     Pose2d cam1Pose = null;
     Pose2d cam2Pose = null;
-
-    if(camera1.getLatestResult().hasTargets())
+    PhotonPipelineResult cam1Result = camera1.getLatestResult();
+    PhotonPipelineResult cam2Result = camera2.getLatestResult();
+    if(cam1Result.hasTargets()){
       SmartDashboard.putString("raw cam 1", camera1.getLatestResult().getBestTarget().getBestCameraToTarget().toString());
-    if(camera2.getLatestResult().hasTargets())
+    }
+      if(cam2Result.hasTargets()){
+      
       SmartDashboard.putString("raw cam 2", camera2.getLatestResult().getBestTarget().getBestCameraToTarget().toString());
-
-
-    if (camera1.getLatestResult().hasTargets()){
-      cam1Pose = weightTargets((ArrayList<PhotonTrackedTarget>) camera1.getLatestResult().targets, Constants.VisionConstants.cam1ToRobot);
+      }
+    if (cam1Result.hasTargets()){
+      cam1Pose = weightTargets((ArrayList<PhotonTrackedTarget>) cam1Result.targets, Constants.VisionConstants.cam1ToRobot);
       SmartDashboard.putString("Cam1", cam1Pose.toString());
     }
-    if(camera2.getLatestResult().hasTargets()){
-      cam2Pose = weightTargets((ArrayList<PhotonTrackedTarget>) camera2.getLatestResult().targets, Constants.VisionConstants.cam1ToRobot);
+    if(cam2Result.hasTargets()){
+      cam2Pose = weightTargets((ArrayList<PhotonTrackedTarget>) cam2Result.targets, Constants.VisionConstants.cam2ToRobot);
       SmartDashboard.putString("Cam2", cam2Pose.toString());
     }
 
