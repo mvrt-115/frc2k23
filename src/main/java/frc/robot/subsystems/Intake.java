@@ -95,7 +95,8 @@ public class Intake extends SubsystemBase {
    */
   public CommandBase intakeClaw() {
     motor.setIdleMode(IdleMode.kCoast); 
-    return new RunCommand(() -> this.moveClaw(true));
+    return new RunCommand(() -> this.intakeAndHold());
+        // change to running command with two steps: make sure its in brake mode after
    }
 
   /*
@@ -103,7 +104,6 @@ public class Intake extends SubsystemBase {
    */
    public CommandBase outtakeClaw() {
     return new RunCommand(() -> this.moveClaw(false)); 
-    // change to running command with two steps: make sure its in brake mode after
    }
 
    /*
@@ -144,6 +144,11 @@ public class Intake extends SubsystemBase {
    }
    */
 
+   public void intakeAndHold()
+   {
+    this.moveClaw(true);
+    motor.setIdleMode(IdleMode.kBrake);
+   }
    /**
     * moves claw using PID control
     * prerequisite: the zero position should be the compressed position
@@ -151,6 +156,7 @@ public class Intake extends SubsystemBase {
     */
    public void moveClaw(boolean isIntaking)
    {
+    //essentially, claw can only move between two set positions: contracted and holding item vs. expanded position
     double goalPos;
     if(isIntaking)
     {
@@ -165,7 +171,6 @@ public class Intake extends SubsystemBase {
     double rotations = goalPos/Constants.Intake.kTicksPerRotation;
 
     m_pidController.setReference(rotations, CANSparkMax.ControlType.kPosition);
-
    }
 
   /*
