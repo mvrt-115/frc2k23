@@ -11,6 +11,9 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -25,12 +28,20 @@ public class Robot extends LoggedRobot {
 
   private RobotContainer m_robotContainer;
 
+  TalonFX frontLeft, frontRight, backLeft, backRight;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+
+    // frontLeft = new TalonFX(3);
+    // frontRight = new TalonFX(1);
+    // backLeft = new TalonFX(5);
+    // backRight = new TalonFX(7);
+
     Logger logger = Logger.getInstance();
 
     logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
@@ -107,7 +118,12 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // frontLeft.set(ControlMode.PercentOutput, 0.3);
+    // frontRight.set(ControlMode.PercentOutput, 0.3);
+    // backLeft.set(ControlMode.PercentOutput, 0.3);
+    // backRight.set(ControlMode.PercentOutput, 0.3);
+  }
 
   @Override
   public void testInit() {
