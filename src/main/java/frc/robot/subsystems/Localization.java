@@ -51,6 +51,7 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
     Pose2d camPose = weightTargets();
     if(camPose!=null){
       SmartDashboard.putString("weightedCamPose", camPose.toString());
@@ -153,19 +154,16 @@ public class Localization extends SubsystemBase {
   * @return the weighted Pose2d
   */
   private Pose2d weightTargets() {
-    SmartDashboard.putNumber("fuck this", Timer.getFPGATimestamp());
-   // SmartDashboard.putString("cam1", camera1.getLatestResult());
-   // SmartDashboard.putString("cam2", camera2.getLatestResult().);
     Pose2d cam1Pose = null;
     Pose2d cam2Pose = null;
     PhotonPipelineResult cam1Result = camera1.getLatestResult();
     PhotonPipelineResult cam2Result = camera2.getLatestResult();
     if(cam1Result.hasTargets()){
-      SmartDashboard.putString("raw cam 1", camera1.getLatestResult().getBestTarget().getBestCameraToTarget().toString());
+      SmartDashboard.putString("raw cam 1", cam1Result.getBestTarget().getBestCameraToTarget().toString());
     }
       if(cam2Result.hasTargets()){
       
-      SmartDashboard.putString("raw cam 2", camera2.getLatestResult().getBestTarget().getBestCameraToTarget().toString());
+      SmartDashboard.putString("raw cam 2", cam2Result.getBestTarget().getBestCameraToTarget().toString());
       }
     if (cam1Result.hasTargets()){
       cam1Pose = weightTargets((ArrayList<PhotonTrackedTarget>) cam1Result.targets, Constants.VisionConstants.cam1ToRobot);
