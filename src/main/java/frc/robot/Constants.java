@@ -184,7 +184,7 @@ public final class Constants {
     public static final String kCamera1Name = "chadcam"; //neg offset
     public static final String kCamera2Name = "bohmcam"; //pos offset
     
-    public static final double maxDistFromTag = 3; //Min dist necessary from tag to automate (3 meter aprox)
+    public static final double minDistFromTag = 0.3; //Min dist necessary from tag to automate (0.3 meter aprox)
     public static final double xyTolerance = 0.05;
     public static final double thetaTolerance = 0.05;
 

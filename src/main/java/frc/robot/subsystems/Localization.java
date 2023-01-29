@@ -83,8 +83,10 @@ public class Localization extends SubsystemBase {
 
     log();
 
-    if(getCurrentPose() != null)
-      field.setRobotPose(getCurrentPose()); 
+    Pose2d currPose = getCurrentPose();
+    if(currPose != null)
+      field.setRobotPose(currPose); 
+      
     //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions()); add this when testing on bot
     /**
       periodic:
@@ -94,48 +96,47 @@ public class Localization extends SubsystemBase {
         weightTargets on cameras + infuse dwith kalaman
      */
     
-    // PhotonPipelineResult result1 = camera1.getLatestResult();
-    // PhotonPipelineResult result2 = camera2.getLatestResult();
+    PhotonPipelineResult result1 = camera1.getLatestResult();
+    PhotonPipelineResult result2 = camera2.getLatestResult();
 
-    // Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
+    Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
 
-    // if (result1.hasTargets()) {
-    //   SmartDashboard.putBoolean("Found Tag(s)", true);
-    //   double imageCaptureTime = Timer.getFPGATimestamp() - (result1.getLatencyMillis() / 1000d);
+    if (result1.hasTargets()) {
+      double imageCaptureTime = Timer.getFPGATimestamp() - (result1.getLatencyMillis() / 1000d);
 
-    //   //Loop through seen tags
-    //   for (PhotonTrackedTarget target : result1.getTargets()) {
-    //     int fiducialId = target.getFiducialId();
+      //Loop through seen tags
+      for (PhotonTrackedTarget target : result1.getTargets()) {
+        int fiducialId = target.getFiducialId();
 
-    //     //Extra precaution (who knows)
-    //     if (fiducialId >= 1 && fiducialId <= targetPoses.size()) {
-    //       Transform3d relLoc = target.getBestCameraToTarget();
-    //       Pose3d tag = targetPoses.get(target.getFiducialId());
+        //Extra precaution (who knows)
+        if (fiducialId >= 1 && fiducialId <= targetPoses.size()) {
+          Transform3d relLoc = target.getBestCameraToTarget();
+          Pose3d tag = targetPoses.get(target.getFiducialId());
 
-    //       //Robot position on field (x/y) according to vision
-    //       Pose2d visionFieldRelative = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
-    //       if(poseEstimator==null){
-    //         initializePoseEstimator(visionFieldRelative);
-    //       }
-    //       //Robot pose according to apriltags
-    //       field.getObject("VisionRobot" + fiducialId).setPose(visionFieldRelative);
+          //Robot position on field (x/y) according to vision
+          Pose2d visionFieldRelative = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
+          if(poseEstimator==null){
+            initializePoseEstimator(visionFieldRelative);
+          }
+          //Robot pose according to apriltags
+          field.getObject("VisionRobot" + fiducialId).setPose(visionFieldRelative);
 
-    //       //Add vision estimator to pose estimator
-    //       poseEstimator.addVisionMeasurement(visionFieldRelative, imageCaptureTime);
-    //     }
-    //   }
-    // }
-    // else{
-    //   SmartDashboard.putBoolean("Found Tag(s)", false);
-    // }
+          //Add vision estimator to pose estimator
+          poseEstimator.addVisionMeasurement(visionFieldRelative, imageCaptureTime);
+        }
+      }
+    }
+    else{
+      SmartDashboard.putBoolean("Found Tag(s)", false);
+    }
 
-    // poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
-    // field.setRobotPose(getCurrentPose());
-    // if (estimatedPose != null){
-    //   SmartDashboard.putString("Estimatd Pose", estimatedPose.toString());
-    // }
+    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
+    field.setRobotPose(getCurrentPose());
+    if (estimatedPose != null){
+      SmartDashboard.putString("Estimatd Pose", estimatedPose.toString());
+    }
 
-    // log();
+    log();
   }
 
   /**
@@ -196,7 +197,7 @@ public class Localization extends SubsystemBase {
    */
   private Pose2d weightMultiTargets(ArrayList<PhotonTrackedTarget> targets, Transform3d camPose) {
     double[] weights = new double[targets.size()];
-    
+
     //reciprical of all the distances
     double totalSum = 0;
     Transform3d[] transforms = new Transform3d[targets.size()];
@@ -233,14 +234,12 @@ public class Localization extends SubsystemBase {
   public Pose2d getClosestScoringLoc() {
     //Set the score cols depending on if blue/red
     Map<Integer, Pose2d> scoreCols = Constants.VisionConstants.kRedScoreCols;
-
     Pose2d minCol = null;
     double minDist = Double.MAX_VALUE;
 
     //Loop through cols
     for(int i : scoreCols.keySet()) {
       Pose2d pose = scoreCols.get(i);
-
       double dy = Math.abs(poseEstimator.getEstimatedPosition().getY() - pose.getY());
 
       //Shortest dist away

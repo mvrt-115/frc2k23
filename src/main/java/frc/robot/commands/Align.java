@@ -47,22 +47,17 @@ public class Align extends CommandBase {
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-    // SmartDashboard
-    SmartDashboard.putNumber("scoring x", scorePose.getX());
-    SmartDashboard.putNumber("scoring y", scorePose.getY());
-    if(localization.distFromTag(robotPose, scorePose) < Constants.VisionConstants.maxDistFromTag){
+
+    if(Localization.distFromTag(robotPose, scorePose) > Constants.VisionConstants.minDistFromTag){
       double outX = pidX.calculate(robotPose.getX(), scorePose.getX()); // pos, setpoint
       double outY = -pidY.calculate(robotPose.getY(), scorePose.getY()); // pos, setpoint
       double outTheta = pidTheta.calculate(robotPose.getRotation().getRadians(), scorePose.getRotation().getRadians());
       ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, outTheta);
       SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
       swerve.setModuleStates(states);
-      
-      //Log random stuff
-      SmartDashboard.putNumber("distance from final", localization.distFromTag(robotPose, scorePose));
-      SmartDashboard.putNumber("error x", robotPose.getX() - scorePose.getX());
-      SmartDashboard.putNumber("error y", robotPose.getY() - scorePose.getY());
     }
+
+    log();
   }
 
   // Called once the command ends or is interrupted.
@@ -80,5 +75,18 @@ public class Align extends CommandBase {
     return Math.abs(robotPose.getX() - scorePose.getX()) < Constants.VisionConstants.xyTolerance && 
       Math.abs(robotPose.getY() - scorePose.getY()) < Constants.VisionConstants.xyTolerance && 
       Math.abs(robotPose.getRotation().getDegrees() - scorePose.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;
+  }
+
+  public void log(){
+    Pose2d robotPose = localization.getCurrentPose();
+
+    // SmartDashboard
+    SmartDashboard.putNumber("scoring x", scorePose.getX());
+    SmartDashboard.putNumber("scoring y", scorePose.getY());
+    SmartDashboard.putNumber("robo x", robotPose.getX());
+    SmartDashboard.putNumber("robo y", robotPose.getY());
+    SmartDashboard.putNumber("distance from final", localization.distFromTag(robotPose, scorePose));
+    SmartDashboard.putNumber("error x", robotPose.getX() - scorePose.getX());
+    SmartDashboard.putNumber("error y", robotPose.getY() - scorePose.getY());
   }
 }

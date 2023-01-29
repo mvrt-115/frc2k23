@@ -76,7 +76,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Next test w/localisation.get best target or whatnot
-    //driveJoystick.button(4).onTrue(new Align(swerveDrivetrain, localization));
+    driveJoystick.button(4).onTrue(new Align(swerveDrivetrain, localization));
   }
 
   /**
