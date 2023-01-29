@@ -15,11 +15,13 @@ public class AlignAndExtend extends CommandBase {
   private SetElevatorHeight setHeight;
   private Elevator elevator;
   private boolean forget; //forget about align command
+  private double height;
 
   //Assumes is already at correct location
-  public AlignAndExtend(SwerveDrivetrain swerve, Elevator elevator, Localization localization, Pose2d poseToGoTo) {
+  public AlignAndExtend(SwerveDrivetrain swerve, Localization localization, Elevator elevator, Pose2d poseToGoTo, double height) {
     align = new Align(swerve, localization, poseToGoTo);
     this.elevator = elevator;
+    this.height = height;
   }
 
   // Called when the command is initially scheduled.
@@ -32,7 +34,7 @@ public class AlignAndExtend extends CommandBase {
   @Override
   public void execute() {
     if (!forget && align.isFinished()){
-      setHeight = new SetElevatorHeight(elevator, 0);
+      setHeight = new SetElevatorHeight(elevator, height);
       forget = true;
     }
   }

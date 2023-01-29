@@ -8,7 +8,6 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -18,9 +17,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,7 +34,7 @@ public class Localization extends SubsystemBase {
   private boolean aligning = true;
   private Pose2d lastPose;
 
-  public Localization(SwerveDrivetrain swerveDrivetrain, DriverStation.Alliance alliance) {
+  public Localization(SwerveDrivetrain swerveDrivetrain) {
     this.camera1 = new PhotonCamera(Constants.VisionConstants.kCamera1Name);
     this.camera2 = new PhotonCamera(Constants.VisionConstants.kCamera2Name);
     this.swerveDrivetrain = swerveDrivetrain;

@@ -5,12 +5,11 @@
 package frc.robot;
 
 import frc.robot.commands.Align;
+import frc.robot.commands.AlignAndExtend;
 import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
-
-import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -18,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -40,13 +38,11 @@ public class RobotContainer {
   private final CommandJoystick driveJoystick = new CommandJoystick(Constants.SwerveDrivetrain.kDriveJoystickPort);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
-  private DriverStation.Alliance alliance;
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    alliance = DriverStation.Alliance.Red; //DriverStation.Alliance.getAlliance();
+    elevator = new Elevator();
 
-    localization = new Localization(swerveDrivetrain, alliance);
+    localization = new Localization(swerveDrivetrain);
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
@@ -58,8 +54,6 @@ public class RobotContainer {
       
     // Configure the trigger bindings
     configureBindings();
-    elevator = new Elevator();
-    elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
   }
 
   /**
@@ -84,7 +78,7 @@ public class RobotContainer {
   
     //Align to nearest column on click
     Pose2d nearestCol = localization.getClosestScoringLoc();
-    driveJoystick.button(4).onTrue(new Align(swerveDrivetrain, localization, nearestCol));
+    driveJoystick.button(4).onTrue(new AlignAndExtend(swerveDrivetrain, localization, elevator, nearestCol, Constants.Elevator.CONE_MID_HEIGHT));
   }
 
   /**

@@ -83,7 +83,7 @@ public class Align extends CommandBase {
     SmartDashboard.putNumber("scoring y", poseToGoTo.getY());
     SmartDashboard.putNumber("robo x", robotPose.getX());
     SmartDashboard.putNumber("robo y", robotPose.getY());
-    SmartDashboard.putNumber("distance from final", localization.distFromTag(robotPose, poseToGoTo));
+    SmartDashboard.putNumber("distance from final", Localization.distFromTag(robotPose, poseToGoTo));
     SmartDashboard.putNumber("error x", robotPose.getX() - poseToGoTo.getX());
     SmartDashboard.putNumber("error y", robotPose.getY() - poseToGoTo.getY());
   }
