@@ -84,20 +84,11 @@ public class Localization extends SubsystemBase {
     log();
 
     Pose2d currPose = getCurrentPose();
-    if(currPose != null)
+    if(currPose != null){
       field.setRobotPose(currPose); 
-      
-    //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions()); add this when testing on bot
-    /**
-      periodic:
-        getEstimeadPoe()
+    }
 
-      getEstimatedPose()
-        weightTargets on cameras + infuse dwith kalaman
-     */
-    
     PhotonPipelineResult result1 = camera1.getLatestResult();
-    PhotonPipelineResult result2 = camera2.getLatestResult();
 
     Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
 
@@ -116,7 +107,7 @@ public class Localization extends SubsystemBase {
           //Robot position on field (x/y) according to vision
           Pose2d visionFieldRelative = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
           if(poseEstimator==null){
-            initializePoseEstimator(visionFieldRelative);
+            resetPoseEstimator(visionFieldRelative);
           }
           //Robot pose according to apriltags
           field.getObject("VisionRobot" + fiducialId).setPose(visionFieldRelative);
@@ -126,17 +117,37 @@ public class Localization extends SubsystemBase {
         }
       }
     }
-    else{
-      SmartDashboard.putBoolean("Found Tag(s)", false);
-    }
 
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     field.setRobotPose(getCurrentPose());
-    if (estimatedPose != null){
-      SmartDashboard.putString("Estimatd Pose", estimatedPose.toString());
-    }
-
     log();
+  }
+
+  public void updatePos(PhotonPipelineResult results){
+    Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
+
+    double imageCaptureTime = Timer.getFPGATimestamp() - (results.getLatencyMillis() / 1000d);
+
+      //Loop through seen tags
+      for (PhotonTrackedTarget target : results.getTargets()) {
+        int fiducialId = target.getFiducialId();
+
+        //Extra precaution (who knows)
+        if (fiducialId >= 1 && fiducialId <= targetPoses.size()) {
+          Transform3d relLoc = target.getBestCameraToTarget();
+          Pose3d tag = targetPoses.get(target.getFiducialId());
+
+          //Robot position on field (x/y) according to vision
+          Pose2d visionFieldRelative = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
+          if(poseEstimator == null){
+            resetPoseEstimator(visionFieldRelative);
+          }
+          field.getObject("VisionRobot" + fiducialId).setPose(visionFieldRelative);
+
+          //Add vision estimator to pose estimator
+          poseEstimator.addVisionMeasurement(visionFieldRelative, imageCaptureTime);
+        }
+      }
   }
 
   /**
