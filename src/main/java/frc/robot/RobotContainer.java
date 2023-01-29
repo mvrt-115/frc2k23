@@ -15,6 +15,9 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.SetElevatorHeight;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -29,7 +32,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final Localization localization; //Utils camera
-  private PhotonCamera camera; //Actual camera
+
+  private Elevator elevator;
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final CommandJoystick driveJoystick = new CommandJoystick(Constants.SwerveDrivetrain.kDriveJoystickPort);
@@ -53,6 +57,8 @@ public class RobotContainer {
       
     // Configure the trigger bindings
     configureBindings();
+    elevator = new Elevator();
+    elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
   }
 
   /**
