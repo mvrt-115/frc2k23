@@ -51,36 +51,39 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
     Pose2d camPose = weightTargets();
+
     if(camPose!=null){
       SmartDashboard.putString("weightedCamPose", camPose.toString());
-      if(aligning){ // If aligning, reset pose to whatever camera gives us
+
+      //If aligning, reset pose to whatever camera gives us
+      if(aligning){
         resetPoseEstimator(camPose);
-      }
-      else{
+
+      } else{
         double latency = 0;
         PhotonPipelineResult cam1Result = camera1.getLatestResult();
         PhotonPipelineResult cam2Result = camera2.getLatestResult();
 
         if(cam1Result.hasTargets()){
           latency = cam1Result.getLatencyMillis();
-        }
-        if(cam2Result.hasTargets()){
-          if(latency==0){
-            latency = cam2Result.getLatencyMillis();
-          }
-          else{
-            latency+=cam2Result.getLatencyMillis();
-            latency/=2;
-          }
+
+        } if(cam2Result.hasTargets()){
+            if(latency==0){
+              latency = cam2Result.getLatencyMillis();
+            }
+            else{
+              latency+=cam2Result.getLatencyMillis();
+              latency/=2;
+            }
         }
         poseEstimator.addVisionMeasurement(camPose, latency);
       }
-
-      log();
     }
-    if(getCurrentPose()!=null)
+
+    log();
+
+    if(getCurrentPose() != null)
       field.setRobotPose(getCurrentPose()); 
     //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions()); add this when testing on bot
     /**
@@ -142,6 +145,7 @@ public class Localization extends SubsystemBase {
   public void resetPoseEstimator(Pose2d pose){
     poseEstimator.resetPosition(swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions(), pose);
   }
+
   /**
    * @return current pose according to pose estimator
    */
@@ -161,22 +165,21 @@ public class Localization extends SubsystemBase {
     if(cam1Result.hasTargets()){
       SmartDashboard.putString("raw cam 1", cam1Result.getBestTarget().getBestCameraToTarget().toString());
     }
-      if(cam2Result.hasTargets()){
-      
+    if(cam2Result.hasTargets()){
       SmartDashboard.putString("raw cam 2", cam2Result.getBestTarget().getBestCameraToTarget().toString());
-      }
+    }
     if (cam1Result.hasTargets()){
-      cam1Pose = weightTargets((ArrayList<PhotonTrackedTarget>) cam1Result.targets, Constants.VisionConstants.cam1ToRobot);
+      cam1Pose = weightMultiTargets((ArrayList<PhotonTrackedTarget>) cam1Result.targets, Constants.VisionConstants.cam1ToRobot);
       SmartDashboard.putString("Cam1", cam1Pose.toString());
     }
     if(cam2Result.hasTargets()){
-      cam2Pose = weightTargets((ArrayList<PhotonTrackedTarget>) cam2Result.targets, Constants.VisionConstants.cam2ToRobot);
+      cam2Pose = weightMultiTargets((ArrayList<PhotonTrackedTarget>) cam2Result.targets, Constants.VisionConstants.cam2ToRobot);
       SmartDashboard.putString("Cam2", cam2Pose.toString());
     }
 
     if(cam1Pose == null && cam2Pose==null) return null;
     if(cam1Pose == null) return cam2Pose;
-    if(cam2Pose==null) return cam1Pose;
+    if(cam2Pose == null) return cam1Pose;
     
     double xAvg = (cam1Pose.getX() + cam2Pose.getX()) / 2;
     double yAvg = (cam1Pose.getY() + cam2Pose.getY()) / 2;
@@ -185,9 +188,15 @@ public class Localization extends SubsystemBase {
     return new Pose2d(xAvg, yAvg, new Rotation2d(tAvg));
   }
 
-
-  private Pose2d weightTargets(ArrayList<PhotonTrackedTarget> targets, Transform3d camPose) {
+  /**
+   * 
+   * @param targets list of apriltag targets
+   * @param camPose camera position
+   * @return new camera position after weighting all targets
+   */
+  private Pose2d weightMultiTargets(ArrayList<PhotonTrackedTarget> targets, Transform3d camPose) {
     double[] weights = new double[targets.size()];
+    
     //reciprical of all the distances
     double totalSum = 0;
     Transform3d[] transforms = new Transform3d[targets.size()];
@@ -244,7 +253,6 @@ public class Localization extends SubsystemBase {
   }
 
    /**
-   * 
    * @param relLoc the target relative to camera which is (0, 0)
    * @return distance from target
    */
@@ -275,9 +283,23 @@ public class Localization extends SubsystemBase {
    * Log stuff
    */
   public void log() {
-    if(poseEstimator.getEstimatedPosition()!=null){
-      SmartDashboard.putString("Logged Estimated Position", poseEstimator.getEstimatedPosition().toString());
+    var pos = poseEstimator.getEstimatedPosition();
+    if(pos != null){
+      SmartDashboard.putString("Logged Estimated Position", pos.toString());
     }
+
+    if (camera1.getLatestResult().hasTargets()){
+      SmartDashboard.putBoolean("Cam 1 can see", true);
+    } else{
+      SmartDashboard.putBoolean("Cam 1 can see", false);
+    }
+
+    if (camera2.getLatestResult().hasTargets()){
+      SmartDashboard.putBoolean("Cam 2 can see", true);
+    } else{
+      SmartDashboard.putBoolean("Cam 2 can see", false);
+    }
+
    // Logger.getInstance().recordOutput("Robo X", lastPose.getX());
     //Logger.getInstance().recordOutput("Robo Y", lastPose.getY());
   }
