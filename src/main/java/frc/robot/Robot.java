@@ -14,6 +14,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -28,7 +29,7 @@ public class Robot extends LoggedRobot {
 
   private RobotContainer m_robotContainer;
 
-  TalonFX frontLeft, frontRight, backLeft, backRight;
+  // TalonFX frontLeft, frontRight, backLeft, backRight;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -123,6 +124,9 @@ public class Robot extends LoggedRobot {
     // frontRight.set(ControlMode.PercentOutput, 0.3);
     // backLeft.set(ControlMode.PercentOutput, 0.3);
     // backRight.set(ControlMode.PercentOutput, 0.3);
+
+    // SmartDashboard.putNumber("normal", frontLeft.getSelectedSensorVelocity());
+    // SmartDashboard.putNumber("stupid", backLeft.getSelectedSensorVelocity());
   }
 
   @Override
