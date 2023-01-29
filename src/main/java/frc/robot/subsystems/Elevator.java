@@ -32,7 +32,7 @@ public class Elevator extends SubsystemBase {
   
   private TalonFX elev_motor;
   private PIDController pid;
-  ElevatorFeedforward eFeedforward;
+  private ElevatorFeedforward eFeedforward;
   private TrapezoidProfile.Constraints constraints;
   private TrapezoidProfile.State goal;
   private TrapezoidProfile.State setpoint;

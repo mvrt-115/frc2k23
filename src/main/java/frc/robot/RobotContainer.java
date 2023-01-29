@@ -12,6 +12,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
 
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -81,8 +82,9 @@ public class RobotContainer {
     autonSelector.setDefaultOption("Example", new AutonPathExample(swerveDrivetrain));
     SmartDashboard.putData("Auton Selector", autonSelector);
   
-    //Next test w/localisation.get best target or whatnot
-    driveJoystick.button(4).onTrue(new Align(swerveDrivetrain, localization));
+    //Align to nearest column on click
+    Pose2d nearestCol = localization.getClosestScoringLoc();
+    driveJoystick.button(4).onTrue(new Align(swerveDrivetrain, localization, nearestCol));
   }
 
   /**
