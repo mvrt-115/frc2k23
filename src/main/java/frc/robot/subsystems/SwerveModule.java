@@ -167,6 +167,10 @@ public class SwerveModule {
    * @param v_mps
    */
   public void setVelocity(double v_mps) {
+    SmartDashboard.putNumber("tpsIn" + absEncoder.getDeviceID(), MathUtils.rpmToTicks(
+      MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
+      Constants.SwerveModule.gear_ratio_drive));
+
     driveMotor.set(
         ControlMode.Velocity,
         MathUtils.rpmToTicks(
@@ -180,6 +184,7 @@ public class SwerveModule {
    * @return SwerveModuleState
    */
   public SwerveModuleState getState() {
+    SmartDashboard.putNumber("tps out" + absEncoder.getDeviceID(), driveMotor.getSelectedSensorVelocity());
     SmartDashboard.putNumber("TurnMotor " + absEncoder.getDeviceID(), MathUtils.ticksToDegrees(
         turnMotor.getSelectedSensorPosition(), Constants.Talon.talonFXTicks, Constants.SwerveModule.gear_ratio_turn));
     return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurnPosition()));

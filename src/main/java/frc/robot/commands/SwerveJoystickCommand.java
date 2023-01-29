@@ -92,10 +92,7 @@ public class SwerveJoystickCommand extends CommandBase {
       chassisSpeeds = new ChassisSpeeds(-vY, -vX, -vW);
     }
 
-    SmartDashboard.putNumber("Chassis Speed", Math.sqrt(
-      Math.pow(chassisSpeeds.vxMetersPerSecond, 2) + 
-      Math.pow(chassisSpeeds.vyMetersPerSecond, 2)
-      )
+    SmartDashboard.putString("Chassis Speed", chassisSpeeds.toString() 
     );
 
     // apply heading correction to the robot
@@ -103,7 +100,13 @@ public class SwerveJoystickCommand extends CommandBase {
     double desired_heading = Math.atan(chassisSpeeds.vyMetersPerSecond / chassisSpeeds.vxMetersPerSecond);
     double omega_offset = desired_heading - drivetrain.thetaController.calculate(true_heading, desired_heading);
     omega_offset *= Constants.SwerveDrivetrain.kTeleopHeadingCorrectionScale;
+
+    if(Double.isNaN(omega_offset))
+      omega_offset = 0;
     double v_omega = chassisSpeeds.omegaRadiansPerSecond + omega_offset;
+
+    // if(Double.isNaN(v_omega))
+    //   v_omega = 0;
 
     chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, v_omega);
     

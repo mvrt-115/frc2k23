@@ -90,10 +90,10 @@ public final class Constants {
     // Comp Bot Encoder Offsets
     public static final boolean isCompBot = false;
 
-    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(227);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(273);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(264);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(302);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(204.8);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(318);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(218.5);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(125.6);// + Math.PI/2.0;
 
     // Practice Bot Encoder Offsets
     public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(205.576);// + Math.PI/2.0;
@@ -130,7 +130,7 @@ public final class Constants {
     public static final double kMaxSpeedMPS = 5; // optimize max speed to prioritize translation
     public static final double kDriveMaxAcceleration = 2;
     public static final double kTurnMaxAcceleration = 1 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 2;
+    public static final double kDriveMaxSpeedMPS = 3;
     public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
