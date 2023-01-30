@@ -34,7 +34,7 @@ public class AlignAndExtend extends CommandBase {
   @Override
   public void execute() {
     if (!forget && align.isFinished()){
-      setHeight = new SetElevatorHeight(elevator, height);
+      //setHeight = new SetElevatorHeight(elevator, height);
       forget = true;
     }
   }
@@ -48,7 +48,7 @@ public class AlignAndExtend extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (forget && setHeight.isFinished()){
+    if (forget){// && setHeight.isFinished()){
       return true;
     }
     return true;

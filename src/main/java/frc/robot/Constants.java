@@ -90,9 +90,9 @@ public final class Constants {
     // Comp Bot Encoder Offsets
     public static final boolean isCompBot = false;
 
-    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(204.8);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.2);// + Math.PI/2.0;
     public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(318);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(218.5);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(37.88);// + Math.PI/2.0;
     public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(125.6);// + Math.PI/2.0;
 
     // Practice Bot Encoder Offsets
@@ -130,8 +130,8 @@ public final class Constants {
     public static final double kMaxSpeedMPS = 5; // optimize max speed to prioritize translation
     public static final double kDriveMaxAcceleration = 2;
     public static final double kTurnMaxAcceleration = 1 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 3;
-    public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
+    public static final double kDriveMaxSpeedMPS = 2;
+    public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
     public static final int kDriveYAxis = 1;
@@ -182,7 +182,7 @@ public final class Constants {
   }
 
   public static class VisionConstants{
-    public static final String kCamera1Name = "chad" + "cam"; //neg offset
+    public static final String kCamera1Name = "bettygotmoney" + "cam"; //neg offset
     public static final String kCamera2Name = "bohm" + "cam"; //pos offset
     
     public static final double minDistFromTag = 0.3; //Min dist necessary from tag to automate (0.3 meter aprox)

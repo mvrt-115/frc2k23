@@ -85,36 +85,6 @@ public class Localization extends SubsystemBase {
       field.setRobotPose(currPose); 
     }
 
-    PhotonPipelineResult result1 = camera1.getLatestResult();
-
-    Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
-
-    if (result1.hasTargets()) {
-      double imageCaptureTime = Timer.getFPGATimestamp() - (result1.getLatencyMillis() / 1000d);
-
-      //Loop through seen tags
-      for (PhotonTrackedTarget target : result1.getTargets()) {
-        int fiducialId = target.getFiducialId();
-
-        //Extra precaution (who knows)
-        if (fiducialId >= 1 && fiducialId <= targetPoses.size()) {
-          Transform3d relLoc = target.getBestCameraToTarget();
-          Pose3d tag = targetPoses.get(target.getFiducialId());
-
-          //Robot position on field (x/y) according to vision
-          Pose2d visionFieldRelative = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
-          if(poseEstimator==null){
-            resetPoseEstimator(visionFieldRelative);
-          }
-          //Robot pose according to apriltags
-          field.getObject("VisionRobot" + fiducialId).setPose(visionFieldRelative);
-
-          //Add vision estimator to pose estimator
-          poseEstimator.addVisionMeasurement(visionFieldRelative, imageCaptureTime);
-        }
-      }
-    }
-
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     field.setRobotPose(getCurrentPose());
     log();
@@ -222,7 +192,7 @@ public class Localization extends SubsystemBase {
     double weightedRot = 0;
     
     for(int i = 0; i < targets.size(); i++) {
-      Pose3d tag = Constants.VisionConstants.aprilTags.get(targets.get(i).getFiducialId());
+      Pose3d tag = Constants.VisionConstants.aprilTags.get(2);
       Pose3d robotPose = ComputerVisionUtil.objectToRobotPose(tag, transforms[i], camPose);
       weightedX += weights[i] * robotPose.getX();
       weightedY += weights[i] * robotPose.getY();
@@ -256,7 +226,7 @@ public class Localization extends SubsystemBase {
         minCol = pose;
       }
     }
-    return minCol;
+    return scoreCols.get(5);
   }
 
    /**

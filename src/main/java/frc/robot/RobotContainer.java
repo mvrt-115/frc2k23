@@ -78,7 +78,7 @@ public class RobotContainer {
   
     //Align to nearest column on click
     Pose2d nearestCol = localization.getClosestScoringLoc();
-    driveJoystick.button(4).onTrue(new AlignAndExtend(swerveDrivetrain, localization, elevator, nearestCol, Constants.Elevator.CONE_MID_HEIGHT));
+    driveJoystick.button(4).onTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
   }
 
   /**

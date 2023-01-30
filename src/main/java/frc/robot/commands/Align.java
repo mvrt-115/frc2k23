@@ -30,9 +30,9 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseToGoTo = poseToGoTo;
 
-    pidX = new PIDController(0, 0, 0); // pid x-coor
+    pidX = new PIDController(0.5, 0, 0); // pid x-coor
     pidY = new PIDController(0.5, 0, 0); // pid y-coor
-    pidTheta = new PIDController(0, 0, 0); // pid t-coor
+    pidTheta = new PIDController(0.05, 0, 0); // pid t-coor
   }
 
   // Called when the command is initially scheduled.
@@ -45,15 +45,16 @@ public class Align extends CommandBase {
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-
-    if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
-      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
-      double outY = -pidY.calculate(robotPose.getY(), poseToGoTo.getY()); // pos, setpoint
+    //SmartDashboard.putString("Target", localization.getClosestScoringLoc().toString());
+    //SmartDashboard.putString("currP")
+    //if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
+      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.3; // pos, setpoint
+      double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY()); // pos, setpoint
       double outTheta = pidTheta.calculate(robotPose.getRotation().getRadians(), poseToGoTo.getRotation().getRadians());
       ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, outTheta);
       SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
       swerve.setModuleStates(states);
-    }
+   // }
 
     log();
   }
