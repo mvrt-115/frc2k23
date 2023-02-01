@@ -51,8 +51,8 @@ public final class Constants {
 
   public static class SwerveDrivetrain {
     // Physical Constants
-    public static final double chassisWidth = Units.inchesToMeters(26);
-    public static final double chassisHeight = Units.inchesToMeters(28);
+    public static final double chassisWidth = Units.inchesToMeters(28);
+    public static final double chassisHeight = Units.inchesToMeters(26);// swap for comp
 
     // Important locations for swerve
     // consider swapping corners
@@ -96,10 +96,10 @@ public final class Constants {
     public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(125.6);// + Math.PI/2.0;
 
     // Practice Bot Encoder Offsets
-    public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(205.576);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(138.07);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(218.23);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(305.59);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(25.75);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(317.54);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(37.17);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(125.68);// + Math.PI/2.0;
 
     // Abs Encoder Offsets
     public static final double m_frontLeftEncoderOffset = isCompBot? m_frontLeftEncoderOffset_Comp:m_frontLeftEncoderOffset_P;// + Math.PI/2.0;
@@ -146,7 +146,7 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kTurnMaxSpeedRPS, kTurnMaxAcceleration);
 
-    public static final double kTeleopHeadingCorrectionScale = 0.1;
+    public static final double kTeleopHeadingCorrectionScale = 0;
   }
 
   public static class Talon {
@@ -175,8 +175,8 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kFF = 0;
 
-    public static final double kPTurn = 0.1;
-    public static final double kITurn = 0.0005;
+    public static final double kPTurn = 0.15;
+    public static final double kITurn = 0.005;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
   }

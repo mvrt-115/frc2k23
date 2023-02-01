@@ -17,6 +17,8 @@ import frc.robot.Constants;
 import frc.robot.utils.MathUtils;
 import frc.robot.utils.TalonFactory;
 
+import org.littletonrobotics.junction.Logger;
+
 public class SwerveModule {
   private final BaseTalon driveMotor;
   private final BaseTalon turnMotor;
@@ -46,7 +48,7 @@ public class SwerveModule {
     turnMotor.config_kD(Constants.Talon.kPIDIdx, Constants.SwerveModule.kDTurn);
     turnMotor.config_kF(Constants.Talon.kPIDIdx, Constants.SwerveModule.kFTurn);
 
-    turnMotor.setNeutralMode(NeutralMode.Coast);
+    turnMotor.setNeutralMode(NeutralMode.Brake);
 
     absEncoderReversed = encoderReversed;
     absEncoderOffsetRad = encoderOffset;
@@ -148,6 +150,10 @@ public class SwerveModule {
    * @param radians
    */
   public void setAngle(double radians) {
+    SmartDashboard.putNumber("Angle " + absEncoder.getDeviceID(), radians);
+    if(Math.abs(MathUtils.ticksToRadians(turnMotor.getSelectedSensorPosition(), 2048, Constants.SwerveModule.gear_ratio_turn)-radians) < 3*Math.PI/180){
+      turnMotor.setIntegralAccumulator(0);
+    }
     turnMotor.set(
         ControlMode.Position,
         MathUtils.radiansToTicks(
@@ -209,6 +215,8 @@ public class SwerveModule {
       disableModule();
       return;
     }
+    //setAngle(state.angle.getRadians());
+    //setVelocity(state.speedMetersPerSecond);
     state = optimize(state);
     SmartDashboard.putString("Swerve [" + absEncoder.getDeviceID() + "] desired state", state.toString());
     updatePosition();
@@ -243,7 +251,9 @@ public class SwerveModule {
         targetAngle = currentAngle + diff;
       }
       
-      SmartDashboard.putNumber("Target Angle " + absEncoder.getDeviceID(), targetAngle);
+      String log_key = "swerve.mod" + absEncoder.getDeviceID() + ".target";
+      Logger.getInstance().recordOutput(log_key, targetAngle);
+      SmartDashboard.putNumber(log_key, targetAngle);
       setAngle(targetAngle * Math.PI / 180.0);
       setVelocity(velocity);
       SwerveModuleState newState = new SwerveModuleState(velocity, new Rotation2d(targetAngle * Math.PI / 180.0));
@@ -265,12 +275,16 @@ public class SwerveModule {
    * @return String name
    */
   public String getName() {
-    // SmartDashboard.putNumber("Cancoder " + absEncoder.getDeviceID(), absEncoder.getAbsolutePosition());
+    if(Math.abs(getAbsoluteEncoderRad()*180/Math.PI - 0) < 3){
+      // resetEncoders();
+    }
+    SmartDashboard.putNumber("Cancoder " + absEncoder.getDeviceID(), absEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Actual " + absEncoder.getDeviceID(), getAbsoluteEncoderRad() * 180 / Math.PI);
     SmartDashboard.putNumber("Val in Rad " + absEncoder.getDeviceID(),
         MathUtils.radiansToTicks(getAbsoluteEncoderRad(), Constants.Talon.talonFXTicks,   
             Constants.SwerveModule.gear_ratio_turn) / (2048 / Constants.SwerveModule.gear_ratio_turn));
-    return "Swerve " + absEncoder.getDeviceID();
+    SmartDashboard.putNumber("Velocity" + absEncoder.getDeviceID(),  getDriveVelocity());
+            return "Swerve " + absEncoder.getDeviceID();
   }
 
   /**
