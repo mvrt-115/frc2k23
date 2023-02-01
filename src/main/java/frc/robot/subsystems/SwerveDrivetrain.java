@@ -156,7 +156,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @return heading angle in degrees
    */
   public double getHeading() {
-    return Math.IEEEremainder(gyro.getYaw() - gyroOffset, 360);
+    return Math.IEEEremainder(gyro.getYaw() - gyroOffset, 360.0);
     //.getAngle()
 
     /**
