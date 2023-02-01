@@ -74,7 +74,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    //all motors on break here so no crashing into trash cans :D
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -107,7 +109,15 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // frontLeft.set(ControlMode.PercentOutput, 0.3);
+    // frontRight.set(ControlMode.PercentOutput, 0.3);
+    // backLeft.set(ControlMode.PercentOutput, 0.3);
+    // backRight.set(ControlMode.PercentOutput, 0.3);
+
+    // SmartDashboard.putNumber("normal", frontLeft.getSelectedSensorVelocity());
+    // SmartDashboard.putNumber("stupid", backLeft.getSelectedSensorVelocity());
+  }
 
   @Override
   public void testInit() {

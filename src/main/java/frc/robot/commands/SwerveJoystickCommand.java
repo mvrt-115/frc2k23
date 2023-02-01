@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -92,18 +94,22 @@ public class SwerveJoystickCommand extends CommandBase {
       chassisSpeeds = new ChassisSpeeds(-vY, -vX, -vW);
     }
 
-    SmartDashboard.putNumber("Chassis Speed", Math.sqrt(
-      Math.pow(chassisSpeeds.vxMetersPerSecond, 2) + 
-      Math.pow(chassisSpeeds.vyMetersPerSecond, 2)
-      )
+    SmartDashboard.putString("Chassis Speed", chassisSpeeds.toString() 
     );
 
     // apply heading correction to the robot
     double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
-    double desired_heading = Math.atan(chassisSpeeds.vyMetersPerSecond / chassisSpeeds.vxMetersPerSecond);
+    double vx = chassisSpeeds.vxMetersPerSecond;
+    if(vx < 0.1 && vx > -0.1){vx = Math.signum(vx)*0.1;}
+    double desired_heading = Math.atan(chassisSpeeds.vyMetersPerSecond / (vx));
     double omega_offset = desired_heading - drivetrain.thetaController.calculate(true_heading, desired_heading);
     omega_offset *= Constants.SwerveDrivetrain.kTeleopHeadingCorrectionScale;
-    double v_omega = chassisSpeeds.omegaRadiansPerSecond + omega_offset;
+    SmartDashboard.putNumber("Omega Offset", omega_offset);
+
+    if(Double.isNaN(omega_offset))
+      omega_offset = 0;
+    double v_omega = chassisSpeeds.omegaRadiansPerSecond;// + omega_offset;
+    
 
     chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, v_omega);
     
@@ -111,6 +117,12 @@ public class SwerveJoystickCommand extends CommandBase {
     SwerveModuleState[] moduleStates = drivetrain.getKinematics().toSwerveModuleStates(
       chassisSpeeds,
       Constants.SwerveDrivetrain.rotatePoints[0]); //drivetrain.getRotationPointIdx()
+    Logger.getInstance().recordOutput("SwerveModuleStatesDesired", new double[]{
+      moduleStates[0].angle.getRadians(), moduleStates[0].speedMetersPerSecond,
+      moduleStates[1].angle.getRadians(), moduleStates[1].speedMetersPerSecond,
+      moduleStates[2].angle.getRadians(), moduleStates[2].speedMetersPerSecond,
+      moduleStates[3].angle.getRadians(), moduleStates[3].speedMetersPerSecond,
+      });
     drivetrain.setModuleStates(moduleStates);
     SmartDashboard.putNumber("vX", vX);
     SmartDashboard.putNumber("vY", vY);

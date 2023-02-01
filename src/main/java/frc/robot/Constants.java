@@ -10,13 +10,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.Elevator.ElevatorState;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -49,8 +51,8 @@ public final class Constants {
 
   public static class SwerveDrivetrain {
     // Physical Constants
-    public static final double chassisWidth = Units.inchesToMeters(26);
-    public static final double chassisHeight = Units.inchesToMeters(28);
+    public static final double chassisWidth = Units.inchesToMeters(28);
+    public static final double chassisHeight = Units.inchesToMeters(26);// swap for comp
 
     // Important locations for swerve
     // consider swapping corners
@@ -85,11 +87,25 @@ public final class Constants {
     public static final int m_backLeftEncoderID = 11;
     public static final int m_backRightEncoderID = 12;
 
+    // Comp Bot Encoder Offsets
+    public static final boolean isCompBot = false;
+
+    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.2);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(318);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(37.88);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(125.6);// + Math.PI/2.0;
+
+    // Practice Bot Encoder Offsets
+    public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(25.75);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(317.54);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(37.17);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(125.68);// + Math.PI/2.0;
+
     // Abs Encoder Offsets
-    public static final double m_frontLeftEncoderOffset = Units.degreesToRadians(327);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset = Units.degreesToRadians(163);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset = Units.degreesToRadians(2);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset = Units.degreesToRadians(211);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset = isCompBot? m_frontLeftEncoderOffset_Comp:m_frontLeftEncoderOffset_P;// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset = isCompBot? m_frontRightEncoderOffset_Comp:m_frontRightEncoderOffset_P;// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset = isCompBot? m_backLeftEncoderOffset_Comp:m_backLeftEncoderOffset_P;// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset = isCompBot? m_backRightEncoderOffset_Comp:m_backRightEncoderOffset_P;// + Math.PI/2.0;
 
     // Position PID
     public static final double m_x_control_P = 0.5;
@@ -111,11 +127,11 @@ public final class Constants {
     public static final double kThrottleDeadband = 0.2;
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
-    public static final double kMaxSpeedMPS = 5; // optimize max speed to prioritize translation
-    public static final double kDriveMaxAcceleration = 2;
-    public static final double kTurnMaxAcceleration = 1 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 5;
-    public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
+    public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
+    public static final double kDriveMaxAcceleration = 5;
+    public static final double kTurnMaxAcceleration = 1.5 * Math.PI;
+    public static final double kDriveMaxSpeedMPS = 3;
+    public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
     public static final int kDriveYAxis = 1;
@@ -130,7 +146,7 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kTurnMaxSpeedRPS, kTurnMaxAcceleration);
 
-    public static final double kTeleopHeadingCorrectionScale = 0.1;
+    public static final double kTeleopHeadingCorrectionScale = 0;
   }
 
   public static class Talon {
@@ -159,22 +175,23 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kFF = 0;
 
-    public static final double kPTurn = 0.1;
-    public static final double kITurn = 0.0005;
+    public static final double kPTurn = 0.2;
+    public static final double kITurn = 0.001;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
   }
+
   public static class VisionConstants{
-    public static final String kCameraName = "sheeshcam"; //SHEESHCAM!!!
-
-    // Physical location of the camera on the robot, relative to the center of bot
-    public static final Transform2d CAMERA_ON_ROBOT = 
-      new Transform2d(new Translation2d(Units.inchesToMeters(12.75), 0.0), new Rotation2d(0.0));
-
-    public static final double maxDistFromTag = 3; //Min dist necessary from tag to automate (3 meter aprox)
+    public static final String kCamera1Name = "bettygotmoney" + "cam"; //neg offset
+    public static final String kCamera2Name = "bohm" + "cam"; //pos offset
+    
+    public static final double minDistFromTag = 0.3; //Min dist necessary from tag to automate (0.3 meter aprox)
     public static final double xyTolerance = 0.05;
     public static final double thetaTolerance = 0.05;
 
+    //Camera position on robot
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, -(4.5*2.54)/100.0-0.05, 0), new Rotation3d());
+    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0, (4.5*2.54)/100.0+0.05, 0), new Rotation3d());
     /**
      * Key:
      * Orientation: facing red community from blue community 
@@ -337,5 +354,56 @@ public final class Constants {
             Units.inchesToMeters(42.19),
             Units.inchesToMeters(18.22),
             new Rotation3d()));
+  }
+
+  public static class Elevator {
+    public static final int MOTOR_ID = 0;
+    
+    public static final int kPIDIdx = 0;
+    public static final int P = 0;
+    public static final int I = 0;
+    public static final int D = 0;
+    public static final int F = 0;
+
+    // Wtvr it is
+    public static final int METERS_PER_TICK = 0;
+    public static final int INCHES_PER_TICK = 0;
+
+    // Min/Max heights for the elevator (in inches)
+    public static final double MAX_HEIGHT = 20;
+    public static final double MIN_HEIGHT = 0;
+
+    public static final double ZERO_HEIGHT = 0;
+    public static final double SHELF_HEIGHT = 0;
+
+    // MID, HIGH heights parwa cone (in inches)
+    public static final double CONE_MID_HEIGHT = 46;
+    public static final double CONE_HIGH_HEIGHT = 34;
+
+    // MID, HIGH heights para cube (in inches)
+    public static final double CUBE_MID_HEIGHT = 35.5;
+    public static final double CUBE_HIGH_HEIGHT = 23.5;
+
+    // feed forward constants
+    public static final double kS = 0.0;
+    public static final double kG = 0.0;
+    public static final double kV = 0.0;
+    public static final double kA = 0.0;
+
+    // Game Object Heights
+    public static final double CONE_HEIGHT = 6;
+    public static final double CUBE_HIEGHT = 8;
+
+    public static final int SENSOR_PORT = 0;
+    public static final double KDt = 0.01;
+
+    // constraints
+    public static final double MAX_VELOCITY = 0;
+    public static final double MAX_ACCELERATION = 0;
+
+    // initial elevator stages
+    public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
+
+	public static final double ERROR = 0; 
   }
 }

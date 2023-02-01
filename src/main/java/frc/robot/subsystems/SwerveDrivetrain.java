@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import java.sql.Time;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -18,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,14 +50,16 @@ public class SwerveDrivetrain extends SubsystemBase {
   public PIDController yController;
   public ProfiledPIDController thetaController;
   private TrajectoryConfig trajectoryConfig;
-
   // sensors
   private AHRS gyro;
   // private PigeonIMU gyro;
   private double gyroOffset = 0; // degrees
   
+  private DriveSimulationData dsdODE; 
+  
   /** Creates a new SwerveDrive. */
   public SwerveDrivetrain() {
+
     gyro = new AHRS(SPI.Port.kMXP);
 
     // reset in new thread since gyro needs some time to boot up and we don't 
@@ -137,7 +144,8 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS, 
       Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     trajectoryConfig.setKinematics(swerveKinematics);
-    state = DrivetrainState.JOYSTICK_DRIVE;   
+    state = DrivetrainState.JOYSTICK_DRIVE; 
+    dsdODE = new DriveSimulationData(new SwerveDriveOdometry(swerveKinematics, new Rotation2d(), modulePositions), field);
   }
 
   public SwerveModulePosition[] getModulePositions(){
@@ -191,6 +199,12 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   @Override
   public void periodic() {
+    Logger.getInstance().recordOutput("SwerveModuleStatesTrue", new double[]{
+      motors[0].getAbsoluteEncoderRad(), motors[0].getDriveVelocity(),
+      motors[1].getAbsoluteEncoderRad(), motors[1].getDriveVelocity(),
+      motors[2].getAbsoluteEncoderRad(), motors[2].getDriveVelocity(),
+      motors[3].getAbsoluteEncoderRad(), motors[3].getDriveVelocity(),
+    });
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Robot Heading", getHeading());
     SmartDashboard.putData("Field", field);
@@ -202,11 +216,17 @@ public class SwerveDrivetrain extends SubsystemBase {
     SmartDashboard.putNumber("yvel", getLinearVelocity().getY());
 
     odometry.update(getRotation2d(), modulePositions);
-    field.setRobotPose(
-      odometry.getPoseMeters().getX(),
-      odometry.getPoseMeters().getY(),
-      getRotation2d()
-    );
+    if(Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM){
+      field.setRobotPose(
+        odometry.getPoseMeters().getX(),
+        odometry.getPoseMeters().getY(),
+        getRotation2d()
+      );
+    }
+  }
+
+  public void simulationPeriodic() {
+    dsdODE.quadrature(swerveKinematics.toChassisSpeeds(getOutputModuleStates()).omegaRadiansPerSecond, modulePositions);
   }
 
   /**

@@ -18,55 +18,54 @@ public class Align extends CommandBase {
   private SwerveDrivetrain swerve;
   private Localization localization;
 
-  private Pose2d scorePose;
+  private Pose2d poseToGoTo;
 
   private PIDController pidX;
   private PIDController pidY;
   private PIDController pidTheta;
 
   /** Creates a new Align. */
-  public Align(SwerveDrivetrain swerve, Localization localization) {
-    addRequirements(swerve);
-
+  public Align(SwerveDrivetrain swerve, Localization localization, Pose2d poseToGoTo) {
     this.swerve = swerve;
     this.localization = localization;
-    this.scorePose = localization.getClosestScoringLoc();
+    this.poseToGoTo = poseToGoTo;
 
-    pidX = new PIDController(0, 0, 0); // pid x-coor
-    pidY = new PIDController(0.5, 0, 0); // pid y-coor
-    pidTheta = new PIDController(0, 0, 0); // pid t-coor
+    pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
+    
+    pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
+    pidTheta = new PIDController(0.2, 0, 0); // pid t-coor
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    localization.setAligning(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-    // SmartDashboard
-    SmartDashboard.putNumber("scoring x", scorePose.getX());
-    SmartDashboard.putNumber("scoring y", scorePose.getY());
-    if(localization.distFromTag(robotPose, scorePose) < Constants.VisionConstants.maxDistFromTag){
-      double outX = pidX.calculate(robotPose.getX(), scorePose.getX()); // pos, setpoint
-      double outY = -pidY.calculate(robotPose.getY(), scorePose.getY()); // pos, setpoint
-      double outTheta = pidTheta.calculate(robotPose.getRotation().getRadians(), scorePose.getRotation().getRadians());
+    //SmartDashboard.putString("Target", localization.getClosestScoringLoc().toString());
+    //SmartDashboard.putString("currP")
+    //if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
+      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
+      double outY = -pidY.calculate(robotPose.getY(), poseToGoTo.getY());
+      // pos, setpoint
+      double outTheta = -pidTheta.calculate(robotPose.getRotation().getRadians(), poseToGoTo.getRotation().getRadians());
       ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, outTheta);
       SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
       swerve.setModuleStates(states);
-      //Log random stuff
-      SmartDashboard.putNumber("distance from final", localization.distFromTag(robotPose, scorePose));
-      SmartDashboard.putNumber("error x", robotPose.getX() - scorePose.getX());
-      SmartDashboard.putNumber("error y", robotPose.getY() - scorePose.getY());
-    }
+   // }
+
+    log();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    localization.setAligning(true);
+  }
 
   // Returns true when the command should end.
   @Override
@@ -74,8 +73,23 @@ public class Align extends CommandBase {
     Pose2d robotPose = localization.getCurrentPose();
 
     //If close enough to target
-    return Math.abs(robotPose.getX() - scorePose.getX()) < Constants.VisionConstants.xyTolerance && 
-      Math.abs(robotPose.getY() - scorePose.getY()) < Constants.VisionConstants.xyTolerance && 
-      Math.abs(robotPose.getRotation().getDegrees() - scorePose.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;
+    return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.1;
+    /* 
+    return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance && 
+      Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance && 
+      Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;*/
+  }
+
+  public void log(){
+    Pose2d robotPose = localization.getCurrentPose();
+
+    // SmartDashboard
+    SmartDashboard.putNumber("scoring x", poseToGoTo.getX());
+    SmartDashboard.putNumber("scoring y", poseToGoTo.getY());
+    SmartDashboard.putNumber("robo x", robotPose.getX());
+    SmartDashboard.putNumber("robo y", robotPose.getY());
+    SmartDashboard.putNumber("distance from final", Localization.distFromTag(robotPose, poseToGoTo));
+    SmartDashboard.putNumber("error x", robotPose.getX() - poseToGoTo.getX());
+    SmartDashboard.putNumber("error y", robotPose.getY() - poseToGoTo.getY());
   }
 }
