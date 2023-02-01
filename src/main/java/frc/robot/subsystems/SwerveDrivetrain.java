@@ -8,6 +8,7 @@ import java.sql.Time;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -407,6 +408,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   public void resetModules() {
     for (SwerveModule m:motors) {
       m.resetEncoders();
+      m.setMode(NeutralMode.Coast);
     }
   }
 

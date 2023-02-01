@@ -309,7 +309,16 @@ public class SwerveModule {
   public void disableModule() {
     driveMotor.set(ControlMode.PercentOutput, 0);
     turnMotor.set(ControlMode.PercentOutput, 0);
+    setMode(NeutralMode.Brake);
     // desiredState = new SwerveModuleState(0, new Rotation2d(0.0));
+  }
+
+  /**
+   * Set mode
+   */
+  public void setMode(NeutralMode mode){
+    driveMotor.setNeutralMode(mode);
+    turnMotor.setNeutralMode(mode);
   }
 
   /**
