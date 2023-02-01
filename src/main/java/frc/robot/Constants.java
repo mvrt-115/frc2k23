@@ -127,10 +127,10 @@ public final class Constants {
     public static final double kThrottleDeadband = 0.2;
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
-    public static final double kMaxSpeedMPS = 5; // optimize max speed to prioritize translation
-    public static final double kDriveMaxAcceleration = 2;
-    public static final double kTurnMaxAcceleration = 1 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 2;
+    public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
+    public static final double kDriveMaxAcceleration = 5;
+    public static final double kTurnMaxAcceleration = 1.5 * Math.PI;
+    public static final double kDriveMaxSpeedMPS = 3;
     public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
@@ -175,8 +175,8 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kFF = 0;
 
-    public static final double kPTurn = 0.15;
-    public static final double kITurn = 0.005;
+    public static final double kPTurn = 0.2;
+    public static final double kITurn = 0.001;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
   }
