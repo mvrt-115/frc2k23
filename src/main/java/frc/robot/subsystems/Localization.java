@@ -49,7 +49,6 @@ public class Localization extends SubsystemBase {
   @Override
   public void periodic() {
     Pose2d camPose = weightTargets();
-
     if(camPose!=null){
       SmartDashboard.putString("weightedCamPose", camPose.toString());
 
