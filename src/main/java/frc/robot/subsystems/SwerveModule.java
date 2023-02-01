@@ -223,6 +223,21 @@ public class SwerveModule {
   }
 
   /**
+   * This function is used to log the swerve module state
+   * @param state
+   */
+  public void logModuleData(SwerveModuleState state){
+    String log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetAngle";
+    Logger.getInstance().recordOutput(log_key, state.angle.getDegrees());
+    log_key = "swerve.mod" + absEncoder.getDeviceID() + ".currentAngle";
+    Logger.getInstance().recordOutput(log_key, getRawEncoderRad() * 180/Math.PI);
+    log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetVelocity";
+    Logger.getInstance().recordOutput(log_key, state.speedMetersPerSecond);
+    log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetCurrent";
+    Logger.getInstance().recordOutput(log_key, getDriveVelocity());
+  }
+
+  /**
    * Find the optimal angle for the module to go to (prevents it from ever rotating more than 90 degrees at a time)
    * @param state
    * @return optimal state
@@ -233,13 +248,13 @@ public class SwerveModule {
       double currentAngle = getRawEncoderRad() * 180.0 / Math.PI;
       double currentAngleNormalized = currentAngle % 360.0;
       double diff = targetAngle - currentAngleNormalized;
-      double velocity = state.speedMetersPerSecond;
+      double targetVelocity = state.speedMetersPerSecond;
 
       if (90.0 < Math.abs(diff) && Math.abs(diff) < 270.0) {
         double beta = 180.0 - Math.abs(diff);
         beta *= Math.signum(diff);
         targetAngle = currentAngle - beta;
-        velocity *= -1;
+        targetVelocity *= -1;
       }
       else if (Math.abs(diff) >= 270.0) {
         if (diff < 0)
@@ -251,12 +266,12 @@ public class SwerveModule {
         targetAngle = currentAngle + diff;
       }
       
-      String log_key = "swerve.mod" + absEncoder.getDeviceID() + ".target";
-      Logger.getInstance().recordOutput(log_key, targetAngle);
-      SmartDashboard.putNumber(log_key, targetAngle);
+      // Log Module Data
+      logModuleData(state);
+
       setAngle(targetAngle * Math.PI / 180.0);
-      setVelocity(velocity);
-      SwerveModuleState newState = new SwerveModuleState(velocity, new Rotation2d(targetAngle * Math.PI / 180.0));
+      setVelocity(targetVelocity);
+      SwerveModuleState newState = new SwerveModuleState(targetVelocity, new Rotation2d(targetAngle * Math.PI / 180.0));
       return newState;
   }
 
