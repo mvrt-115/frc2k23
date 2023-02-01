@@ -408,7 +408,16 @@ public class SwerveDrivetrain extends SubsystemBase {
   public void resetModules() {
     for (SwerveModule m:motors) {
       m.resetEncoders();
-      m.setMode(NeutralMode.Coast);
+    }
+  }
+
+  /**
+   * set the modes
+   * @param mode the mode
+   */
+  public void setModes(NeutralMode mode){
+    for (SwerveModule m:motors) {
+      m.setMode(mode);
     }
   }
 
