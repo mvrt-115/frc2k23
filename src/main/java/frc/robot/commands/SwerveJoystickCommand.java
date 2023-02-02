@@ -120,12 +120,6 @@ public class SwerveJoystickCommand extends CommandBase {
     SwerveModuleState[] moduleStates = drivetrain.getKinematics().toSwerveModuleStates(
       chassisSpeeds,
       Constants.SwerveDrivetrain.rotatePoints[0]); //drivetrain.getRotationPointIdx()
-    Logger.getInstance().recordOutput("SwerveModuleStatesDesired", new double[]{
-      moduleStates[2].angle.getRadians(), moduleStates[2].speedMetersPerSecond,
-      moduleStates[0].angle.getRadians(), moduleStates[0].speedMetersPerSecond,
-      moduleStates[1].angle.getRadians(), moduleStates[1].speedMetersPerSecond,
-      moduleStates[3].angle.getRadians(), moduleStates[3].speedMetersPerSecond,
-      });
     drivetrain.setModuleStates(moduleStates);
     SmartDashboard.putNumber("vX", vX);
     SmartDashboard.putNumber("vY", vY);
@@ -134,6 +128,7 @@ public class SwerveJoystickCommand extends CommandBase {
     if (MathUtils.withinEpsilon(vX, 0, 0.01) && MathUtils.withinEpsilon(vY, 0, 0.01) && MathUtils.withinEpsilon(vW, 0, 0.01)) {
       drivetrain.stopModules();
       drivetrain.setRotationPointIdx(0);
+      drivetrain.resetModules();
     }
   }
 

@@ -218,10 +218,10 @@ public class SwerveModule {
         MathUtils.rpmToTicks(
             MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
             Constants.SwerveModule.gear_ratio_drive));
-    driveMotorSwim.setIntegratedSensorVelocity(
-        (int) MathUtils.rpmToTicks(
-            MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
-            Constants.SwerveModule.gear_ratio_drive));
+    // driveMotorSwim.setIntegratedSensorVelocity(
+    //     (int) MathUtils.rpmToTicks(
+    //         MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
+    //         Constants.SwerveModule.gear_ratio_drive));
   }
 
   /**
@@ -373,6 +373,17 @@ public class SwerveModule {
     str.append(getState().toString());
     str.append("; Cancoder Position: " + absEncoder.getAbsolutePosition() + "");
     return str.toString();
+  }
+
+  public SwerveModuleState getLoggingState() {
+    double velocity = this.getDriveVelocity();
+    double angle = this.getAbsoluteEncoderRad();
+    if (velocity < 0) {
+      angle += Math.PI;
+      angle %= 2.0 * Math.PI;
+      velocity *= -1;
+    }
+    return new SwerveModuleState(velocity, new Rotation2d(angle));
   }
 
   /**

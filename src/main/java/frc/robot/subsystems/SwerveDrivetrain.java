@@ -40,7 +40,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   // kinematics stuff
   private SwerveDriveKinematics swerveKinematics;
   private SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
-  private SwerveModule[] motors;
+  private SwerveModule[] modules;
   private int rotationPoint = 0;
   public boolean fieldOriented = false;
 
@@ -90,9 +90,9 @@ public class SwerveDrivetrain extends SubsystemBase {
     modulePositions[2] = new SwerveModulePosition();
     modulePositions[3] = new SwerveModulePosition();
 
-    motors = new SwerveModule[4];
+    modules = new SwerveModule[4];
 
-    motors[0] = new SwerveModule(
+    modules[0] = new SwerveModule(
       "FrontLeft",
       Constants.SwerveDrivetrain.m_frontLeftDriveID,
       Constants.SwerveDrivetrain.m_frontLeftTurnID,
@@ -103,7 +103,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_frontLeftEncoderOffset,
       modulePositions[0]);
 
-    motors[2] = new SwerveModule(
+    modules[2] = new SwerveModule(
       "FrontRight",
       Constants.SwerveDrivetrain.m_frontRightDriveID,
       Constants.SwerveDrivetrain.m_frontRightTurnID,
@@ -112,9 +112,9 @@ public class SwerveDrivetrain extends SubsystemBase {
       false,
       false,
       Constants.SwerveDrivetrain.m_frontRightEncoderOffset,
-      modulePositions[1]);
+      modulePositions[2]);
 
-    motors[1] = new SwerveModule(
+    modules[1] = new SwerveModule(
       "BackLeft",
       Constants.SwerveDrivetrain.m_backLeftDriveID,
       Constants.SwerveDrivetrain.m_backLeftTurnID,
@@ -123,9 +123,9 @@ public class SwerveDrivetrain extends SubsystemBase {
       false,
       false,
       Constants.SwerveDrivetrain.m_backLeftEncoderOffset,
-      modulePositions[2]);
+      modulePositions[1]);
 
-    motors[3] = new SwerveModule(
+    modules[3] = new SwerveModule(
       "BackRight",
       Constants.SwerveDrivetrain.m_backRightDriveID,
       Constants.SwerveDrivetrain.m_backRightTurnID,
@@ -210,12 +210,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    Logger.getInstance().recordOutput("SwerveModuleStatesTrue", new double[]{
-      motors[2].getAbsoluteEncoderRad(), motors[2].getDriveVelocity(),
-      motors[0].getAbsoluteEncoderRad(), motors[0].getDriveVelocity(),
-      motors[1].getAbsoluteEncoderRad(), motors[1].getDriveVelocity(),
-      motors[3].getAbsoluteEncoderRad(), motors[3].getDriveVelocity(),
-    });
+    logger.recordOutput("SwerveModuleStatesTrue", getLoggedModuleStates());
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("Robot Heading", getHeading()); //i don't think we need to know this
     SmartDashboard.putData("Field", field);
@@ -249,7 +244,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * stop the swerve modules
    */
   public void stopModules() {
-    for (SwerveModule m : motors) {
+    for (SwerveModule m : modules) {
       m.disableModule();
     }
   }
@@ -259,10 +254,12 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param states
    */
   public void setModuleStates(SwerveModuleState[] states) {
+    Logger.getInstance().recordOutput("SwerveModuleStatesDesired", states);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.SwerveDrivetrain.kMaxSpeedMPS);
-    for (int i = 0; i < motors.length; i++)
+    Logger.getInstance().recordOutput("SwerveModuleStatesDesiredNorm", states);
+    for (int i = 0; i < modules.length; i++)
     {
-      motors[i].setDesiredState(states[i]);
+      modules[i].setDesiredState(states[i]);
     }
   }
 
@@ -276,10 +273,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   public void setSpeeds(double v_forwardMps, double v_sideMps, double v_rot, Translation2d rotatePoint) {
     ChassisSpeeds speeds = new ChassisSpeeds(v_forwardMps, v_sideMps, v_rot);
     SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds, rotatePoint);
-    for (int i = 0; i < 4; i++)
-    {
-      motors[i].setDesiredState(moduleStates[i]);
-    }
+    setModuleStates(moduleStates);
   }
 
   /**
@@ -296,10 +290,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public Translation2d getLinearVelocity() {
     ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(
-        motors[0].getState(),
-        motors[1].getState(),
-        motors[2].getState(),
-        motors[3].getState()
+        getOutputModuleStates()
     );
     return new Translation2d(
         speeds.vxMetersPerSecond,
@@ -313,10 +304,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public double getRotationalVelocity() {
     ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(
-        motors[0].getState(),
-        motors[1].getState(),
-        motors[2].getState(),
-        motors[3].getState()
+        getOutputModuleStates()
     );
     return speeds.omegaRadiansPerSecond;
   }
@@ -327,10 +315,10 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public double getDesiredRotationalVelocity() {
     ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(
-        motors[0].getDesiredState(),
-        motors[1].getDesiredState(),
-        motors[2].getDesiredState(),
-        motors[3].getDesiredState()
+        modules[0].getDesiredState(),
+        modules[1].getDesiredState(),
+        modules[2].getDesiredState(),
+        modules[3].getDesiredState()
     );
     return speeds.omegaRadiansPerSecond;
   }
@@ -343,7 +331,33 @@ public class SwerveDrivetrain extends SubsystemBase {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (int i = 0; i < 4; i++)
     {
-      states[i] = motors[i].getState();
+      states[i] = modules[i].getState();
+    }
+    return states;
+  }
+
+  /**
+   * get the desired states of all swerve modules
+   * @return SwerveModuleState[] states
+   */
+  public SwerveModuleState[] getDesiredModuleStates() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (int i = 0; i < 4; i++)
+    {
+      states[i] = modules[i].getDesiredState();
+    }
+    return states;
+  }
+
+  /**
+   * get the logged states of all swerve modules
+   * @return SwerveModuleState[] states
+   */
+  public SwerveModuleState[] getLoggedModuleStates() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (int i = 0; i < 4; i++)
+    {
+      states[i] = modules[i].getLoggingState();
     }
     return states;
   }
@@ -421,7 +435,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * Reset the modules encoders
    */
   public void resetModules() {
-    for (SwerveModule m:motors) {
+    for (SwerveModule m:modules) {
       m.resetEncoders();
     }
   }
@@ -431,7 +445,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param mode the mode
    */
   public void setModes(NeutralMode mode){
-    for (SwerveModule m:motors) {
+    for (SwerveModule m:modules) {
       m.setMode(mode);
     }
   }

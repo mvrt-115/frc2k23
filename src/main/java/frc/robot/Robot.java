@@ -69,7 +69,10 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
+
+    // preLog
     CommandScheduler.getInstance().run();
+    // postLog
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
