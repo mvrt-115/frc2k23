@@ -11,6 +11,8 @@ import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -30,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  //private final Localization localization; //Utils camera
+  private final Localization localization; //Utils camera
 
   private Elevator elevator;
 
@@ -40,9 +42,9 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    elevator = new Elevator();
+    //elevator = new Elevator();
 
-    // localization = new Localization(swerveDrivetrain);
+   localization = new Localization(swerveDrivetrain);
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
@@ -77,8 +79,14 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    //Pose2d nearestCol = localization.getClosestScoringLoc();
-    //driveJoystick.button(4).onTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    Pose2d nearestCol = localization.getClosestScoringLoc();
+    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    
+    //Brake baby brake
+    driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
+
+    //No braking
+    driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
   }
 
   /**
