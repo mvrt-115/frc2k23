@@ -190,7 +190,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   public double getRelativeHeading() {
     SwerveModuleState[] states = getOutputModuleStates();
 
-    logger.recordOutput("Current SwerveDriveState [LF, LB, RF, RB]", states);
+    // logger.recordOutput("Current SwerveDriveState [LF, LB, RF, RB]", states);
 
     ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(states);
     double angle = Math.atan(speeds.vyMetersPerSecond/speeds.vxMetersPerSecond);
@@ -211,9 +211,9 @@ public class SwerveDrivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     Logger.getInstance().recordOutput("SwerveModuleStatesTrue", new double[]{
+      motors[2].getAbsoluteEncoderRad(), motors[2].getDriveVelocity(),
       motors[0].getAbsoluteEncoderRad(), motors[0].getDriveVelocity(),
       motors[1].getAbsoluteEncoderRad(), motors[1].getDriveVelocity(),
-      motors[2].getAbsoluteEncoderRad(), motors[2].getDriveVelocity(),
       motors[3].getAbsoluteEncoderRad(), motors[3].getDriveVelocity(),
     });
     // This method will be called once per scheduler run
