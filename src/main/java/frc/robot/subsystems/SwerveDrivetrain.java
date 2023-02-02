@@ -55,7 +55,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   // private PigeonIMU gyro;
   private double gyroOffset = 0; // degrees
   
-  private DriveSimulationData dsdODE; 
+  private DriveSimulationData driveSimData; 
   
   /** Creates a new SwerveDrive. */
   public SwerveDrivetrain() {
@@ -76,8 +76,8 @@ public class SwerveDrivetrain extends SubsystemBase {
     }).start(); 
 
     swerveKinematics = new SwerveDriveKinematics(
-      Constants.SwerveDrivetrain.m_frontLeftLocation, 
       Constants.SwerveDrivetrain.m_frontRightLocation, 
+      Constants.SwerveDrivetrain.m_frontLeftLocation, 
       Constants.SwerveDrivetrain.m_backLeftLocation, 
       Constants.SwerveDrivetrain.m_backRightLocation);
     
@@ -89,16 +89,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     motors = new SwerveModule[4];
 
     motors[0] = new SwerveModule(
-      Constants.SwerveDrivetrain.m_frontLeftDriveID,
-      Constants.SwerveDrivetrain.m_frontLeftTurnID,
-      Constants.SwerveDrivetrain.m_frontLeftEncoderID,
-      false,
-      false,
-      false,
-      Constants.SwerveDrivetrain.m_frontLeftEncoderOffset,
-      modulePositions[0]);
-
-    motors[2] = new SwerveModule(
       Constants.SwerveDrivetrain.m_frontRightDriveID,
       Constants.SwerveDrivetrain.m_frontRightTurnID,
       Constants.SwerveDrivetrain.m_frontRightEncoderID,
@@ -106,9 +96,19 @@ public class SwerveDrivetrain extends SubsystemBase {
       false,
       false,
       Constants.SwerveDrivetrain.m_frontRightEncoderOffset,
-      modulePositions[1]);
+      modulePositions[0]);
 
     motors[1] = new SwerveModule(
+      Constants.SwerveDrivetrain.m_frontLeftDriveID,
+      Constants.SwerveDrivetrain.m_frontLeftTurnID,
+      Constants.SwerveDrivetrain.m_frontLeftEncoderID,
+      false,
+      false,
+      false,
+      Constants.SwerveDrivetrain.m_frontLeftEncoderOffset,
+      modulePositions[1]);
+
+    motors[2] = new SwerveModule(
       Constants.SwerveDrivetrain.m_backLeftDriveID,
       Constants.SwerveDrivetrain.m_backLeftTurnID,
       Constants.SwerveDrivetrain.m_backLeftEncoderID,
@@ -145,7 +145,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     trajectoryConfig.setKinematics(swerveKinematics);
     state = DrivetrainState.JOYSTICK_DRIVE; 
-    dsdODE = new DriveSimulationData(new SwerveDriveOdometry(swerveKinematics, new Rotation2d(), modulePositions), field);
+    driveSimData = new DriveSimulationData(new SwerveDriveOdometry(swerveKinematics, new Rotation2d(), modulePositions), field);
   }
 
   public SwerveModulePosition[] getModulePositions(){
@@ -226,7 +226,8 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   public void simulationPeriodic() {
-    dsdODE.quadrature(swerveKinematics.toChassisSpeeds(getOutputModuleStates()).omegaRadiansPerSecond, modulePositions);
+    SmartDashboard.putNumber("Chassis Turn Speed", swerveKinematics.toChassisSpeeds(getOutputModuleStates()).omegaRadiansPerSecond);
+    driveSimData.quadrature(swerveKinematics.toChassisSpeeds(getOutputModuleStates()).omegaRadiansPerSecond, modulePositions);
   }
 
   /**

@@ -11,9 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.utils.MathUtils;
@@ -25,8 +27,8 @@ public class SwerveModule {
   private final BaseTalon driveMotor;
   private final BaseTalon turnMotor;
 
-  private TalonFXSimCollection driveMotorSwim = null;
-  private TalonFXSimCollection turnMotorSwam = null;
+  private TalonFXSimCollection driveMotorSim = null;
+  private TalonFXSimCollection turnMotorSim = null;
 
   // private final AnalogInput absEncoder;
   private final CANCoder absEncoder;
@@ -44,8 +46,8 @@ public class SwerveModule {
     turnMotor = TalonFactory.createTalonFX(turnID, turnReversed);
 
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
-      driveMotorSwim = ((TalonFX) driveMotor).getSimCollection();
-      turnMotorSwam = ((TalonFX) turnMotor).getSimCollection();
+      driveMotorSim = ((TalonFX) driveMotor).getSimCollection();
+      turnMotorSim = ((TalonFX) turnMotor).getSimCollection();
     }
 
     driveMotor.config_kP(Constants.Talon.kPIDIdx, Constants.SwerveModule.kP);
@@ -178,11 +180,13 @@ public class SwerveModule {
             Constants.Talon.talonFXTicks,
             Constants.SwerveModule.gear_ratio_turn) - talonEncoderOffset);
 
-    turnMotorSwam.setIntegratedSensorRawPosition(
+    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
+      turnMotorSim.setIntegratedSensorRawPosition(
         (int) (MathUtils.radiansToTicks(
             radians,
             Constants.Talon.talonFXTicks,
-            Constants.SwerveModule.gear_ratio_turn) - talonEncoderOffset));
+            Constants.SwerveModule.gear_ratio_turn) - talonEncoderOffset));    
+    }
 
     SmartDashboard.putNumber("Turn Value " + getName(), MathUtils.radiansToTicks(
         radians,
@@ -205,10 +209,23 @@ public class SwerveModule {
         MathUtils.rpmToTicks(
             MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
             Constants.SwerveModule.gear_ratio_drive));
-    driveMotorSwim.setIntegratedSensorVelocity(
+    
+    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
+      driveMotorSim.setIntegratedSensorVelocity(
         (int) MathUtils.rpmToTicks(
             MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
             Constants.SwerveModule.gear_ratio_drive));
+      
+      double dt = Timer.getFPGATimestamp() - DriveSimulationData.prevTime;
+      dt = Math.min(0.3, dt);
+      double position = driveMotor.getSelectedSensorPosition() + MathUtils.rpmToTicks(
+        MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
+        Constants.SwerveModule.gear_ratio_drive) * dt;
+      SmartDashboard.putNumber("raw sim sensor pos " + absEncoder.getDeviceID(), position);
+      driveMotorSim.setIntegratedSensorRawPosition(
+        (int)position
+      );
+    }
   }
 
   /**
@@ -357,6 +374,7 @@ public class SwerveModule {
   public void updatePosition() {
     Rotation2d angle = new Rotation2d(getTurnPosition());
     double distance = getDrivePosition();
+    SmartDashboard.putString("Module Positions Values " + absEncoder.getDeviceID(), angle + " rad, " + distance + " meters");
     modulePosition.angle = angle;
     modulePosition.distanceMeters = distance;
   }

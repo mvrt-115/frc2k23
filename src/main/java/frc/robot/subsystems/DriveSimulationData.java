@@ -23,7 +23,8 @@ public class DriveSimulationData {
     private SwerveDriveOdometry m_odometry;
     private Field2d m_field2d;
     private double headingAngle;
-    private double currentTime;
+    public static double currentTime;
+    public static double prevTime;
 
     /**
      * Create a new SimulationData container
@@ -35,6 +36,7 @@ public class DriveSimulationData {
         this.m_field2d = field2d;
         headingAngle = 0;
         currentTime = Timer.getFPGATimestamp();
+        prevTime = currentTime;
     }
 
     /**
@@ -61,10 +63,14 @@ public class DriveSimulationData {
      * @param modulePositions
      */
     public void quadrature(double angularVelocity, SwerveModulePosition[] modulePositions) {
-        double dt = Timer.getFPGATimestamp() - currentTime;
-        currentTime = Timer.getFPGATimestamp();
-        double pw = angularVelocity * dt + headingAngle;
-        update(modulePositions, pw);
+        if (Math.abs(angularVelocity) > 0.3) {
+            double dt = Timer.getFPGATimestamp() - currentTime;
+            prevTime = currentTime;
+            currentTime = Timer.getFPGATimestamp();
+            SmartDashboard.putNumber("dt", dt);
+            double pw = angularVelocity * dt + headingAngle;
+            update(modulePositions, pw);
+        }
     }
 
 

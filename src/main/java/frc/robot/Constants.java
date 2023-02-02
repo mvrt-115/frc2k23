@@ -57,10 +57,10 @@ public final class Constants {
     // Important locations for swerve
     // consider swapping corners
     public static final Translation2d m_standardCenterLocation = new Translation2d(0, 0);
-    public static final Translation2d m_frontLeftLocation = new Translation2d(-chassisWidth / 2.0, chassisHeight / 2.0);
-    public static final Translation2d m_frontRightLocation = new Translation2d(chassisWidth / 2.0, chassisHeight / 2.0);
-    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
-    public static final Translation2d m_backRightLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_frontLeftLocation = new Translation2d(chassisWidth / 2.0, chassisHeight / 2.0);
+    public static final Translation2d m_frontRightLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth / 2.0, chassisHeight / 2.0);
+    public static final Translation2d m_backRightLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
     public static final Translation2d[] rotatePoints = {
 
       m_standardCenterLocation,
@@ -71,19 +71,19 @@ public final class Constants {
     };
 
     // Motor ID
-    public static final int m_frontLeftDriveID = 3;
     public static final int m_frontRightDriveID = 1;
+    public static final int m_frontLeftDriveID = 3;
     public static final int m_backLeftDriveID = 5;
     public static final int m_backRightDriveID = 7;
 
-    public static final int m_frontLeftTurnID = 4;
     public static final int m_frontRightTurnID = 2;
+    public static final int m_frontLeftTurnID = 4;
     public static final int m_backLeftTurnID = 6;
     public static final int m_backRightTurnID = 8;
 
     // Abs Encoder ID
-    public static final int m_frontLeftEncoderID = 10;
     public static final int m_frontRightEncoderID = 9;
+    public static final int m_frontLeftEncoderID = 10;
     public static final int m_backLeftEncoderID = 11;
     public static final int m_backRightEncoderID = 12;
 
