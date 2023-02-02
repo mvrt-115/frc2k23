@@ -32,8 +32,12 @@ public class SwerveModule {
   private SwerveModuleState desiredState;
   private SwerveModulePosition modulePosition;
 
+  private String swerveID;
+  
+  private Logger logger;
+
   /** Creates a new SwerveModule. */
-  public SwerveModule(int driveID, int turnID, int encoderID, boolean driveReversed, boolean turnReversed,
+  public SwerveModule(String _swerveID, int driveID, int turnID, int encoderID, boolean driveReversed, boolean turnReversed,
       boolean encoderReversed, double encoderOffset, SwerveModulePosition position) {
     driveMotor = TalonFactory.createTalonFX(driveID, driveReversed);
     turnMotor = TalonFactory.createTalonFX(turnID, turnReversed);
@@ -56,8 +60,12 @@ public class SwerveModule {
 
     desiredState = new SwerveModuleState();
 
+    swerveID = "SwerveModule/" + _swerveID;
+
     resetEncoders();
     modulePosition = position;
+
+    logger = Logger.getInstance();
   }
 
   /**
@@ -150,7 +158,8 @@ public class SwerveModule {
    * @param radians
    */
   public void setAngle(double radians) {
-    SmartDashboard.putNumber("Angle " + absEncoder.getDeviceID(), radians);
+    // SmartDashboard.putNumber("Angle " + absEncoder.getDeviceID(), radians);
+    // logger.recordOutput(swerveID+"/targetAngleRadians", radians);
     if(Math.abs(MathUtils.ticksToRadians(turnMotor.getSelectedSensorPosition(), 2048, Constants.SwerveModule.gear_ratio_turn)-radians) < 3*Math.PI/180){
       turnMotor.setIntegralAccumulator(0);
     }
@@ -161,10 +170,10 @@ public class SwerveModule {
             Constants.Talon.talonFXTicks,
             Constants.SwerveModule.gear_ratio_turn) - talonEncoderOffset);
 
-    SmartDashboard.putNumber("Turn Value " + getName(), MathUtils.radiansToTicks(
-        radians,
-        Constants.Talon.talonFXTicks,
-        Constants.SwerveModule.gear_ratio_turn));
+    // logger.recordOutput(swerveID+"/targetAngleTicks", MathUtils.radiansToTicks(
+    //     radians,
+    //     Constants.Talon.talonFXTicks,
+    //     Constants.SwerveModule.gear_ratio_turn));
   }
 
   /**
@@ -173,7 +182,7 @@ public class SwerveModule {
    * @param v_mps
    */
   public void setVelocity(double v_mps) {
-    SmartDashboard.putNumber("tpsIn" + absEncoder.getDeviceID(), MathUtils.rpmToTicks(
+    logger.recordOutput(swerveID+"/targetVelocityTicks",  MathUtils.rpmToTicks(
       MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
       Constants.SwerveModule.gear_ratio_drive));
 
@@ -190,9 +199,9 @@ public class SwerveModule {
    * @return SwerveModuleState
    */
   public SwerveModuleState getState() {
-    SmartDashboard.putNumber("tps out" + absEncoder.getDeviceID(), driveMotor.getSelectedSensorVelocity());
-    SmartDashboard.putNumber("TurnMotor " + absEncoder.getDeviceID(), MathUtils.ticksToDegrees(
-        turnMotor.getSelectedSensorPosition(), Constants.Talon.talonFXTicks, Constants.SwerveModule.gear_ratio_turn));
+    // logger.recordOutput(swerveID+"/currentVelocityMPS",  driveMotor.getSelectedSensorVelocity());
+    // logger.recordOutput(swerveID+"/currentAngleDegrees", MathUtils.ticksToDegrees(
+    //     turnMotor.getSelectedSensorPosition(), Constants.Talon.talonFXTicks, Constants.SwerveModule.gear_ratio_turn));
     return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurnPosition()));
   }
 
@@ -218,7 +227,8 @@ public class SwerveModule {
     //setAngle(state.angle.getRadians());
     //setVelocity(state.speedMetersPerSecond);
     state = optimize(state);
-    SmartDashboard.putString("Swerve [" + absEncoder.getDeviceID() + "] desired state", state.toString());
+    // SmartDashboard.putString("Swerve [" + absEncoder.getDeviceID() + "] desired state", state.toString());
+    logger.recordOutput(swerveID+"/DesiredState", state);
     updatePosition();
   }
 
@@ -227,14 +237,19 @@ public class SwerveModule {
    * @param state
    */
   public void logModuleData(SwerveModuleState state){
-    String log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetAngle";
-    Logger.getInstance().recordOutput(log_key, state.angle.getDegrees());
-    log_key = "swerve.mod" + absEncoder.getDeviceID() + ".currentAngle";
-    Logger.getInstance().recordOutput(log_key, getRawEncoderRad() * 180/Math.PI);
-    log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetVelocity";
-    Logger.getInstance().recordOutput(log_key, state.speedMetersPerSecond);
-    log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetCurrent";
-    Logger.getInstance().recordOutput(log_key, getDriveVelocity());
+    // String log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetAngle";
+    // Logger.getInstance().recordOutput(log_key, state.angle.getDegrees());
+    // log_key = "swerve.mod" + absEncoder.getDeviceID() + ".currentAngle";
+    // Logger.getInstance().recordOutput(log_key, getRawEncoderRad() * 180/Math.PI);
+    // log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetVelocity";
+    // Logger.getInstance().recordOutput(log_key, state.speedMetersPerSecond);
+    // log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetCurrent";
+    // Logger.getInstance().recordOutput(log_key, getDriveVelocity());
+
+    logger.recordOutput(swerveID+"/TargetAngle", state.angle.getDegrees());
+    logger.recordOutput(swerveID+"/CurrentAngle", getRawEncoderRad() * 180 / Math.PI);
+    logger.recordOutput(swerveID+"/TargetVelocity", state.speedMetersPerSecond);
+    logger.recordOutput(swerveID+"/CurrentVelocity", getDriveVelocity());
   }
 
   /**
@@ -293,13 +308,18 @@ public class SwerveModule {
     if(Math.abs(getAbsoluteEncoderRad()*180/Math.PI - 0) < 3){
       // resetEncoders();
     }
-    SmartDashboard.putNumber("Cancoder " + absEncoder.getDeviceID(), absEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("Actual " + absEncoder.getDeviceID(), getAbsoluteEncoderRad() * 180 / Math.PI);
-    SmartDashboard.putNumber("Val in Rad " + absEncoder.getDeviceID(),
-        MathUtils.radiansToTicks(getAbsoluteEncoderRad(), Constants.Talon.talonFXTicks,   
-            Constants.SwerveModule.gear_ratio_turn) / (2048 / Constants.SwerveModule.gear_ratio_turn));
-    SmartDashboard.putNumber("Velocity" + absEncoder.getDeviceID(),  getDriveVelocity());
-            return "Swerve " + absEncoder.getDeviceID();
+    // SmartDashboard.putNumber("Cancoder " + absEncoder.getDeviceID(), absEncoder.getAbsolutePosition());
+    // SmartDashboard.putNumber("Actual " + absEncoder.getDeviceID(), getAbsoluteEncoderRad() * 180 / Math.PI);
+    // SmartDashboard.putNumber("Val in Rad " + absEncoder.getDeviceID(),
+    //     MathUtils.radiansToTicks(getAbsoluteEncoderRad(), Constants.Talon.talonFXTicks,   
+    //         Constants.SwerveModule.gear_ratio_turn) / (2048 / Constants.SwerveModule.gear_ratio_turn));
+    
+    logger.recordOutput(swerveID+" Cancoder", absEncoder.getAbsolutePosition());
+    logger.recordOutput(swerveID+" Actual", getAbsoluteEncoderRad() * 180 / Math.PI);
+    // logger.recordOutput(swerveID+" Val in Ticks", MathUtils.radiansToTicks(getAbsoluteEncoderRad(), Constants.Talon.talonFXTicks,   
+    //   Constants.SwerveModule.gear_ratio_turn) / (2048 / Constants.SwerveModule.gear_ratio_turn)); //do we rly need this
+
+    return swerveID;
   }
 
   /**
@@ -309,7 +329,7 @@ public class SwerveModule {
    */
   public String getStateSummary() {
     StringBuilder str = new StringBuilder();
-    str.append("Swerve Module: [" + absEncoder.getDeviceID() + "]: ");
+    str.append(swerveID+": ");
     str.append(getState().toString());
     str.append("; Cancoder Position: " + absEncoder.getAbsolutePosition() + "");
     return str.toString();

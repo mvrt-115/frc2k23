@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -50,9 +52,13 @@ public class SwerveDrivetrain extends SubsystemBase {
   private AHRS gyro;
   // private PigeonIMU gyro;
   private double gyroOffset = 0; // degrees
+
+  private Logger logger;
   
   /** Creates a new SwerveDrive. */
   public SwerveDrivetrain() {
+    logger = Logger.getInstance();
+
     gyro = new AHRS(SPI.Port.kMXP);
 
     // reset in new thread since gyro needs some time to boot up and we don't 
@@ -82,6 +88,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     motors = new SwerveModule[4];
 
     motors[0] = new SwerveModule(
+      "FrontLeft",
       Constants.SwerveDrivetrain.m_frontLeftDriveID,
       Constants.SwerveDrivetrain.m_frontLeftTurnID,
       Constants.SwerveDrivetrain.m_frontLeftEncoderID,
@@ -92,6 +99,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       modulePositions[0]);
 
     motors[2] = new SwerveModule(
+      "FrontRight",
       Constants.SwerveDrivetrain.m_frontRightDriveID,
       Constants.SwerveDrivetrain.m_frontRightTurnID,
       Constants.SwerveDrivetrain.m_frontRightEncoderID,
@@ -102,6 +110,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       modulePositions[1]);
 
     motors[1] = new SwerveModule(
+      "BackLeft",
       Constants.SwerveDrivetrain.m_backLeftDriveID,
       Constants.SwerveDrivetrain.m_backLeftTurnID,
       Constants.SwerveDrivetrain.m_backLeftEncoderID,
@@ -112,6 +121,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       modulePositions[2]);
 
     motors[3] = new SwerveModule(
+      "BackRight",
       Constants.SwerveDrivetrain.m_backRightDriveID,
       Constants.SwerveDrivetrain.m_backRightTurnID,
       Constants.SwerveDrivetrain.m_backRightEncoderID,
@@ -173,6 +183,9 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public double getRelativeHeading() {
     SwerveModuleState[] states = getOutputModuleStates();
+
+    logger.recordOutput("Current SwerveDriveState [LF, LB, RF, RB]", states);
+
     ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(states);
     double angle = Math.atan(speeds.vyMetersPerSecond/speeds.vxMetersPerSecond);
     return Math.toDegrees(angle);
@@ -192,14 +205,16 @@ public class SwerveDrivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Robot Heading", getHeading());
+    // SmartDashboard.putNumber("Robot Heading", getHeading()); //i don't think we need to know this
     SmartDashboard.putData("Field", field);
-    for (SwerveModule m : motors) {
-      SmartDashboard.putString(m.getName(), m.getStateSummary());
-    }
-    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-    SmartDashboard.putNumber("xvel", getLinearVelocity().getX());
-    SmartDashboard.putNumber("yvel", getLinearVelocity().getY());
+    // for (SwerveModule m : motors) {
+    //   SmartDashboard.putString(m.getName(), m.getStateSummary());
+    // }
+    // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    // SmartDashboard.putNumber("xvel", getLinearVelocity().getX());
+    // SmartDashboard.putNumber("yvel", getLinearVelocity().getY());
+
+    // logger.recordOutput("Robot Heading", getHeading());
 
     odometry.update(getRotation2d(), modulePositions);
     field.setRobotPose(
@@ -207,6 +222,8 @@ public class SwerveDrivetrain extends SubsystemBase {
       odometry.getPoseMeters().getY(),
       getRotation2d()
     );
+
+    logger.recordOutput("Robot Location", getPose());
   }
 
   /**
