@@ -144,8 +144,6 @@ public class SwerveModule {
   public double getAbsoluteEncoderRad() {
     double angle = absEncoder.getAbsolutePosition();
     angle = Math.toRadians(angle);
-    // absEncoder.getVoltage() / RobotController.getVoltage5V();
-    // angle *= 2.0 * Math.PI;
     angle -= absEncoderOffsetRad;
     return angle * (absEncoderReversed ? -1.0 : 1.0);
   }
@@ -233,7 +231,7 @@ public class SwerveModule {
       dt = Math.min(0.3, dt);
       double position = driveMotor.getSelectedSensorPosition() + MathUtils.rpmToTicks(
         MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
-        Constants.SwerveModule.gear_ratio_drive) * dt;
+        Constants.SwerveModule.gear_ratio_drive) * 0.1 * dt;
       SmartDashboard.putNumber("raw sim sensor pos " + absEncoder.getDeviceID(), position);
       driveMotorSim.setIntegratedSensorRawPosition(
         (int)position
@@ -275,7 +273,7 @@ public class SwerveModule {
     // setAngle(state.angle.getRadians());
     // setVelocity(state.speedMetersPerSecond);
     state = optimize(state);
-    // SmartDashboard.putString("Swerve [" + absEncoder.getDeviceID() + "] desired state", state.toString());
+    SmartDashboard.putString("Swerve [" + absEncoder.getDeviceID() + "] desired state", state.toString());
     logger.recordOutput(swerveID+"/DesiredState", state);
     updatePosition();
   }
@@ -311,6 +309,9 @@ public class SwerveModule {
   public SwerveModuleState optimize(SwerveModuleState state) {
     double targetAngle = state.angle.getDegrees();
     targetAngle %= 360.0;
+    if (targetAngle < 0) {
+      targetAngle += 360;
+    }
     double currentAngle = getRawEncoderRad() * 180.0 / Math.PI;
     double currentAngleNormalized = currentAngle % 360.0;
     double diff = targetAngle - currentAngleNormalized;
