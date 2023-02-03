@@ -41,18 +41,18 @@ public final class Constants {
     public static final double SHELF_HEIGHT = 0;
 
     // MID, HIGH heights parwa cone
-    public static final double MID_HEIGHT = 0;
-    public static final double HIGH_HEIGHT = 0;
+    public static final double CONE_MID_HEIGHT = 0;
+    public static final double CONE_HIGH_HEIGHT = 0;
 
     // MID, HIGH heights para cube
-    public static final double MID_HEIGHT = 0;
-    public static final double HIGH_HEIGHT = 0;
+    public static final double CUBE_MID_HEIGHT = 0;
+    public static final double CUBE_HIGH_HEIGHT = 0;
 
     // TrapezoidProfile State constants
-    public static final TrapezoidProfile.State ZERO_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State MID_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State HIGH_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State SHEL_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State ZERO_STATE = new TrapezoidProfile.State(Constants.Elevator.CONE_MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State MID_STATE = new TrapezoidProfile.State(Constants.Elevator.CONE_MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State HIGH_STATE = new TrapezoidProfile.State(Constants.Elevator.CONE_MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State SHEL_STATE = new TrapezoidProfile.State(Constants.Elevator.CONE_MID_HEIGHT, 0);
 
     // Game Object Heights
     public static final double CONE_HEIGHT = 6;
