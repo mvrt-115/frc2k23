@@ -120,6 +120,9 @@ public class SwerveJoystickCommand extends CommandBase {
     SwerveModuleState[] moduleStates = drivetrain.getKinematics().toSwerveModuleStates(
       chassisSpeeds,
       Constants.SwerveDrivetrain.rotatePoints[0]); //drivetrain.getRotationPointIdx()
+    for (int i = 0; i < 4; i++) {
+      SmartDashboard.putString("kinematics desired state " + i, moduleStates[i].toString());
+    }
     drivetrain.setModuleStates(moduleStates);
     SmartDashboard.putNumber("vX", vX);
     SmartDashboard.putNumber("vY", vY);

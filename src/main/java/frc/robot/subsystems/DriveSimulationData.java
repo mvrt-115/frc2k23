@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.AnalogGyro;
@@ -63,14 +65,15 @@ public class DriveSimulationData {
      * @param modulePositions
      */
     public void quadrature(double angularVelocity, SwerveModulePosition[] modulePositions) {
+        double dt = Timer.getFPGATimestamp() - currentTime;
+        prevTime = currentTime;
+        currentTime = Timer.getFPGATimestamp();
+        SmartDashboard.putNumber("dt", dt);
+        double pw = 0;
         if (Math.abs(angularVelocity) > 0.3) {
-            double dt = Timer.getFPGATimestamp() - currentTime;
-            prevTime = currentTime;
-            currentTime = Timer.getFPGATimestamp();
-            SmartDashboard.putNumber("dt", dt);
-            double pw = angularVelocity * dt + headingAngle;
-            update(modulePositions, pw);
+            pw = angularVelocity * dt + headingAngle;
         }
+        update(modulePositions, pw);
     }
 
 

@@ -142,9 +142,9 @@ public class SwerveDrivetrain extends SubsystemBase {
     xController = new PIDController(Constants.SwerveDrivetrain.m_x_control_P, Constants.SwerveDrivetrain.m_x_control_I, Constants.SwerveDrivetrain.m_x_control_D);
     yController = new PIDController(Constants.SwerveDrivetrain.m_y_control_P, Constants.SwerveDrivetrain.m_y_control_I, Constants.SwerveDrivetrain.m_y_control_D);
     thetaController = new ProfiledPIDController(
-      Constants.SwerveDrivetrain.m_r_control_P, 
-      Constants.SwerveDrivetrain.m_r_control_I, 
-      Constants.SwerveDrivetrain.m_r_control_D, 
+      Constants.SwerveDrivetrain.m_r_control_P,
+      Constants.SwerveDrivetrain.m_r_control_I,
+      Constants.SwerveDrivetrain.m_r_control_D,
       Constants.SwerveDrivetrain.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
