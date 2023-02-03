@@ -88,12 +88,12 @@ public final class Constants {
     public static final int m_backRightEncoderID = 12;
 
     // Comp Bot Encoder Offsets
-    public static final boolean isCompBot = false;
+    public static final boolean isCompBot = true;
 
-    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.2);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(318);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(37.88);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(125.6);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(29.53);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(182.37);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(343.30);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(146.87);// + Math.PI/2.0;
 
     // Practice Bot Encoder Offsets
     public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(25.75);// + Math.PI/2.0;
@@ -175,8 +175,8 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kFF = 0;
 
-    public static final double kPTurn = 0.2;
-    public static final double kITurn = 0.001;
+    public static final double kPTurn = 0.15;
+    public static final double kITurn = 0.0001;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
   }

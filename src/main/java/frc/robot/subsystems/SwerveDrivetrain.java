@@ -214,9 +214,9 @@ public class SwerveDrivetrain extends SubsystemBase {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("Robot Heading", getHeading()); //i don't think we need to know this
     SmartDashboard.putData("Field", field);
-    // for (SwerveModule m : motors) {
-    //   SmartDashboard.putString(m.getName(), m.getStateSummary());
-    // }
+    for (SwerveModule m : modules) {
+       SmartDashboard.putString(m.getName(), m.getStateSummary());
+    }
     // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     // SmartDashboard.putNumber("xvel", getLinearVelocity().getX());
     // SmartDashboard.putNumber("yvel", getLinearVelocity().getY());

@@ -367,9 +367,9 @@ public class SwerveModule {
     }
     // SmartDashboard.putNumber("Cancoder " + absEncoder.getDeviceID(), absEncoder.getAbsolutePosition());
     // SmartDashboard.putNumber("Actual " + absEncoder.getDeviceID(), getAbsoluteEncoderRad() * 180 / Math.PI);
-    // SmartDashboard.putNumber("Val in Rad " + absEncoder.getDeviceID(),
-    //     MathUtils.radiansToTicks(getAbsoluteEncoderRad(), Constants.Talon.talonFXTicks,   
-    //         Constants.SwerveModule.gear_ratio_turn) / (2048 / Constants.SwerveModule.gear_ratio_turn));
+    //  SmartDashboard.putNumber("Val in Rad " + absEncoder.getDeviceID(),
+    //      MathUtils.radiansToTicks(getAbsoluteEncoderRad(), Constants.Talon.talonFXTicks,   
+    //          Constants.SwerveModule.gear_ratio_turn) / (2048 / Constants.SwerveModule.gear_ratio_turn));
     
     logger.recordOutput(swerveID+" Cancoder", absEncoder.getAbsolutePosition());
     logger.recordOutput(swerveID+" Actual", getAbsoluteEncoderRad() * 180 / Math.PI);
