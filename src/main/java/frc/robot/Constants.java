@@ -47,6 +47,9 @@ public final class Constants {
 
   public static class JoystickControls {
     public static final boolean xBoxControl = false;
+    public static final boolean invertJoystickX = true;
+    public static final boolean invertJoystickY = true;
+    public static final boolean invertJoystickW = false;
   }
 
   public static class SwerveDrivetrain {
@@ -135,7 +138,7 @@ public final class Constants {
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
     public static final int kDriveYAxis = 1;
-    public static final int kDriveWAxis = 4;
+    public static final int kDriveWAxis = 2;
     public static final int kDriveFieldOrientButtonIdx = 1;
 
     // values to be determined after the robot is characterized

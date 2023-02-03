@@ -33,6 +33,9 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "SwerveModule": {
+          "open": true
+        },
         "open": true
       }
     }

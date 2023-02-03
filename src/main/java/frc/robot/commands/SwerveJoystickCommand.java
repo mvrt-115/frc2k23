@@ -91,10 +91,10 @@ public class SwerveJoystickCommand extends CommandBase {
     
     if (drivetrain.fieldOriented) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-       -vY, vX, vW, drivetrain.getRotation2d());
+       vY, vX, vW, drivetrain.getRotation2d());
     }
     else {
-      chassisSpeeds = new ChassisSpeeds(-vY, vX, -vW);
+      chassisSpeeds = new ChassisSpeeds(vY, vX, vW);
     }
 
     SmartDashboard.putString("Chassis Speed", chassisSpeeds.toString() 
