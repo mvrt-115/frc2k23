@@ -182,8 +182,8 @@ public final class Constants {
   }
 
   public static class VisionConstants{
-    public static final String kCamera1Name = "bettygotmoney" + "cam"; //neg offset
-    public static final String kCamera2Name = "bohm" + "cam"; //pos offset
+    public static final String kCamera1Name = "monocle";//neg offset
+    public static final String kCamera2Name = "beholder"; //pos offset
     
     public static final double minDistFromTag = 0.3; //Min dist necessary from tag to automate (0.3 meter aprox)
     public static final double xyTolerance = 0.05;

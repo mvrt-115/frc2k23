@@ -91,30 +91,30 @@ public class SwerveJoystickCommand extends CommandBase {
     
     if (drivetrain.fieldOriented) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-       -vY, vX, vW, drivetrain.getRotation2d());
+       -vY, -vX, vW, drivetrain.getRotation2d());
     }
     else {
-      chassisSpeeds = new ChassisSpeeds(-vY, vX, -vW);
+      chassisSpeeds = new ChassisSpeeds(-vY, -vX, -vW);
     }
 
     SmartDashboard.putString("Chassis Speed", chassisSpeeds.toString() 
     );
 
     // apply heading correction to the robot
-    // double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
-    // double vx = chassisSpeeds.vxMetersPerSecond;
-    // if(vx < 0.1 && vx > -0.1){vx = Math.signum(vx)*0.1;}
-    // double desired_heading = Math.atan(chassisSpeeds.vyMetersPerSecond / (vx));
-    // double omega_offset = desired_heading - drivetrain.thetaController.calculate(true_heading, desired_heading);
-    // omega_offset *= Constants.SwerveDrivetrain.kTeleopHeadingCorrectionScale;
-    // SmartDashboard.putNumber("Omega Offset", omega_offset);
+    double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
+    double vx = chassisSpeeds.vxMetersPerSecond;
+    if(vx < 0.1 && vx > -0.1){vx = Math.signum(vx)*0.1;}
+    double desired_heading = Math.atan(chassisSpeeds.vyMetersPerSecond / (vx));
+    double omega_offset = desired_heading - drivetrain.thetaController.calculate(true_heading, desired_heading);
+    omega_offset *= Constants.SwerveDrivetrain.kTeleopHeadingCorrectionScale;
+    SmartDashboard.putNumber("Omega Offset", omega_offset);
 
-    // if(Double.isNaN(omega_offset))
-    //   omega_offset = 0;
-    // double v_omega = chassisSpeeds.omegaRadiansPerSecond;// + omega_offset;
+    if(Double.isNaN(omega_offset))
+      omega_offset = 0;
+    double v_omega = chassisSpeeds.omegaRadiansPerSecond;// + omega_offset;
     
 
-    // chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, v_omega);
+    chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, v_omega);
     
     // convert to module states and apply to each wheel
     SwerveModuleState[] moduleStates = drivetrain.getKinematics().toSwerveModuleStates(
