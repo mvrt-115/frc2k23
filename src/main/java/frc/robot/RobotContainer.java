@@ -100,8 +100,6 @@ public class RobotContainer {
   }
 
   public void putTestCommand() {
-
-    SmartDashboard.putData("Test", new InstantCommand(() -> swerveDrivetrain.testModules()));
-
+    swerveDrivetrain.setupTests();
   }
 }

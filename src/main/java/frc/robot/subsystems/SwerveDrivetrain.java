@@ -26,8 +26,10 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+
 
 public class SwerveDrivetrain extends SubsystemBase {
   // state stuff
@@ -58,8 +60,8 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   private Logger logger;
   
-  private DriveSimulationData driveSimData; 
-  
+  private DriveSimulationData driveSimData;
+    
   /** Creates a new SwerveDrive. */
   public SwerveDrivetrain() {
     logger = Logger.getInstance();
@@ -250,60 +252,22 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
   }
 
+  public void testModule(SwerveModule module){
+    module.setAngle(Math.PI/2);
+    Timer.delay(20);
+    module.setAngle(Math.PI);
+    Timer.delay(20);
+    module.setAngle(3*Math.PI/2);
+    Timer.delay(20);
+    module.setAngle(2*Math.PI);
+  }
+
   public void testModules() {
     for(SwerveModule m: modules) {
-
-      m.setVelocity(Constants.SwerveDrivetrain.kMaxSpeedMPS);
-
-      new Thread(() -> {
-        try {
-          Thread.sleep(20);
-        }
-        catch (Exception e)
-        {
-          
-        }
-      }).start(); 
-
-      m.setAngle(Math.PI/2);
-
-      new Thread(() -> {
-        try {
-          Thread.sleep(20);
-        }
-        catch (Exception e)
-        {
-          
-        }
-      }).start(); 
-
-      m.setAngle(Math.PI);
-
-      new Thread(() -> {
-        try {
-          Thread.sleep(20);
-        }
-        catch (Exception e)
-        {
-          
-        }
-      }).start(); 
-
-      m.setAngle(3*Math.PI/2);
-
-      new Thread(() -> {
-        try {
-          Thread.sleep(20);
-        }
-        catch (Exception e)
-        {
-          
-        }
-      }).start(); 
-
-      m.setAngle(2*Math.PI);
-
+      testModule(m);
     }
+  }
+  public void setupTests(){
   }
 
   /**
