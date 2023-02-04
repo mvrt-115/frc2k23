@@ -268,6 +268,9 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
   }
   public void setupTests(){
+    for(SwerveModule m: modules) {
+      SmartDashboard.putData(m.getSwerveID() + "/RunTurnTest", new InstantCommand(() -> testModule(m)));
+    }
   }
 
   /**
