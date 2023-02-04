@@ -380,6 +380,9 @@ public class SwerveModule {
     return swerveID;
   }
 
+  public String getSwerveID(){
+    return swerveID;
+  }
   /**
    * get a summary of the modules values
    * 
