@@ -251,7 +251,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   public void testModules() {
-    for(SwerveModule m: motors) {
+    for(SwerveModule m: modules) {
 
       m.setVelocity(Constants.SwerveDrivetrain.kMaxSpeedMPS);
 
