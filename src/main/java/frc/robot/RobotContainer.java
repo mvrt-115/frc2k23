@@ -11,6 +11,9 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
+
+import com.fasterxml.jackson.databind.node.IntNode;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -86,5 +89,11 @@ public class RobotContainer {
     // return Autos.exampleAuto(m_exampleSubsystem);
     SmartDashboard.putString("hi", "hi");
     return autonSelector.getSelected();
+  }
+
+  public void putTestCommand() {
+
+    SmartDashboard.putData("Test", new InstantCommand(() -> swerveDrivetrain.testModules()));
+
   }
 }
