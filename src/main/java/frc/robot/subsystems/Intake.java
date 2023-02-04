@@ -63,27 +63,73 @@ public class Intake extends SubsystemBase {
     pidController.setOutputRange(Constants.Intake.kMinOutput, Constants.Intake.kMaxOutput);
   }
 
-  /////////////////////////////////////////COMMANDS//////////////////////////////////////////////
+  /******************************************COMMANDS***************************************/
+
+  ///////////////////////GENERAL MANUAL//////////////////////////
+ /*
+   * Decides which intake method based on the type of intake system
+   */
+  public CommandBase manualIntake() {
+    if(type == INTAKE_TYPE.wheeled)
+      return manualIntakeWheeled();
+    else 
+      return manualIntakeClaw();
+  }
+
+  ///////////////////////WHEELED//////////////////////////
 
    public RunCommand outtakeElement()
    {
-     return new RunCommand(() -> moveClaw(false));
+    while(intakeState != INTAKE_STATE.COMPRESSED)
+    {
+      moveClaw(false);
+    }
+    return new RunCommand(() -> setVelPIDSpeed(false, Constants.Intake.kGoalRPM));
    }
 
    public RunCommand intakeElement()
    {
-    return new RunCommand(() -> moveClaw(true));
+    while(currentProxState) {} //wait until an object is detected in the vicinity
+
+    while(intakeState != INTAKE_STATE.COMPRESSED) //after detected, run intake in set pattern
+    {
+      moveClaw(true);
+    }
+    return new RunCommand(() -> setVelPIDSpeed(true, Constants.Intake.kGoalRPM));
    }
 
-   /////////////////////////////////////////METHODS//////////////////////////////////////////////
+   /*
+    * Runs wheels inward and stops when the element is detected within the intake
+    */
+    public CommandBase manualIntakeWheeled() {
+      setMotorSpeed(Constants.Intake.kGoalRPM);
+      Timer.delay(2.5); ///ADJUST DELAY AS NECESSARY
+  
+      return new RunCommand(() -> setMotorSpeed(Constants.Intake.kCompressedSpeed)); //CHANGE HOLD SPEED AS NECESSARY
+     }
+
+     ///////////////////////CLAW//////////////////////////
+
+  /*
+   * Runs claw inwards constantly
+   */
+  public CommandBase manualIntakeClaw() {
+    motor.setIdleMode(IdleMode.kCoast); // change to the correct method
+    return this.runOnce(() -> motor.set(Constants.Intake.kGoalRPM));
+   }
+
+   /******************************************METHODS***************************************/
+
+   ///////////////////////AUTO//////////////////////////
 
    /**
-    * if its compressing, then sets to the positive speed. if not, then sets to the negative speed.
-    * @param isCompressing
+    * if it's intaking, then sets to the positive speed. if it is outtaking, then sets to the negative speed.
+    * @param isIntaking
     */
-   public void setSpeed(boolean isCompressing)
+   public void setVelPIDSpeed(boolean isIntaking, double desiredSpeed)
    {
-      double speed = isCompressing ? Constants.Intake.kGoalRPM : -Constants.Intake.kGoalRPM;
+      double speed = isIntaking ? desiredSpeed : -desiredSpeed;
+      //double speed = isCompressing ? Constants.Intake.kGoalRPM : -Constants.Intake.kGoalRPM;
       pidController.setReference(speed, CANSparkMax.ControlType.kVelocity);
    }
 
@@ -102,28 +148,80 @@ public class Intake extends SubsystemBase {
         {
           case SPEEDING_UP:
           {
-            setSpeed(isIntaking);
+            setVelPIDSpeed(isIntaking, Constants.Intake.kGoalRPM);
 
             if(isWithinError(motor.get()))
             {
-              intakeState = INTAKE_STATE.AT_SPEED;
+              intakeState = INTAKE_STATE.COMPRESSED;
             }
           }
 
           case AT_SPEED:
           {
-           Timer.delay(3); // however much time it needs to intake the element
+           Timer.delay(1); // however much time it needs to intake the element
            intakeState = INTAKE_STATE.COMPRESSED;
           }
 
           case COMPRESSED:
           {
-            if(isIntaking) motor.set(0.03);
-            else motor.set(0);
+            if(isIntaking) setVelPIDSpeed(isIntaking, Constants.Intake.kGoalRPM);
+            else zeroMotorSpeed();
           }
         }
     }
+
+    /*//PROPOSED CHANGE: if intake button started intake and proximity sensor was used as a stopping mechanism to decide when to compress
+    
+    if(!currentProxState && isIntaking) 
+    {
+      while(!currentProxState) 
+      {
+        setVelPIDSpeed(isIntaking, Constants.Intake.kGoalRPM); //intaking at 0.3 until the proximity sensor is triggered
+      }
+      setVelPIDSpeed(isIntaking, Constants.Intake.kCompressedSpeed); //after in compressed position, switch to maintaining low compression speed
+    }
+    else if(!isIntaking) 
+    {
+      setVelPIDSpeed(isIntaking, Constants.Intake.kGoalRPM);
+      Timer.delay(2); //CHANGE TIME BASED ON OUTTAKE TIME
+      zeroMotorSpeed();
+    }*/
+
+
    }
+
+   ///////////////////////MANUAL//////////////////////////
+
+   /**
+    * sets constant speed to claw until it reaches the limit of expansion as dictated by an encoder
+    */
+   public void expand() {
+      while(!(encoder.getPosition() <= Constants.Intake.kExpandedTicks + Constants.Intake.kMarginOfError && 
+        encoder.getPosition() >= Constants.Intake.kExpandedTicks - Constants.Intake.kMarginOfError ))
+      {
+        setMotorSpeed(-Constants.Intake.kGoalRPM);
+      }
+      zeroMotorSpeed();
+   }
+
+   /*
+   * Sets the motor to speed after entering coast mode
+   * @param speed   speed to run motor at
+   */
+  public void setMotorSpeed(double speed) {
+    motor.setIdleMode(IdleMode.kCoast);
+    motor.set(speed);
+  }
+
+  /*
+   * Sets the motor speed to zero and enter brake mode
+   */
+  public void zeroMotorSpeed() {
+    setMotorSpeed(0);
+    motor.setIdleMode(IdleMode.kBrake);
+  }
+
+  /******************************************PERIODIC***************************************/
 
    @Override
   public void periodic() {
@@ -141,6 +239,8 @@ public class Intake extends SubsystemBase {
       prevProxState = currentProxState;
   }
 
+  /******************************************CALCULATIONS***************************************/
+
   /**
    * @param speed
    * @return true if the speed of the motor is close to the desired compressing/extending speed
@@ -149,5 +249,5 @@ public class Intake extends SubsystemBase {
   {
     return Math.abs(Math.abs(speed) - Constants.Intake.kGoalRPM) <= Constants.Intake.kMarginOfError;
   }
-  
+
 }
