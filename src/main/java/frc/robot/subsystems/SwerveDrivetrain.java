@@ -251,6 +251,18 @@ public class SwerveDrivetrain extends SubsystemBase {
 
       m.setAngle(3*Math.PI/2);
 
+      new Thread(() -> {
+        try {
+          Thread.sleep(20);
+        }
+        catch (Exception e)
+        {
+          
+        }
+      }).start(); 
+
+      m.setAngle(2*Math.PI);
+
     }
   }
 
