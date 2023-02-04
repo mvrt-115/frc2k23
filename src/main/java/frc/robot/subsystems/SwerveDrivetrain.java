@@ -250,6 +250,62 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
   }
 
+  public void testModules() {
+    for(SwerveModule m: motors) {
+
+      m.setVelocity(Constants.SwerveDrivetrain.kMaxSpeedMPS);
+
+      new Thread(() -> {
+        try {
+          Thread.sleep(20);
+        }
+        catch (Exception e)
+        {
+          
+        }
+      }).start(); 
+
+      m.setAngle(Math.PI/2);
+
+      new Thread(() -> {
+        try {
+          Thread.sleep(20);
+        }
+        catch (Exception e)
+        {
+          
+        }
+      }).start(); 
+
+      m.setAngle(Math.PI);
+
+      new Thread(() -> {
+        try {
+          Thread.sleep(20);
+        }
+        catch (Exception e)
+        {
+          
+        }
+      }).start(); 
+
+      m.setAngle(3*Math.PI/2);
+
+      new Thread(() -> {
+        try {
+          Thread.sleep(20);
+        }
+        catch (Exception e)
+        {
+          
+        }
+      }).start(); 
+
+      m.setAngle(2*Math.PI);
+
+    }
+  }
+
   /**
    * set the states of all four modules
    * @param states

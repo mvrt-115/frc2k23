@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.SetElevatorHeight;
@@ -96,5 +97,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autonSelector.getSelected();
+  }
+
+  public void putTestCommand() {
+
+    SmartDashboard.putData("Test", new InstantCommand(() -> swerveDrivetrain.testModules()));
+
   }
 }
