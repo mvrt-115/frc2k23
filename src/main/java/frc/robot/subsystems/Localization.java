@@ -50,6 +50,7 @@ public class Localization extends SubsystemBase {
   public void periodic() {
     Pose2d camPose = weightTargets();
     if(camPose!=null){
+      log2();
       SmartDashboard.putString("weightedCamPose", camPose.toString());
 
       //If aligning, reset pose to whatever camera gives us
@@ -279,4 +280,27 @@ public class Localization extends SubsystemBase {
    // Logger.getInstance().recordOutput("Robo X", lastPose.getX());
     //Logger.getInstance().recordOutput("Robo Y", lastPose.getY());
   }
+  public void log2(){
+    Pose2d robotPose = getCurrentPose();
+    if(robotPose==null){
+      SmartDashboard.putBoolean("pose is null", true);
+      return;
+    }
+
+    // SmartDashboard
+    Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
+
+    SmartDashboard.putNumber("robo theta", robotPose.getRotation().getDegrees());
+    SmartDashboard.putNumber("score theta",  poseToGoTo.getRotation().getDegrees());
+    SmartDashboard.putNumber("error theta", poseToGoTo.getRotation().getDegrees() - robotPose.getRotation().getDegrees());
+
+    SmartDashboard.putNumber("scoring x", poseToGoTo.getX());
+    SmartDashboard.putNumber("scoring y", poseToGoTo.getY());
+    SmartDashboard.putNumber("robo x", robotPose.getX());
+    SmartDashboard.putNumber("robo y", robotPose.getY());
+    SmartDashboard.putNumber("distance from final", Localization.distFromTag(robotPose, poseToGoTo));
+    SmartDashboard.putNumber("error x", poseToGoTo.getX() - robotPose.getX());
+    SmartDashboard.putNumber("error y", poseToGoTo.getY() - robotPose.getY());
+  }
+  
 }

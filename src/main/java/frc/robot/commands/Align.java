@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,9 +32,8 @@ public class Align extends CommandBase {
     this.poseToGoTo = poseToGoTo;
 
     pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
-    
     pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
-    pidTheta = new PIDController(0.2, 0, 0); // pid t-coor
+    pidTheta = new PIDController(0.08, 0, 0); // pid t-coor
   }
 
   // Called when the command is initially scheduled.
@@ -49,16 +49,16 @@ public class Align extends CommandBase {
     //SmartDashboard.putString("Target", localization.getClosestScoringLoc().toString());
     //SmartDashboard.putString("currP")
     //if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
-      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
-      double outY = -pidY.calculate(robotPose.getY(), poseToGoTo.getY());
-      // pos, setpoint
-      double outTheta = -pidTheta.calculate(robotPose.getRotation().getRadians(), poseToGoTo.getRotation().getRadians());
-      ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, outTheta);
+      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.6; // pos, setpoint
+      double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY())*0.7;
+
+      double outTheta = pidTheta.calculate((robotPose.getRotation().getDegrees()+360)%360, (poseToGoTo.getRotation().getDegrees()+360)%360);
+      ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-outX, outY, outTheta, new Rotation2d(-robotPose.getRotation().getRadians()));
       SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
       swerve.setModuleStates(states);
-   // }
 
-    log();
+      SmartDashboard.putNumber("out theta", outTheta);
+   // }
   }
 
   // Called once the command ends or is interrupted.
@@ -73,23 +73,13 @@ public class Align extends CommandBase {
     Pose2d robotPose = localization.getCurrentPose();
 
     //If close enough to target
-    return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.1;
+    return Math.abs(robotPose.getRotation().minus(poseToGoTo.getRotation()).getRadians())<0.05;
+    //return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 && Math.abs(robotPose.getX()-poseToGoTo.getX())<0.05 ;
     /* 
     return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance && 
       Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance && 
       Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;*/
   }
 
-  public void log(){
-    Pose2d robotPose = localization.getCurrentPose();
 
-    // SmartDashboard
-    SmartDashboard.putNumber("scoring x", poseToGoTo.getX());
-    SmartDashboard.putNumber("scoring y", poseToGoTo.getY());
-    SmartDashboard.putNumber("robo x", robotPose.getX());
-    SmartDashboard.putNumber("robo y", robotPose.getY());
-    SmartDashboard.putNumber("distance from final", Localization.distFromTag(robotPose, poseToGoTo));
-    SmartDashboard.putNumber("error x", robotPose.getX() - poseToGoTo.getX());
-    SmartDashboard.putNumber("error y", robotPose.getY() - poseToGoTo.getY());
-  }
 }

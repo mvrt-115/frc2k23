@@ -35,7 +35,7 @@ import frc.robot.subsystems.Elevator.ElevatorState;
 public final class Constants {
 
   public static class DataLogging {
-    public static final Mode currMode = Mode.REAL;
+    public static final Mode currMode = Mode.SIM;
 
     public static enum Mode { REAL, REPLAY, SIM }
 
@@ -51,16 +51,16 @@ public final class Constants {
 
   public static class SwerveDrivetrain {
     // Physical Constants
-    public static final double chassisWidth = Units.inchesToMeters(28);
-    public static final double chassisHeight = Units.inchesToMeters(26);// swap for comp
+    public static final double chassisWidth = Units.inchesToMeters(26);
+    public static final double chassisHeight = Units.inchesToMeters(28);
 
     // Important locations for swerve
     // consider swapping corners
     public static final Translation2d m_standardCenterLocation = new Translation2d(0, 0);
-    public static final Translation2d m_frontLeftLocation = new Translation2d(chassisWidth / 2.0, chassisHeight / 2.0);
-    public static final Translation2d m_frontRightLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
-    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth / 2.0, chassisHeight / 2.0);
-    public static final Translation2d m_backRightLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_frontLeftLocation = new Translation2d(-chassisWidth / 2.0, chassisHeight / 2.0);
+    public static final Translation2d m_frontRightLocation = new Translation2d(chassisWidth / 2.0, chassisHeight / 2.0);
+    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisWidth / 2.0, -chassisHeight / 2.0);
+    public static final Translation2d m_backRightLocation = new Translation2d(chassisWidth / 2.0, -chassisHeight / 2.0);
     public static final Translation2d[] rotatePoints = {
 
       m_standardCenterLocation,
@@ -71,35 +71,35 @@ public final class Constants {
     };
 
     // Motor ID
-    public static final int m_frontRightDriveID = 1;
     public static final int m_frontLeftDriveID = 3;
+    public static final int m_frontRightDriveID = 1;
     public static final int m_backLeftDriveID = 5;
     public static final int m_backRightDriveID = 7;
 
-    public static final int m_frontRightTurnID = 2;
     public static final int m_frontLeftTurnID = 4;
+    public static final int m_frontRightTurnID = 2;
     public static final int m_backLeftTurnID = 6;
     public static final int m_backRightTurnID = 8;
 
     // Abs Encoder ID
-    public static final int m_frontRightEncoderID = 9;
     public static final int m_frontLeftEncoderID = 10;
+    public static final int m_frontRightEncoderID = 9;
     public static final int m_backLeftEncoderID = 11;
     public static final int m_backRightEncoderID = 12;
 
     // Comp Bot Encoder Offsets
-    public static final boolean isCompBot = true;
+    public static final boolean isCompBot = false;
 
-    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(29.53);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(182.37);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(343.30);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(146.87);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.2);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(318);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(37.88);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(125.6);// + Math.PI/2.0;
 
     // Practice Bot Encoder Offsets
-    public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(25.75);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(317.54);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(37.17);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(125.68);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(205.576);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(138.07);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(218.23);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(305.59);// + Math.PI/2.0;
 
     // Abs Encoder Offsets
     public static final double m_frontLeftEncoderOffset = isCompBot? m_frontLeftEncoderOffset_Comp:m_frontLeftEncoderOffset_P;// + Math.PI/2.0;
@@ -127,10 +127,10 @@ public final class Constants {
     public static final double kThrottleDeadband = 0.2;
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
-    public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
-    public static final double kDriveMaxAcceleration = 5;
-    public static final double kTurnMaxAcceleration = 1.5 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 3;
+    public static final double kMaxSpeedMPS = 5; // optimize max speed to prioritize translation
+    public static final double kDriveMaxAcceleration = 2;
+    public static final double kTurnMaxAcceleration = 1 * Math.PI;
+    public static final double kDriveMaxSpeedMPS = 2;
     public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
@@ -146,7 +146,7 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kTurnMaxSpeedRPS, kTurnMaxAcceleration);
 
-    public static final double kTeleopHeadingCorrectionScale = 0;
+    public static final double kTeleopHeadingCorrectionScale = 0.1;
   }
 
   public static class Talon {
@@ -175,23 +175,23 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kFF = 0;
 
-    public static final double kPTurn = 0.15;
-    public static final double kITurn = 0.0001;
+    public static final double kPTurn = 0.1;
+    public static final double kITurn = 0.0005;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
   }
 
   public static class VisionConstants{
-    public static final String kCamera1Name = "monocle";//neg offset
-    public static final String kCamera2Name = "beholder"; //pos offset
+    public static final String kCamera1Name = "beholder"; //neg offset
+    public static final String kCamera2Name = "monocle"; //pos offset
     
     public static final double minDistFromTag = 0.3; //Min dist necessary from tag to automate (0.3 meter aprox)
     public static final double xyTolerance = 0.05;
     public static final double thetaTolerance = 0.05;
 
     //Camera position on robot
-    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, -(4.5*2.54)/100.0-0.05, 0), new Rotation3d());
-    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0, (4.5*2.54)/100.0+0.05, 0), new Rotation3d());
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, Units.inchesToMeters(-6), 0), new Rotation3d());
+    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0, Units.inchesToMeters(6), 0), new Rotation3d());
     /**
      * Key:
      * Orientation: facing red community from blue community 
@@ -204,47 +204,47 @@ public final class Constants {
         new Pose2d(
             Units.inchesToMeters(597.1),
             Units.inchesToMeters(20.6),
-            new Rotation2d(Math.PI)),
+            new Rotation2d()),
         2,
         new Pose2d(
             Units.inchesToMeters(597.1),
             Units.inchesToMeters(41.9),
-            new Rotation2d(Math.PI)),
+            new Rotation2d()),
         3,
         new Pose2d(
             Units.inchesToMeters(597.1),
             Units.inchesToMeters(64.6),
-            new Rotation2d(Math.PI)),
+            new Rotation2d()),
         4,
         new Pose2d(
             Units.inchesToMeters(597.1),
             Units.inchesToMeters(86.5),
-            new Rotation2d(Math.PI)),
+            new Rotation2d()),
         5,
         new Pose2d(
-            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(587.1), //597.1
             Units.inchesToMeters(108.9),
-            new Rotation2d(Math.PI)),
+            new Rotation2d()),
         6,
         new Pose2d(
             Units.inchesToMeters(597.1),
             Units.inchesToMeters(130.6),
-            new Rotation2d(Math.PI)),
+            new Rotation2d()),
         7,
         new Pose2d(
             Units.inchesToMeters(597.1),
             Units.inchesToMeters(157.6),
-            new Rotation2d(Math.PI)),
+            new Rotation2d()),
         8,
         new Pose2d(
             Units.inchesToMeters(597.1),
             Units.inchesToMeters(174.9),
-            new Rotation2d(Math.PI)),
+            new Rotation2d()),
         9,
         new Pose2d(
             Units.inchesToMeters(597.1),
             Units.inchesToMeters(196.6),
-            new Rotation2d(Math.PI))
+            new Rotation2d())
     );
 
     public static final Map<Integer, Pose2d> kBlueScoreCols = Map.of(
@@ -252,47 +252,47 @@ public final class Constants {
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(196.6),
-            new Rotation2d(0)),
+            new Rotation2d(Math.PI)),
         8,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(174.9),
-            new Rotation2d(0)),
+            new Rotation2d(Math.PI)),
         7,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(157.6),
-            new Rotation2d(0)),
+            new Rotation2d(Math.PI)),
         6,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(130.6),
-            new Rotation2d(0)),
+            new Rotation2d(Math.PI)),
         5,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(108.9),
-            new Rotation2d(0)),
+            new Rotation2d(Math.PI)),
         4,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(86.5),
-            new Rotation2d(0)),
+            new Rotation2d(Math.PI)),
         3,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(64.6),
-            new Rotation2d(0)),
+            new Rotation2d(Math.PI)),
         2,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(41.9),
-            new Rotation2d(0)),
+            new Rotation2d(Math.PI)),
         1,
         new Pose2d(
             Units.inchesToMeters(56.4),
             Units.inchesToMeters(20.6),
-            new Rotation2d(0))
+            new Rotation2d(Math.PI))
     );
 
     /**

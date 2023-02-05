@@ -6,8 +6,6 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -58,9 +56,6 @@ public class SwerveJoystickCommand extends CommandBase {
     SmartDashboard.putNumber("vX raw", vX);
     SmartDashboard.putNumber("vY raw", vY);
     SmartDashboard.putNumber("vW raw", vW);
-    Logger.getInstance().recordOutput("Controller/vX raw", vX);
-    Logger.getInstance().recordOutput("Controller/vY raw", vY);
-    Logger.getInstance().recordOutput("Controller/vW raw", vW);
 
     // apply deadband
     vX = MathUtils.handleDeadband(vX, Constants.SwerveDrivetrain.kThrottleDeadband);
@@ -102,17 +97,16 @@ public class SwerveJoystickCommand extends CommandBase {
 
     // apply heading correction to the robot
     double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
-    double vx = chassisSpeeds.vxMetersPerSecond;
-    if(vx < 0.1 && vx > -0.1){vx = Math.signum(vx)*0.1;}
-    double desired_heading = Math.atan(chassisSpeeds.vyMetersPerSecond / (vx));
+    double desired_heading = Math.atan(chassisSpeeds.vyMetersPerSecond / chassisSpeeds.vxMetersPerSecond);
     double omega_offset = desired_heading - drivetrain.thetaController.calculate(true_heading, desired_heading);
     omega_offset *= Constants.SwerveDrivetrain.kTeleopHeadingCorrectionScale;
-    SmartDashboard.putNumber("Omega Offset", omega_offset);
 
     if(Double.isNaN(omega_offset))
       omega_offset = 0;
-    double v_omega = chassisSpeeds.omegaRadiansPerSecond;// + omega_offset;
-    
+    double v_omega = chassisSpeeds.omegaRadiansPerSecond + omega_offset;
+
+    // if(Double.isNaN(v_omega))
+    //   v_omega = 0;
 
     chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, v_omega);
     
@@ -128,7 +122,6 @@ public class SwerveJoystickCommand extends CommandBase {
     if (MathUtils.withinEpsilon(vX, 0, 0.01) && MathUtils.withinEpsilon(vY, 0, 0.01) && MathUtils.withinEpsilon(vW, 0, 0.01)) {
       drivetrain.stopModules();
       drivetrain.setRotationPointIdx(0);
-      drivetrain.resetModules();
     }
   }
 
