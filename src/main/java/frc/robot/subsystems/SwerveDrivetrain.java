@@ -229,6 +229,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     logger.recordOutput("Robot Location", getPose());
+    logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
   }
 
   public void simulationPeriodic() {
@@ -288,6 +289,12 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public void setSpeeds(double v_forwardMps, double v_sideMps, double v_rot, Translation2d rotatePoint) {
     ChassisSpeeds speeds = new ChassisSpeeds(v_forwardMps, v_sideMps, v_rot);
+    SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds, rotatePoint);
+    setModuleStates(moduleStates);
+  }
+
+  public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot, Translation2d rotatePoint) {
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getRotation2d());
     SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds, rotatePoint);
     setModuleStates(moduleStates);
   }
