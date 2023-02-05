@@ -108,6 +108,16 @@ public class Intake extends SubsystemBase {
       return new RunCommand(() -> setMotorSpeed(Constants.Intake.kCompressedSpeed)); //CHANGE HOLD SPEED AS NECESSARY
      }
 
+     public RunCommand run()
+     {
+      return new RunCommand( () -> motor.set(0.2));
+     }
+
+     public RunCommand stop()
+     {
+      return new RunCommand( () -> motor.stopMotor());
+     }
+
      ///////////////////////CLAW//////////////////////////
 
   /*
@@ -142,7 +152,7 @@ public class Intake extends SubsystemBase {
 
     if(!isIntaking) intakeState = INTAKE_STATE.SPEEDING_UP;
 
-    if(!currentProxState && isIntaking || !isIntaking) 
+    if(!currentProxState && isIntaking || !isIntaking)  // ADD SOFT LIMIT HERE USING ENCODER AND ALSO A CURRENT LIMIT
     {
         switch(intakeState)
         {
@@ -229,7 +239,7 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean("sensing element in intake", proximityElement.get());
    // SmartDashboard.putBoolean("sensing edge of elevator", proximityClaw.get());
 
-      currentProxState = proximityElement.get();
+      currentProxState = SmartDashboard.getBoolean("prox state", true   );
 
       if(!currentProxState && prevProxState) //goes from no element to yes element
       {
