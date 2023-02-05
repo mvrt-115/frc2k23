@@ -4,13 +4,25 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Align;
+import frc.robot.commands.AlignAndExtend;
+import frc.robot.commands.AutonPathExample;
+import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.subsystems.Localization;
+import frc.robot.subsystems.SwerveDrivetrain;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -21,20 +33,30 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  // private final Localization localization; //Utils camera
+
   private Elevator elevator;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+  private final CommandJoystick driveJoystick = new CommandJoystick(Constants.SwerveDrivetrain.kDriveJoystickPort);
+  private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    //elevator = new Elevator();
+
+  //  localization = new Localization(swerveDrivetrain);
+    driveJoystick.button(0);
+    swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
+      swerveDrivetrain, 
+      () -> ((Constants.JoystickControls.invertJoystickX) ?-1:1)* driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveXAxis), 
+      () -> ((Constants.JoystickControls.invertJoystickY) ?-1:1)* driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveYAxis), 
+      () -> ((Constants.JoystickControls.invertJoystickW) ?-1:1) *  driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveWAxis), 
+      driveJoystick.button(Constants.SwerveDrivetrain.kDriveFieldOrientButtonIdx),
+      driveJoystick));
+      
     // Configure the trigger bindings
     configureBindings();
-    elevator = new Elevator();
-    elevator.setDefaultCommand(new SetElevatorHeight(elevator));
   }
 
   /**
@@ -48,12 +70,24 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // new Trigger(m_exampleSubsystem::exampleCondition)
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
+    
+    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
+    driveJoystick.button(2).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    autonSelector.setDefaultOption("Example", new AutonPathExample(swerveDrivetrain));
+    SmartDashboard.putData("Auton Selector", autonSelector);
+  
+    //Align to nearest column on click
+    // Pose2d nearestCol = localization.getClosestScoringLoc();
+    // driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    
+    //Brake baby brake
+    driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
+
+    //No braking
+    driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
   }
 
   /**
@@ -62,7 +96,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return autonSelector.getSelected();
+  }
+
+  public void putTestCommand() {
+    swerveDrivetrain.setupTests();
   }
 }
