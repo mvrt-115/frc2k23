@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.utils.JoystickIO;
 import frc.robot.utils.MathUtils;
 
 public class SwerveJoystickCommand extends CommandBase {
@@ -25,10 +26,10 @@ public class SwerveJoystickCommand extends CommandBase {
   private final Supplier<Double> xSpeedFunc, ySpeedFunc, turnSpeedFunc;
   private final Trigger fieldOrientedFunc;
   private final SlewRateLimiter xLimiter, yLimiter, wLimiter;
-  private final CommandJoystick joystick;
+  private final JoystickIO joystick;
 
   /** Creates a new SwerveJoystickCommand. */
-  public SwerveJoystickCommand(SwerveDrivetrain drivetrain, Supplier<Double> xSpeedFunc, Supplier<Double> ySpeedFunc, Supplier<Double> angularSpeedFunc, Trigger fieldOrientedFunc, CommandJoystick joystick) {
+  public SwerveJoystickCommand(SwerveDrivetrain drivetrain, Supplier<Double> xSpeedFunc, Supplier<Double> ySpeedFunc, Supplier<Double> angularSpeedFunc, Trigger fieldOrientedFunc, JoystickIO joystick) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.xSpeedFunc = xSpeedFunc;
@@ -46,7 +47,7 @@ public class SwerveJoystickCommand extends CommandBase {
   @Override
   public void initialize() {
     drivetrain.setJoystick();
-    fieldOrientedFunc.onTrue(new InstantCommand(() -> drivetrain.toggleMode())).debounce(0.1);
+    fieldOrientedFunc.onTrue(new InstantCommand(() -> drivetrain.toggleMode())); //.debounce(0.1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -83,10 +84,10 @@ public class SwerveJoystickCommand extends CommandBase {
     SmartDashboard.putBoolean("Field Oriented", drivetrain.fieldOriented);
     
     if (drivetrain.fieldOriented) {
-      drivetrain.setSpeedsFieldOriented(vX, vY, vW, null);
+      drivetrain.setSpeedsFieldOriented(vX, vY, vW, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
     else {
-      drivetrain.setSpeeds(vX, vY, vW, null);
+      drivetrain.setSpeeds(vX, vY, vW, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
 
     // apply heading correction to the robot

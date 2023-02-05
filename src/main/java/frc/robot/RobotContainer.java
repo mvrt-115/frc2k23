@@ -44,14 +44,13 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    driveJoystick.invertLeftStick();
     if (Constants.JoystickControls.invertJoystickX)
       driveJoystick.invertJoystickX();
     if (Constants.JoystickControls.invertJoystickY)
       driveJoystick.invertJoystickY();
     if (Constants.JoystickControls.invertJoystickW)
       driveJoystick.invertJoystickW();
-
+    driveJoystick.invertLeftStick();
     //elevator = new Elevator();
 
   //  localization = new Localization(swerveDrivetrain);

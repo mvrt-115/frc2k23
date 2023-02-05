@@ -10,7 +10,7 @@ public class JoystickIO extends CommandJoystick{
     private boolean xBoxControl = false;
     private boolean leftStickInverted = false;
     private boolean rightStickInverted = false;
-    private double invX, invY, invW, invZ = 1;
+    private double invX = 1, invY = 1, invW = 1, invZ = 1;
 
     public JoystickIO(int port) {
         super(port);
@@ -27,6 +27,7 @@ public class JoystickIO extends CommandJoystick{
         super(port);
         this.leftStickInverted = invertLeftStick;
         this.rightStickInverted = invertRightStick;
+        this.xBoxControl = false;
     }
 
     /**

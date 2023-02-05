@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.networktables.NetworkTableInstance.NetworkMode;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -431,6 +432,8 @@ public class SwerveDrivetrain extends SubsystemBase {
     for (SwerveModule m:modules) {
       m.setMode(mode);
     }
+    SmartDashboard.putBoolean("Brake Mode", (mode == NeutralMode.Brake));
+    logger.recordOutput("Brake Mode", (mode == NeutralMode.Brake));
   }
 
   /**
