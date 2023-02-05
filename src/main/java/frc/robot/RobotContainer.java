@@ -10,6 +10,7 @@ import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.utils.JoystickIO;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -38,20 +39,28 @@ public class RobotContainer {
   private Elevator elevator;
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
-  private final CommandJoystick driveJoystick = new CommandJoystick(Constants.SwerveDrivetrain.kDriveJoystickPort);
+  private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    driveJoystick.invertLeftStick();
+    if (Constants.JoystickControls.invertJoystickX)
+      driveJoystick.invertJoystickX();
+    if (Constants.JoystickControls.invertJoystickY)
+      driveJoystick.invertJoystickY();
+    if (Constants.JoystickControls.invertJoystickW)
+      driveJoystick.invertJoystickW();
+
     //elevator = new Elevator();
 
   //  localization = new Localization(swerveDrivetrain);
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
-      () -> ((Constants.JoystickControls.invertJoystickX) ?-1:1)* driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveXAxis), 
-      () -> ((Constants.JoystickControls.invertJoystickY) ?-1:1)* driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveYAxis), 
-      () -> ((Constants.JoystickControls.invertJoystickW) ?-1:1) *  driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveWAxis), 
+      () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveXAxis), 
+      () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveYAxis), 
+      () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveWAxis), 
       driveJoystick.button(Constants.SwerveDrivetrain.kDriveFieldOrientButtonIdx),
       driveJoystick));
       
