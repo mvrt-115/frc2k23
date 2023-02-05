@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.TestChassisSpeeds;
 import frc.robot.commands.TestSwerveModule;
 
 
@@ -210,7 +211,6 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    logger.recordOutput("SwerveModuleStatesTrue", getLoggedModuleStates());
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("Robot Heading", getHeading()); //i don't think we need to know this
     SmartDashboard.putData("Field", field);
@@ -252,6 +252,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     for(SwerveModule m: modules) {
       SmartDashboard.putData(m.getSwerveID() + "/RunTurnTest", new TestSwerveModule(this, m));
     }
+    SmartDashboard.putData("RunChassisTests", new TestChassisSpeeds(this));
   }
 
   /**
@@ -275,6 +276,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     {
       modules[i].setDesiredState(states[i]);
     }
+    // TODO add a log of the array of post optimized and pre-optimized states
   }
 
   /**
@@ -324,20 +326,6 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   /**
-   * get the desired rotational velocity of the robot
-   * @return desired rotational velocity rad/sec
-   */
-  public double getDesiredRotationalVelocity() {
-    ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(
-        modules[0].getDesiredState(),
-        modules[1].getDesiredState(),
-        modules[2].getDesiredState(),
-        modules[3].getDesiredState()
-    );
-    return speeds.omegaRadiansPerSecond;
-  }
-
-  /**
    * get the actual states of all swerve modules
    * @return SwerveModuleState[] states
    */
@@ -349,33 +337,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
     return states;
   }
-
-  /**
-   * get the desired states of all swerve modules
-   * @return SwerveModuleState[] states
-   */
-  public SwerveModuleState[] getDesiredModuleStates() {
-    SwerveModuleState[] states = new SwerveModuleState[4];
-    for (int i = 0; i < 4; i++)
-    {
-      states[i] = modules[i].getDesiredState();
-    }
-    return states;
-  }
-
-  /**
-   * get the logged states of all swerve modules
-   * @return SwerveModuleState[] states
-   */
-  public SwerveModuleState[] getLoggedModuleStates() {
-    SwerveModuleState[] states = new SwerveModuleState[4];
-    for (int i = 0; i < 4; i++)
-    {
-      states[i] = modules[i].getLoggingState();
-    }
-    return states;
-  }
-
+ 
   /**
    * get the position of the robot
    * @return Pose2d pose

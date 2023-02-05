@@ -16,7 +16,7 @@ public class TestSwerveModule extends CommandBase {
   private final SwerveDrivetrain swerveDrivetrain;
   private final Timer timer;
   private final double period_s = 1.5; // seconds
-  private int index = -1;
+  private int index;
   private double[] positions_deg = {0, 45, 90, 135, 180, 225, 270, 315, 360};
   /** Creates a new TestSwerveModule. */
   public TestSwerveModule(SwerveDrivetrain swerveDrivetrain, SwerveModule module) {
@@ -32,7 +32,7 @@ public class TestSwerveModule extends CommandBase {
   public void initialize() {
     timer.reset();
     timer.start();
-    index = 0;
+    index = -1;
     swerveDrivetrain.resetModules();
   }
 

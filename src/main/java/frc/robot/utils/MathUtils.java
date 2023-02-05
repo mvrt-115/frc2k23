@@ -68,4 +68,15 @@ public class MathUtils {
     public static boolean withinEpsilon(double val, double compare_val, double epsilon) {
         return (compare_val - epsilon) <= val && val <= (compare_val + epsilon); 
     }
+
+    /**
+     * returns if a value is within 0 and max (x in [0, max))
+     * includes 0 and excludes max
+     * @param val
+     * @param max
+     * @return boolean
+     */
+    public static boolean inRange(double val, double max) {
+        return 0 <= val && val < max;
+    }
 }

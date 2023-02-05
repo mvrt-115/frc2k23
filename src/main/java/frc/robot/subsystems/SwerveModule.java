@@ -254,15 +254,6 @@ public class SwerveModule {
   }
 
   /**
-   * get the desired state of the module
-   * 
-   * @return SwerveModuleState
-   */
-  public SwerveModuleState getDesiredState() {
-    return desiredState;
-  }
-
-  /**
    * sets the raw state of the module
    * @param state
    */
@@ -368,20 +359,6 @@ public class SwerveModule {
    */
   public String getSwerveID(){
     return swerveID;
-  }
-
-  /**
-   * @return log the pre-optimized state
-   */
-  public SwerveModuleState getLoggingState() {
-    double velocity = this.getDriveVelocity();
-    double angle = this.getAbsoluteEncoderRad();
-    if (velocity < 0) {
-      angle += Math.PI;
-      angle %= 2.0 * Math.PI;
-      velocity *= -1;
-    }
-    return new SwerveModuleState(velocity, new Rotation2d(angle));
   }
 
   /**
