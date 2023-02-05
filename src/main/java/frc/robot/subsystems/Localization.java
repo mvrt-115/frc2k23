@@ -32,14 +32,12 @@ public class Localization extends SubsystemBase {
   
   private final Field2d field;
   private boolean aligning = true;
-  private Pose2d lastPose;
 
   public Localization(SwerveDrivetrain swerveDrivetrain) {
     this.camera1 = new PhotonCamera(Constants.VisionConstants.kCamera1Name);
     this.camera2 = new PhotonCamera(Constants.VisionConstants.kCamera2Name);
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
-    lastPose = new Pose2d();
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
       swerveDrivetrain.getRotation2d(), 
       swerveDrivetrain.getModulePositions(), 
@@ -50,14 +48,13 @@ public class Localization extends SubsystemBase {
   public void periodic() {
     Pose2d camPose = weightTargets();
     if(camPose!=null){
-      log2();
+      debugPID();
       SmartDashboard.putString("weightedCamPose", camPose.toString());
-
       //If aligning, reset pose to whatever camera gives us
       if(aligning){
         resetPoseEstimator(camPose);
-
-      } else{
+      }
+      else{
         double latency = 0;
         PhotonPipelineResult cam1Result = camera1.getLatestResult();
         PhotonPipelineResult cam2Result = camera2.getLatestResult();
@@ -77,24 +74,15 @@ public class Localization extends SubsystemBase {
         poseEstimator.addVisionMeasurement(camPose, latency);
       }
     }
-
-    log();
-
     Pose2d currPose = getCurrentPose();
     if(currPose != null){
       field.setRobotPose(currPose); 
     }
-
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
+    //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     field.setRobotPose(getCurrentPose());
     log();
   }
-  /*
-   * does cool stuff
-   */
-  public double cardinalizeAngle(double in){
-    return Math.signum(in)*(Math.PI-Math.abs(in));
-  }
+
   /**
    * Initializes pose estimator and configures stdevs
    * @param pose
@@ -120,35 +108,34 @@ public class Localization extends SubsystemBase {
     PhotonPipelineResult cam1Result = camera1.getLatestResult();
     PhotonPipelineResult cam2Result = camera2.getLatestResult();
     if(cam1Result.hasTargets()){
-      SmartDashboard.putString("raw cam 1", cam1Result.getBestTarget().getBestCameraToTarget().toString());
-    }
-    if(cam2Result.hasTargets()){
-      SmartDashboard.putString("raw cam 2", cam2Result.getBestTarget().getBestCameraToTarget().toString());
-    }
-    if (cam1Result.hasTargets()){
+      //log raw value for debugging
+      SmartDashboard.putString("Cam1 Raw", cam1Result.getBestTarget().getBestCameraToTarget().toString());
       cam1Pose = weightMultiTargets((ArrayList<PhotonTrackedTarget>) cam1Result.targets, Constants.VisionConstants.cam1ToRobot);
-      SmartDashboard.putString("Cam1", cam1Pose.toString());
-    
+      SmartDashboard.putString("Cam1 FieldRelative", cam1Pose.toString());
     }
     if(cam2Result.hasTargets()){
+      //log raw value for debugging
+      SmartDashboard.putString("Cam2 Raw", cam2Result.getBestTarget().getBestCameraToTarget().toString());
       cam2Pose = weightMultiTargets((ArrayList<PhotonTrackedTarget>) cam2Result.targets, Constants.VisionConstants.cam2ToRobot);
-      SmartDashboard.putString("Cam2", cam2Pose.toString());
+      SmartDashboard.putString("Cam2 FieldRelative", cam2Pose.toString());
     }
-
+    //Handle cases where only one camera can see
     if(cam1Pose == null && cam2Pose==null) return null;
     if(cam1Pose == null) return cam2Pose;
     if(cam2Pose == null) return cam1Pose;
     
     double xAvg = (cam1Pose.getX() + cam2Pose.getX()) / 2;
     double yAvg = (cam1Pose.getY() + cam2Pose.getY()) / 2;
-    // Gets photonvision angle and converts it to cardinal angle
-    double tAvg = cardinalizeAngle((cam1Pose.getRotation().getRadians() + cam2Pose.getRotation().getRadians()) / 2);
-    SmartDashboard.putNumber("Trash Angle", tAvg*180/Math.PI);
-    SmartDashboard.putNumber("Cam1 Rando", cam1Result.getBestTarget().getBestCameraToTarget().getRotation().getAngle() * 180 / Math.PI - 180);
-    SmartDashboard.putNumber("Cam2 Rando", cam2Result.getBestTarget().getBestCameraToTarget().getRotation().getAngle() * 180 / Math.PI - 180);
+    double tAvg = (cam1Pose.getRotation().getRadians() + cam2Pose.getRotation().getRadians()) / 2;
+    
+    //For debugging theta
+    SmartDashboard.putNumber("Cam1 Theta Raw", cam1Result.getBestTarget().getBestCameraToTarget().getRotation().toRotation2d().getDegrees());
+    SmartDashboard.putNumber("Cam2 Theta Raw", cam2Result.getBestTarget().getBestCameraToTarget().getRotation().toRotation2d().getDegrees());
+    SmartDashboard.putNumber("Cam1 Theta FieldRelative", cam1Pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("Cam2 Theta Field Relative", cam2Pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("Average FieldRelative Theta", tAvg);
+    //End of debugging
 
-    tAvg = cardinalizeAngle(tAvg);
-    SmartDashboard.putNumber("AVG", tAvg*180/Math.PI);
     return new Pose2d(xAvg, yAvg, new Rotation2d(tAvg));
   }
 
@@ -161,7 +148,7 @@ public class Localization extends SubsystemBase {
   private Pose2d weightMultiTargets(ArrayList<PhotonTrackedTarget> targets, Transform3d camPose) {
     double[] weights = new double[targets.size()];
 
-    //reciprical of all the distances
+    //reciprocal of all the distances
     double totalSum = 0;
     Transform3d[] transforms = new Transform3d[targets.size()];
     
@@ -234,10 +221,18 @@ public class Localization extends SubsystemBase {
     return Math.sqrt(Math.pow(initialPose.getX()-finalPose.getX(),2)+Math.pow(initialPose.getY()-finalPose.getY(),2));
   }
 
+  /**
+   * Returns whether the robot is currently aligning or not
+   * @return whether or not the robot is currently aligning
+   */
   public boolean isAligning(){
     return aligning;
   }
 
+  /**
+   * Sets whether or not the robot is aligning
+   * @param inc whether the bot is aligning
+   */
   public void setAligning(boolean inc){
     aligning = inc;
   }
@@ -246,27 +241,21 @@ public class Localization extends SubsystemBase {
    * Log stuff
    */
   public void log() {
-    var pos = poseEstimator.getEstimatedPosition();
+    var pos = getCurrentPose();
     if(pos != null){
       SmartDashboard.putString("Logged Estimated Position", pos.toString());
     }
-
-    if (camera1.getLatestResult().hasTargets()){
-      SmartDashboard.putBoolean("Cam 1 can see", true);
-    } else{
-      SmartDashboard.putBoolean("Cam 1 can see", false);
-    }
-
-    if (camera2.getLatestResult().hasTargets()){
-      SmartDashboard.putBoolean("Cam 2 can see", true);
-    } else{
-      SmartDashboard.putBoolean("Cam 2 can see", false);
-    }
-
+    
+    SmartDashboard.putBoolean("Cam 1 can see", camera1.getLatestResult().hasTargets());
+    SmartDashboard.putBoolean("Cam 2 can see", camera2.getLatestResult().hasTargets());
    // Logger.getInstance().recordOutput("Robo X", lastPose.getX());
     //Logger.getInstance().recordOutput("Robo Y", lastPose.getY());
   }
-  public void log2(){
+
+  /**
+   * Log stuff for debugging pid
+   */
+  public void debugPID(){
     Pose2d robotPose = getCurrentPose();
     if(robotPose==null){
       SmartDashboard.putBoolean("pose is null", true);
