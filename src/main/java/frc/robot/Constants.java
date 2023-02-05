@@ -167,7 +167,7 @@ public final class Constants {
   }
 
   public static class SwerveModule {
-    public static final double gear_ratio_turn = 1.0 / 16.0 / 1.3;
+    public static final double gear_ratio_turn = 7.0 / 150;
     public static final double gear_ratio_drive = 6.75 / 1.0;
     public static final double radius = 0.05; // meters
     public static final double kwheelCircumference = 2 * Math.PI * radius; // meters
