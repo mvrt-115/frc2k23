@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ManualElevator;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -36,7 +37,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    elevator = new Elevator(new TalonFX(Constants.Elevator.MOTOR_ID));
+    elevator = new Elevator(new TalonFX(Constants.Elevator.MOTOR_ID), new TalonFX(Constants.Elevator.MOTOR_ID2));
     configureBindings();
   }
 
@@ -57,11 +58,18 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
-    m_driverController.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+   // m_driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+   // m_driverController.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+  //  m_driverController.x().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.MIN_HEIGHT));
+  // m_driverController.b().whileTrue(new SetElevatorHeight(elevator, 100));
+  // m_driverController.a().whileTrue(new SetElevatorHeight(elevator, 6000));
+  m_driverController.b().whileTrue(new ManualElevator(elevator, -0.1));
+  m_driverController.a().whileTrue(new ManualElevator(elevator, 0.4));
 
-    SmartDashboard.putData("go to mid", new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
-    SmartDashboard.putData("go to high", new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+  // sim
+  //  SmartDashboard.putData("go to mid", new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+  //  SmartDashboard.putData("go to high", new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
+  //  SmartDashboard.putData("zero", new SetElevatorHeight(elevator, Constants.Elevator.MIN_HEIGHT));
   }
 
   /**

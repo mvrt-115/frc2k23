@@ -36,18 +36,20 @@ public class Elevator extends SubsystemBase {
     ZEROED, ZEROING, AT_SETPOINT, GO_TO_SETPOINT
   };
   
-  private TalonFX elev_motor;
-  private PIDController pid;
-  ElevatorFeedforward eFeedforward;
-  private TrapezoidProfile.Constraints constraints;
-  private double startTime;
- // private TrapezoidProfile.State goal;
- // private TrapezoidProfile.State setpoint;
-  //private TrapezoidProfile profile;
-  private DigitalInput inductiveSensor;
-  private Encoder encoder;
+  private TalonFX elev_motor; // motor
+  private TalonFX elev_motor2;
+  private PIDController pid;  // controller
+  ElevatorFeedforward eFeedforward; // elevator feed forward for motion magic
+  private TrapezoidProfile.Constraints constraints; // max velocity and acceleration for motion magic
+  private double startTime; // time that the motion magic starts 
+  // trapezoid profile goal and current
+  private TrapezoidProfile.State goal;
+  private TrapezoidProfile.State setpoint;
+  private TrapezoidProfile profile;
+  private DigitalInput inductiveSensor; // inductive sensor to check that the elevators at the bottom
 
   // sim fields
+  private Encoder encoder;
   private ElevatorSim sim;
   private EncoderSim encoderSim;
   public static DCMotor gearbox;
@@ -55,11 +57,28 @@ public class Elevator extends SubsystemBase {
 
 
   /** Creates a new Elevator. */
-  public Elevator(TalonFX elevatorMotor) {
+  public Elevator(TalonFX elevatorMotor, TalonFX elevatorMotor2) {
     eFeedforward = new ElevatorFeedforward(Constants.Elevator.kS, Constants.Elevator.kG, Constants.Elevator.kV, Constants.Elevator.kA);
     
     elev_motor = elevatorMotor;
+    elev_motor2 = elevatorMotor2;
+    elev_motor.setInverted(false);
+    elev_motor2.setInverted(false);
+    elev_motor2.follow(elev_motor);
+    int forwardLimit = 10000;
+    int reverseLimit = 50;
+    elev_motor.configForwardSoftLimitThreshold(forwardLimit);
+    elev_motor.configReverseSoftLimitThreshold(reverseLimit);
+    elev_motor.configForwardSoftLimitEnable(true, 0);
+    elev_motor.configReverseSoftLimitEnable(true, 0);
+    elev_motor2.configForwardSoftLimitThreshold(forwardLimit);
+    elev_motor2.configReverseSoftLimitThreshold(reverseLimit);
+    elev_motor2.configForwardSoftLimitEnable(true, 0);
+    elev_motor2.configReverseSoftLimitEnable(true, 0);
+    elev_motor.setNeutralMode(NeutralMode.Brake);
+    elev_motor2.setNeutralMode(NeutralMode.Brake);
 
+    
     pid = new PIDController(Constants.Elevator.P, Constants.Elevator.I, Constants.Elevator.D);
 
     inductiveSensor = new DigitalInput(Constants.Elevator.SENSOR_PORT);
@@ -76,11 +95,12 @@ public class Elevator extends SubsystemBase {
 
     elev_motor.setNeutralMode(NeutralMode.Brake);
     elev_motor.setSelectedSensorPosition(0);
+    elev_motor2.setSelectedSensorPosition(0);
+
+    // sim
     encoder = new Encoder(1, 2);
     encoder.reset();
     encoder.setDistancePerPulse(2.0 * Math.PI * Constants.Elevator.PULLEY_RADIUS / Constants.Elevator.GEAR_RATIO / 4096);
-
-    // sims
     encoderSim = new EncoderSim(encoder);
     elevMotorSim = elev_motor.getSimCollection();
     gearbox = DCMotor.getFalcon500(1);
@@ -96,18 +116,21 @@ public class Elevator extends SubsystemBase {
     // SmartDashboard.putNumber("Elevator Level", getLevel());
     // SmartDashboard.putNumber("Elevator Target Heighr", targetHeight);
    // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
-    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition()*Constants.Elevator.INCHES_PER_TICK);
-    SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity()*Constants.Elevator.INCHES_PER_TICK);
+    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
   }
   
   public void keepAtHeight() {
 
   }
 
+  /* updates the height  */
   public void updateHeight() {
     currentHeight = getHeight();
   }
 
+  /* updates the state */
   public void updateState() {
     if(isWithinError(targetHeight, 0) && !currentIsWithinError())
     {
@@ -126,71 +149,93 @@ public class Elevator extends SubsystemBase {
     }
   }
 
-  //to check that the height is in bounds
-  public void setTargetHeight(double goal, double startTime)
+  /** Checks that the height is in bounds and calls setHeightRaw
+   * @param the goal height and the start time
+  */
+  public void setTargetHeight(double goalHeight, double startTime)
   {
     this.startTime = startTime;
    // System.out.println("hi");
-    targetHeight = goal;
+    targetHeight = goalHeight;
     // Checks bounds
-    targetHeight = targetHeight > Constants.Elevator.MAX_HEIGHT ? Constants.Elevator.MAX_HEIGHT:targetHeight;
-    targetHeight = targetHeight < Constants.Elevator.MIN_HEIGHT ? Constants.Elevator.MIN_HEIGHT:targetHeight;
+   // targetHeight = targetHeight > Constants.Elevator.MAX_HEIGHT ? Constants.Elevator.MAX_HEIGHT:targetHeight;
+   // targetHeight = targetHeight < Constants.Elevator.MIN_HEIGHT ? Constants.Elevator.MIN_HEIGHT:targetHeight;
 
-    SmartDashboard.putNumber("Elevator target height", targetHeight);
-    
+   // SmartDashboard.putNumber("Elevator target height", targetHeight);
+   goal = new TrapezoidProfile.State(targetHeight, 0);
+   setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition(), elev_motor.getSelectedSensorVelocity());
+   profile = new TrapezoidProfile(constraints, goal, setpoint);
     setHeightRaw(targetHeight);
   }
   
-  
+  /** uses motion magic to move the robot to the desired height
+   * @param the goal height
+   */ 
   private void setHeightRaw(double targetHeightRaw)
   {
      
-    TrapezoidProfile.State goal = new TrapezoidProfile.State(targetHeightRaw / Constants.Elevator.INCHES_PER_TICK, 0);
-    TrapezoidProfile.State setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition() + 1, elev_motor.getSelectedSensorVelocity());
-    TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, setpoint);
+   // TrapezoidProfile.State goal = new TrapezoidProfile.State(targetHeightRaw, 0);
+   // TrapezoidProfile.State setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition(), elev_motor.getSelectedSensorVelocity());
+   // TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, setpoint);
     SmartDashboard.putNumber("goal position", goal.position);
     //SmartDashboard.putNumber("profile info", profile);
     setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime);
     SmartDashboard.putNumber("setpoint position", setpoint.position);
     
-    double feedforward = eFeedforward.calculate(setpoint.velocity);
-    elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);    
-    elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));
-    // elev_motor.set(ControlMode.PercentOutput, 1);
+    double feedforward = eFeedforward.calculate(setpoint.velocity/Constants.Elevator.INCHES_PER_TICK*10);
+    SmartDashboard.putNumber("feedforward", feedforward);
+    SmartDashboard.putNumber("pid", pid.calculate(setpoint.velocity));
+    SmartDashboard.putNumber("velocity", (feedforward+pid.calculate(setpoint.velocity))/12);
+    elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, feedforward/12);
+    //SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
+    // sim
+    //  elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));
     currentHeight = getHeight();
 
     // double velocity = elev_motor.getSelectedSensorVelocity(); 
     //elev_motor.set(ControlMode.PercentOutput, ((pid.calculate(getHeight(), targetHeightRaw)) + feedforward) / 10);
   }
 
-  
-
+  /** returns the height of the elevator
+   * @return the height of the elevator in ticks
+  */ 
   public double getHeight()
   {
-    return elev_motor.getSelectedSensorPosition()*Constants.Elevator.INCHES_PER_TICK;
+    return elev_motor.getSelectedSensorPosition();
   }
 
+  /* resets the encoder */
   public void resetEncoder() {
     if(isZeroed())
       elev_motor.setSelectedSensorPosition(0);
     else {
-      setTargetHeight(Constants.Elevator.MIN_HEIGHT, startTime);
+      setTargetHeight(Constants.Elevator.MIN_HEIGHT, Timer.getFPGATimestamp());
       elev_motor.setSelectedSensorPosition(0);
     }
   }
-
+  
+  // sets the elevator state
   public void setElevatorState(ElevatorState desiredState) {
     currState = desiredState;
   }
 
+  /*  returns the elevator state
+   *  @return the elevator state
+    */
   public ElevatorState getElevatorState() {
     return currState;
   }
 
+  /**  retuns true if the elevator is zeroed
+   * @return whether or not the elevator is zeroed
+  */
   public boolean isZeroed() {
     return inductiveSensor.get();
   }
 
+  /* Returns the current level of the elevator in integer format
+   * @return the current level of the elevator in integer format
+   */
   public int getLevel()
   {
     switch(currState)
@@ -208,6 +253,9 @@ public class Elevator extends SubsystemBase {
     }
   }
 
+  /* sets the state of the elevator
+   * @param the level to set the elevator in integer format
+   */
   public void setLevel(int level)
   {
     switch(level)
@@ -225,16 +273,27 @@ public class Elevator extends SubsystemBase {
     }
   }
 
+  /* Returns true if the elevator is at the target height
+   * @return whether or not the elevator is at the target height
+   */
   public boolean currentIsWithinError() {
     return isWithinError(currentHeight, targetHeight);
   }
 
+  /* returns if the elevator is at the right height with an error
+   * 
+   */
   private static boolean isWithinError(double current, double target)
   {
     return Math.abs(current-target) <= Constants.Elevator.ERROR;
   }
 
-public void simulationPeriodic() {
+  public void runMotor(double speed) {
+    elev_motor.set(ControlMode.PercentOutput, speed);
+    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
+  }
+
+  /* public void simulationPeriodic() {
     super.simulationPeriodic();
 
     sim.update(0.020);
@@ -246,5 +305,5 @@ public void simulationPeriodic() {
     SmartDashboard.putNumber("Elevator Level", getLevel());
     SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition() * Constants.Elevator.INCHES_PER_TICK);
     //SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
-  }
+  } */
 }
