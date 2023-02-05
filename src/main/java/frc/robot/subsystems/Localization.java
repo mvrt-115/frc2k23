@@ -89,34 +89,12 @@ public class Localization extends SubsystemBase {
     field.setRobotPose(getCurrentPose());
     log();
   }
-
-  public void updatePos(PhotonPipelineResult results){
-    Map<Integer, Pose3d> targetPoses = Constants.VisionConstants.aprilTags;
-
-    double imageCaptureTime = Timer.getFPGATimestamp() - (results.getLatencyMillis() / 1000d);
-
-      //Loop through seen tags
-      for (PhotonTrackedTarget target : results.getTargets()) {
-        int fiducialId = target.getFiducialId();
-
-        //Extra precaution (who knows)
-        if (fiducialId >= 1 && fiducialId <= targetPoses.size()) {
-          Transform3d relLoc = target.getBestCameraToTarget();
-          Pose3d tag = targetPoses.get(target.getFiducialId());
-
-          //Robot position on field (x/y) according to vision
-          Pose2d visionFieldRelative = ComputerVisionUtil.objectToRobotPose(tag, relLoc, new Transform3d()).toPose2d();
-          if(poseEstimator == null){
-            resetPoseEstimator(visionFieldRelative);
-          }
-          field.getObject("VisionRobot" + fiducialId).setPose(visionFieldRelative);
-
-          //Add vision estimator to pose estimator
-          poseEstimator.addVisionMeasurement(visionFieldRelative, imageCaptureTime);
-        }
-      }
+  /*
+   * does cool stuff
+   */
+  public double cardinalizeAngle(double in){
+    return Math.signum(in)*(Math.PI-Math.abs(in));
   }
-
   /**
    * Initializes pose estimator and configures stdevs
    * @param pose
@@ -150,6 +128,7 @@ public class Localization extends SubsystemBase {
     if (cam1Result.hasTargets()){
       cam1Pose = weightMultiTargets((ArrayList<PhotonTrackedTarget>) cam1Result.targets, Constants.VisionConstants.cam1ToRobot);
       SmartDashboard.putString("Cam1", cam1Pose.toString());
+    
     }
     if(cam2Result.hasTargets()){
       cam2Pose = weightMultiTargets((ArrayList<PhotonTrackedTarget>) cam2Result.targets, Constants.VisionConstants.cam2ToRobot);
@@ -162,8 +141,14 @@ public class Localization extends SubsystemBase {
     
     double xAvg = (cam1Pose.getX() + cam2Pose.getX()) / 2;
     double yAvg = (cam1Pose.getY() + cam2Pose.getY()) / 2;
-    double tAvg = (cam1Pose.getRotation().getRadians() + cam2Pose.getRotation().getRadians()) / 2;
-    
+    // Gets photonvision angle and converts it to cardinal angle
+    double tAvg = cardinalizeAngle((cam1Pose.getRotation().getRadians() + cam2Pose.getRotation().getRadians()) / 2);
+    SmartDashboard.putNumber("Trash Angle", tAvg*180/Math.PI);
+    SmartDashboard.putNumber("Cam1 Rando", cam1Result.getBestTarget().getBestCameraToTarget().getRotation().getAngle() * 180 / Math.PI - 180);
+    SmartDashboard.putNumber("Cam2 Rando", cam2Result.getBestTarget().getBestCameraToTarget().getRotation().getAngle() * 180 / Math.PI - 180);
+
+    tAvg = cardinalizeAngle(tAvg);
+    SmartDashboard.putNumber("AVG", tAvg*180/Math.PI);
     return new Pose2d(xAvg, yAvg, new Rotation2d(tAvg));
   }
 
@@ -202,6 +187,7 @@ public class Localization extends SubsystemBase {
     weightedX /= totalSum;
     weightedY /= totalSum;
     weightedRot /= totalSum;
+
     return new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
   }
 
@@ -290,10 +276,9 @@ public class Localization extends SubsystemBase {
     // SmartDashboard
     Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
 
-    SmartDashboard.putNumber("robo theta", robotPose.getRotation().getDegrees());
-    SmartDashboard.putNumber("score theta",  poseToGoTo.getRotation().getDegrees());
-    SmartDashboard.putNumber("error theta", poseToGoTo.getRotation().getDegrees() - robotPose.getRotation().getDegrees());
-
+    SmartDashboard.putNumber("robo theta", (robotPose.getRotation().getDegrees()));
+    SmartDashboard.putNumber("score theta",  (poseToGoTo.getRotation().getDegrees()));
+    SmartDashboard.putNumber("error theta", (poseToGoTo.getRotation().getDegrees()) - (robotPose.getRotation().getDegrees()));
     SmartDashboard.putNumber("scoring x", poseToGoTo.getX());
     SmartDashboard.putNumber("scoring y", poseToGoTo.getY());
     SmartDashboard.putNumber("robo x", robotPose.getX());

@@ -52,7 +52,7 @@ public class Align extends CommandBase {
       double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.6; // pos, setpoint
       double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY())*0.7;
 
-      double outTheta = pidTheta.calculate((robotPose.getRotation().getDegrees()+360)%360, (poseToGoTo.getRotation().getDegrees()+360)%360);
+      double outTheta = pidTheta.calculate(robotPose.getRotation().getDegrees(), poseToGoTo.getRotation().getDegrees());
       ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-outX, outY, outTheta, new Rotation2d(-robotPose.getRotation().getRadians()));
       SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
       swerve.setModuleStates(states);
