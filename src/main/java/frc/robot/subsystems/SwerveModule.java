@@ -34,7 +34,7 @@ public class SwerveModule {
   private final CANCoder absEncoder;
   private final boolean absEncoderReversed;
   private final double absEncoderOffsetRad;
-  private double talonEncoderOffset;
+  private final double talonEncoderOffset = 0;
 
   private SwerveModuleState desiredState;
   private SwerveModulePosition modulePosition;
@@ -139,7 +139,7 @@ public class SwerveModule {
   /**
    * Get the angle of the absolute encoder sensor on the module
    * 
-   * @return the absolute encoder angle in radians
+   * @return the true angle of the swerve module (0 means forward with all screws facing left) CCW is positive
    */
   public double getAbsoluteEncoderRad() {
     double angle = absEncoder.getAbsolutePosition();
@@ -148,6 +148,12 @@ public class SwerveModule {
     return angle * (absEncoderReversed ? -1.0 : 1.0);
   }
 
+  /**
+   * Get the angle of the wheel based on the talonfx
+   * 0 is an arbitary position
+   * CCW is positive
+   * @return angle in rad
+   */
   public double getRawEncoderRad() {
     double angle = turnMotor.getSelectedSensorPosition();
     angle += talonEncoderOffset;
@@ -162,9 +168,14 @@ public class SwerveModule {
    * calibrate turn motor using abs encoder value
    */
   public void resetEncoders() {
-    turnMotor.setSelectedSensorPosition(0);
-    talonEncoderOffset = 0 - MathUtils.radiansToTicks(getAbsoluteEncoderRad(),
-        Constants.Talon.talonFXTicks, Constants.SwerveModule.gear_ratio_turn);
+    // turnMotor.setSelectedSensorPosition(0);
+    // talonEncoderOffset = 0 - MathUtils.radiansToTicks(getAbsoluteEncoderRad(),
+    //     Constants.Talon.talonFXTicks, Constants.SwerveModule.gear_ratio_turn);
+    turnMotor.setSelectedSensorPosition(MathUtils.radiansToTicks(
+      getAbsoluteEncoderRad(), 
+      Constants.Talon.talonFXTicks, 
+      Constants.SwerveModule.gear_ratio_turn
+      ));
   }
 
   /**
@@ -172,8 +183,7 @@ public class SwerveModule {
    * 
    * @param radians
    */
-  public void setAngle(double radians) {
-    SmartDashboard.putNumber("Angle " + absEncoder.getDeviceID(), radians);
+  private void setAngle(double radians) {
     if (Math.abs(
         MathUtils.ticksToRadians(turnMotor.getSelectedSensorPosition(), 2048, Constants.SwerveModule.gear_ratio_turn)
             - radians) < 3 * Math.PI / 180) {
@@ -193,11 +203,6 @@ public class SwerveModule {
             Constants.Talon.talonFXTicks,
             Constants.SwerveModule.gear_ratio_turn) - talonEncoderOffset));    
     }
-
-    // SmartDashboard.putNumber("Turn Value " + getName(), MathUtils.radiansToTicks(
-    //     radians,
-    //     Constants.Talon.talonFXTicks,
-    //     Constants.SwerveModule.gear_ratio_turn));
   }
 
   /**
@@ -205,7 +210,7 @@ public class SwerveModule {
    * 
    * @param v_mps
    */
-  public void setVelocity(double v_mps) {
+  private void setVelocity(double v_mps) {
     
     logger.recordOutput(swerveID+"/targetVelocityTicks",  MathUtils.rpmToTicks(
       MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
@@ -245,9 +250,6 @@ public class SwerveModule {
    * @return SwerveModuleState
    */
   public SwerveModuleState getState() {
-    // logger.recordOutput(swerveID+"/currentVelocityMPS",  driveMotor.getSelectedSensorVelocity());
-    // logger.recordOutput(swerveID+"/currentAngleDegrees", MathUtils.ticksToDegrees(
-    //     turnMotor.getSelectedSensorPosition(), Constants.Talon.talonFXTicks, Constants.SwerveModule.gear_ratio_turn));
     return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurnPosition()));
   }
 
@@ -261,42 +263,31 @@ public class SwerveModule {
   }
 
   /**
+   * sets the raw state of the module
+   * @param state
+   */
+  public void setRawState(SwerveModuleState state) {
+    logger.recordOutput(swerveID+"/DesiredState", state);
+    logger.recordOutput(swerveID+"/Disabled", false);
+    logModuleTargetData(state);
+    setAngle(state.angle.getRadians());
+    setVelocity(state.speedMetersPerSecond);
+  }
+
+  /**
    * set the desired state of the module
-   * 
+   * performs optimization based on currents state and velocity
    * @param state
    */
   public void setDesiredState(SwerveModuleState state) {
+    logger.recordOutput(swerveID+"/DesiredStatePreOptimized", state);
     if (Math.abs(state.speedMetersPerSecond) < 0.001) {
       disableModule();
       return;
     }
-    // setAngle(state.angle.getRadians());
-    // setVelocity(state.speedMetersPerSecond);
-    state = optimize(state);
-    SmartDashboard.putString("Swerve [" + absEncoder.getDeviceID() + "] desired state", state.toString());
-    logger.recordOutput(swerveID+"/DesiredState", state);
+    SwerveModuleState optimized_state = optimize(state);
+    setRawState(optimized_state);
     updatePosition();
-  }
-
-  /**
-   * This function is used to log the swerve module state
-   * 
-   * @param state
-   */
-  public void logModuleData(SwerveModuleState state){
-    // String log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetAngle";
-    // Logger.getInstance().recordOutput(log_key, state.angle.getDegrees());
-    // log_key = "swerve.mod" + absEncoder.getDeviceID() + ".currentAngle";
-    // Logger.getInstance().recordOutput(log_key, getRawEncoderRad() * 180/Math.PI);
-    // log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetVelocity";
-    // Logger.getInstance().recordOutput(log_key, state.speedMetersPerSecond);
-    // log_key = "swerve.mod" + absEncoder.getDeviceID() + ".targetCurrent";
-    // Logger.getInstance().recordOutput(log_key, getDriveVelocity());
-
-    logger.recordOutput(swerveID+"/TargetAngle", state.angle.getDegrees());
-    logger.recordOutput(swerveID+"/CurrentAngle", getRawEncoderRad() * 180 / Math.PI);
-    logger.recordOutput(swerveID+"/TargetVelocity", state.speedMetersPerSecond);
-    logger.recordOutput(swerveID+"/CurrentVelocity", getDriveVelocity());
   }
 
   /**
@@ -331,11 +322,6 @@ public class SwerveModule {
       targetAngle = currentAngle + diff;
     }
 
-    // Log Module Data
-    logModuleData(state);
-
-    setAngle(targetAngle * Math.PI / 180.0);
-    setVelocity(targetVelocity);
     SwerveModuleState newState = new SwerveModuleState(targetVelocity, new Rotation2d(targetAngle * Math.PI / 180.0));
     return newState;
   }
@@ -346,7 +332,7 @@ public class SwerveModule {
   public void disableModule() {
     driveMotor.set(ControlMode.PercentOutput, 0);
     turnMotor.set(ControlMode.PercentOutput, 0);
-    // desiredState = new SwerveModuleState(0, new Rotation2d(0.0));
+    logger.recordOutput(swerveID+"/Disabled", true);
   }
 
   /**
@@ -359,43 +345,34 @@ public class SwerveModule {
 
   /**
    * get the swerve module name (useful for SmartDashboard)
-   * 
-   * @return String name
    */
-  public String getName() {
-    if (Math.abs(getAbsoluteEncoderRad() * 180 / Math.PI - 0) < 3) {
-      // resetEncoders();
-    }
-    // SmartDashboard.putNumber("Cancoder " + absEncoder.getDeviceID(), absEncoder.getAbsolutePosition());
-    // SmartDashboard.putNumber("Actual " + absEncoder.getDeviceID(), getAbsoluteEncoderRad() * 180 / Math.PI);
-    //  SmartDashboard.putNumber("Val in Rad " + absEncoder.getDeviceID(),
-    //      MathUtils.radiansToTicks(getAbsoluteEncoderRad(), Constants.Talon.talonFXTicks,   
-    //          Constants.SwerveModule.gear_ratio_turn) / (2048 / Constants.SwerveModule.gear_ratio_turn));
-    
-    logger.recordOutput(swerveID+" Cancoder", absEncoder.getAbsolutePosition());
-    logger.recordOutput(swerveID+" Actual", getAbsoluteEncoderRad() * 180 / Math.PI);
-    // logger.recordOutput(swerveID+" Val in Ticks", MathUtils.radiansToTicks(getAbsoluteEncoderRad(), Constants.Talon.talonFXTicks,   
-    //   Constants.SwerveModule.gear_ratio_turn) / (2048 / Constants.SwerveModule.gear_ratio_turn)); //do we rly need this
-
-    return swerveID;
+  public void logMeasuredData() {
+    logger.recordOutput(swerveID+"/CancoderDeg", absEncoder.getAbsolutePosition());
+    logger.recordOutput(swerveID+"/OffsetCancoderDeg", getAbsoluteEncoderRad() * 180 / Math.PI);
+    logger.recordOutput(swerveID+"/TalonEncoderDeg", getRawEncoderRad() * 180 / Math.PI);
+    logger.recordOutput(swerveID+"/CurrentVelocityMPS", getDriveVelocity());
   }
 
+  /**
+   * This function is used to log the swerve module state
+   * 
+   * @param state
+   */
+  public void logModuleTargetData(SwerveModuleState state){
+    logger.recordOutput(swerveID+"/TargetAngleDeg", state.angle.getDegrees());
+    logger.recordOutput(swerveID+"/TargetVelocityMPS", state.speedMetersPerSecond);
+  }
+
+  /**
+   * @return id of swerve module
+   */
   public String getSwerveID(){
     return swerveID;
   }
-  /**
-   * get a summary of the modules values
-   * 
-   * @return
-   */
-  public String getStateSummary() {
-    StringBuilder str = new StringBuilder();
-    str.append(swerveID+": ");
-    str.append(getState().toString());
-    str.append("; Cancoder Position: " + absEncoder.getAbsolutePosition() + "");
-    return str.toString();
-  }
 
+  /**
+   * @return log the pre-optimized state
+   */
   public SwerveModuleState getLoggingState() {
     double velocity = this.getDriveVelocity();
     double angle = this.getAbsoluteEncoderRad();

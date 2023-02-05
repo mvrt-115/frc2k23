@@ -55,7 +55,8 @@ public class SwerveJoystickCommand extends CommandBase {
     double vX = Constants.JoystickControls.xBoxControl ? ySpeedFunc.get(): xSpeedFunc.get();
     double vY = Constants.JoystickControls.xBoxControl ? xSpeedFunc.get(): ySpeedFunc.get();
     double vW = turnSpeedFunc.get();
-    SmartDashboard.putNumber("vX raw", vX);
+    SmartDashboard.putNumber(
+      "vX raw", vX);
     SmartDashboard.putNumber("vY raw", vY);
     SmartDashboard.putNumber("vW raw", vW);
     Logger.getInstance().recordOutput("Controller/vX raw", vX);

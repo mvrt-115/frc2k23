@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.TestSwerveModule;
 
 
 public class SwerveDrivetrain extends SubsystemBase {
@@ -100,7 +101,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_frontRightTurnID,
       Constants.SwerveDrivetrain.m_frontRightEncoderID,
       false,
-      false,
+      true,
       false,
       Constants.SwerveDrivetrain.m_frontRightEncoderOffset,
       modulePositions[0]);
@@ -111,7 +112,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_frontLeftTurnID,
       Constants.SwerveDrivetrain.m_frontLeftEncoderID,
       false,
-      false,
+      true,
       false,
       Constants.SwerveDrivetrain.m_frontLeftEncoderOffset,
       modulePositions[1]);
@@ -122,7 +123,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_backLeftTurnID,
       Constants.SwerveDrivetrain.m_backLeftEncoderID,
       false,
-      false,
+      true,
       false,
       Constants.SwerveDrivetrain.m_backLeftEncoderOffset,
       modulePositions[2]);
@@ -133,7 +134,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_backRightTurnID,
       Constants.SwerveDrivetrain.m_backRightEncoderID,
       false,
-      false,
+      true,
       false,
       Constants.SwerveDrivetrain.m_backRightEncoderOffset,
       modulePositions[3]);
@@ -170,19 +171,16 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   /**
-   * get the heading of the physical gyro
+   * <h3>get the heading of the physical gyro </h3> <br></br>
+   * use IEEEremainder because it uses formula:
+   * dividend - (divisor x Math.Round(dividend / divisor))
+   * versus the remainder operator (%) which uses:
+   * (Math.Abs(dividend) - (Math.Abs(divisor) x (Math.Floor(Math.Abs(dividend) / Math.Abs(divisor))))) x Math.Sign(dividend)
+   * 
    * @return heading angle in degrees
    */
   public double getHeading() {
     return Math.IEEEremainder(gyro.getYaw() - gyroOffset, 360.0);
-    //.getAngle()
-
-    /**
-     * use IEEEremainder because it uses formula:
-     * dividend - (divisor x Math.Round(dividend / divisor))
-     * versus the remainder operator (%) which uses:
-     * (Math.Abs(dividend) - (Math.Abs(divisor) x (Math.Floor(Math.Abs(dividend) / Math.Abs(divisor))))) x Math.Sign(dividend)
-     */
   }
 
   /**
@@ -217,13 +215,8 @@ public class SwerveDrivetrain extends SubsystemBase {
     // SmartDashboard.putNumber("Robot Heading", getHeading()); //i don't think we need to know this
     SmartDashboard.putData("Field", field);
     for (SwerveModule m : modules) {
-       SmartDashboard.putString(m.getName(), m.getStateSummary());
+       m.logMeasuredData();
     }
-    // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-    // SmartDashboard.putNumber("xvel", getLinearVelocity().getX());
-    // SmartDashboard.putNumber("yvel", getLinearVelocity().getY());
-
-    // logger.recordOutput("Robot Heading", getHeading());
 
     odometry.update(getRotation2d(), modulePositions);
 
@@ -252,25 +245,22 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
   }
 
-  public void testModule(SwerveModule module){
-    module.setAngle(Math.PI/2);
-    Timer.delay(20);
-    module.setAngle(Math.PI);
-    Timer.delay(20);
-    module.setAngle(3*Math.PI/2);
-    Timer.delay(20);
-    module.setAngle(2*Math.PI);
-  }
-
-  public void testModules() {
-    for(SwerveModule m: modules) {
-      testModule(m);
-    }
-  }
+  /**
+   * show commands of the tests on each of the modules
+   */
   public void setupTests(){
     for(SwerveModule m: modules) {
-      SmartDashboard.putData(m.getSwerveID() + "/RunTurnTest", new InstantCommand(() -> testModule(m)));
+      SmartDashboard.putData(m.getSwerveID() + "/RunTurnTest", new TestSwerveModule(this, m));
     }
+  }
+
+  /**
+   * get the swerve module
+   * @param moduleID
+   * @return SwerveModule [0 = FR, 1 = FL, 2 = BL, 3 = BR]
+   */
+  public SwerveModule getModule(int moduleID) {
+    return modules[moduleID];
   }
 
   /**
