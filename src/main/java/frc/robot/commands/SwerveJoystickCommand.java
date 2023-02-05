@@ -46,19 +46,15 @@ public class SwerveJoystickCommand extends CommandBase {
   @Override
   public void initialize() {
     drivetrain.setJoystick();
-    fieldOrientedFunc.onTrue(new InstantCommand(() -> drivetrain.toggleMode()));
+    fieldOrientedFunc.onTrue(new InstantCommand(() -> drivetrain.toggleMode())).debounce(0.1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double vX = Constants.JoystickControls.xBoxControl ? ySpeedFunc.get(): xSpeedFunc.get();
-    double vY = Constants.JoystickControls.xBoxControl ? xSpeedFunc.get(): ySpeedFunc.get();
-    double vW = turnSpeedFunc.get();
-    SmartDashboard.putNumber(
-      "vX raw", vX);
-    SmartDashboard.putNumber("vY raw", vY);
-    SmartDashboard.putNumber("vW raw", vW);
+    double vX = xSpeedFunc.get(); // as of here, negative X is backwards, positive X is forward
+    double vY = ySpeedFunc.get(); // as of here, negative Y is left, positive Y is right
+    double vW = turnSpeedFunc.get(); // as of here, negative W is up (CW) positive W is down (CCW)
     Logger.getInstance().recordOutput("Controller/vX raw", vX);
     Logger.getInstance().recordOutput("Controller/vY raw", vY);
     Logger.getInstance().recordOutput("Controller/vW raw", vW);
@@ -84,22 +80,14 @@ public class SwerveJoystickCommand extends CommandBase {
     //   default: drivetrain.setRotationPointIdx(0);
     // }
 
-    // get chassis speed
-    ChassisSpeeds chassisSpeeds;
-    // chassisSpeeds = new ChassisSpeeds(-vX, vY, vW);
-
     SmartDashboard.putBoolean("Field Oriented", drivetrain.fieldOriented);
     
     if (drivetrain.fieldOriented) {
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-       vY, vX, vW, drivetrain.getRotation2d());
+      drivetrain.setSpeedsFieldOriented(vX, vY, vW, null);
     }
     else {
-      chassisSpeeds = new ChassisSpeeds(vY, vX, vW);
+      drivetrain.setSpeeds(vX, vY, vW, null);
     }
-
-    SmartDashboard.putString("Chassis Speed", chassisSpeeds.toString() 
-    );
 
     // apply heading correction to the robot
     // double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
@@ -114,17 +102,7 @@ public class SwerveJoystickCommand extends CommandBase {
     //   omega_offset = 0;
     // double v_omega = chassisSpeeds.omegaRadiansPerSecond;// + omega_offset;
     
-
-    // chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, v_omega);
     
-    // convert to module states and apply to each wheel
-    SwerveModuleState[] moduleStates = drivetrain.getKinematics().toSwerveModuleStates(
-      chassisSpeeds,
-      Constants.SwerveDrivetrain.rotatePoints[0]); //drivetrain.getRotationPointIdx()
-    for (int i = 0; i < 4; i++) {
-      SmartDashboard.putString("kinematics desired state " + i, moduleStates[i].toString());
-    }
-    drivetrain.setModuleStates(moduleStates);
     SmartDashboard.putNumber("vX", vX);
     SmartDashboard.putNumber("vY", vY);
     SmartDashboard.putNumber("vW", vW);
