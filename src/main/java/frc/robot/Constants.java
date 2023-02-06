@@ -31,20 +31,15 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static final double kCompressedTicks = 0; //MAKE THE ZERO POSITION THE COMPRESSED INTAKE PIECE POSITION
-        public static final double kExpandedTicks = 50; // find the ticks when expanded at the most
-        public static final int kGearRatio = 4; //temp
-        public static final int kTicksPerRotation = 42; 
-        public static final int kLengthIntake = 7;
         public static final double kMarginOfError = 0.03;
 
-        public static final int kProximityPort = 0; //port number for element proximity sensor
-        public static final int kProximityClawPort = 0; //port number for element proximity sensor
-
-        public static final double kP = 0, kI = 0, kD = 0, kIz = 0 , kMaxOutput = 0, kMinOutput = 0;
+        public static final int kProximityPort = 6; //port number for element proximity sensor
+        public static final int kMotorPort = 4; 
+    
+        public static final double kP = 0, kI = 0, kD = 0;
 
         public static final double kCompressedSpeed = 0.03;
 
-        public static final double kGoalRPM = 0.3; //change based on testing
+        public static final double kGoalRPM = 0.3; 
     }
 }

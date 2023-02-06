@@ -26,19 +26,27 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final Joystick m_driverController =
+ /* private final Joystick m_driverController =
       new Joystick(OperatorConstants.kDriverControllerPort);
 
       private final JoystickButton intakeButton = new JoystickButton(m_driverController, 1);
       private final JoystickButton outtakeButton = new JoystickButton(m_driverController, 2);
-      private final JoystickButton manualButton = new JoystickButton(m_driverController, 3);
+      private final JoystickButton manualButton = new JoystickButton(m_driverController, 3);*/
+  
+  private final Joystick driverController = new Joystick(OperatorConstants.kDriverControllerPort);
 
-  private Intake intake; 
+  private final JoystickButton intakeButton = new JoystickButton(driverController, 1);
+  private final JoystickButton outtakeButton = new JoystickButton(driverController, 2);
+
+  private final JoystickButton manualIntake = new JoystickButton(driverController, 3);
+  private final JoystickButton manualOuttake = new JoystickButton(driverController, 4);
+
+  private Intake2 intake; 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    intake = new Intake(Intake.INTAKE_TYPE.wheeled); /// SPECIFY WHETHER WHEELED OR CLAW INTAKE
+    intake = new Intake2(Intake.INTAKE_TYPE.wheeled); /// SPECIFY WHETHER WHEELED OR CLAW INTAKE
     configureBindings();
   }
 
@@ -59,10 +67,16 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    outtakeButton.whileTrue(intake.outtakeElement()); //Run outtake when A is pressed
-    intakeButton.whileTrue(intake.intakeElement()); //Intend to intake when B is pressed
+  //  outtakeButton.whileTrue(intake.outtakeElement()); //Run outtake when A is pressed
+   // intakeButton.whileTrue(intake.intakeElement()); //Intend to intake when B is pressed
 
-    manualButton.whileTrue(intake.manualIntake()); //Run manual intake when X is pressed
+  // manualButton.whileTrue(intake.manualIntake()); //Run manual intake when X is pressed
+
+    intakeButton.whileTrue(intake.intake()).onFalse(intake.stop());
+    outtakeButton.whileTrue(intake.outtake()).onFalse(intake.stop());
+
+    manualIntake.whileTrue(intake.runIn()).onFalse(intake.stop());
+    manualOuttake.whileTrue(intake.runOut()).onFalse(intake.stop());
   }
 
   /**
