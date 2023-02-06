@@ -59,7 +59,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   // sensors
   private AHRS gyro;
   // private PigeonIMU gyro;
-  private double gyroOffset = 0; // degrees
+  private double gyroOffset_deg = 0; // degrees
 
   private Logger logger;
   
@@ -172,6 +172,10 @@ public class SwerveDrivetrain extends SubsystemBase {
     gyro.reset();
   }
 
+  public void setGyroOffset_deg(double offset_deg){
+    this.gyroOffset_deg = offset_deg;
+  }
+
   /**
    * <h3>get the heading of the physical gyro </h3> <br></br>
    * use IEEEremainder because it uses formula:
@@ -182,7 +186,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @return heading angle in degrees
    */
   public double getHeading() {
-    return Math.IEEEremainder(gyro.getYaw() - gyroOffset, 360.0);
+    return Math.IEEEremainder(gyro.getYaw() - gyroOffset_deg, 360.0);
   }
 
   /**
@@ -218,6 +222,9 @@ public class SwerveDrivetrain extends SubsystemBase {
     for (SwerveModule m : modules) {
        m.logMeasuredData();
     }
+
+    logger.recordOutput("NavXHeading", getRotation2d().getDegrees());
+    logger.recordOutput("OdometryHeading", getPose().getRotation().getDegrees());
 
     odometry.update(getRotation2d(), modulePositions);
 

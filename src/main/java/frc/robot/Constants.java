@@ -51,6 +51,12 @@ public final class Constants {
     public static final boolean invertJoystickX = true;
     public static final boolean invertJoystickY = true;
     public static final boolean invertJoystickW = true;
+
+    public static final double kPJoystick = 0.2;
+    public static final double kIJoystick = 0.0;
+    public static final double kDJoystick = 0.0;
+    public static final double kFJoystick = 0.0;
+
   }
 
   public static class SwerveDrivetrain {
@@ -164,6 +170,7 @@ public final class Constants {
     public static final double kVoltageComp = 10.0;
     public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(true, 40,
         50, 3.8);
+
   }
 
   public static class SwerveModule {

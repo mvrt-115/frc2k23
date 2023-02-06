@@ -79,4 +79,16 @@ public class MathUtils {
     public static boolean inRange(double val, double max) {
         return 0 <= val && val < max;
     }
+
+    public static double betterATanDeg(double x, double y) {
+        if (x == 0) {
+            if (y<0){
+                return -90;
+            }else{
+                return 90;
+            }
+        }else{
+            return Math.atan(y/x)*180/Math.PI;
+        }
+    }
 }

@@ -8,6 +8,8 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -28,6 +30,8 @@ public class SwerveJoystickCommand extends CommandBase {
   private final SlewRateLimiter xLimiter, yLimiter, wLimiter;
   private final JoystickIO joystick;
 
+  public PIDController thetaController;
+
   /** Creates a new SwerveJoystickCommand. */
   public SwerveJoystickCommand(SwerveDrivetrain drivetrain, Supplier<Double> xSpeedFunc, Supplier<Double> ySpeedFunc, Supplier<Double> angularSpeedFunc, Trigger fieldOrientedFunc, JoystickIO joystick) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -40,6 +44,7 @@ public class SwerveJoystickCommand extends CommandBase {
     this.yLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     this.wLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kTurnMaxAcceleration);
     this.joystick = joystick;
+    thetaController = new PIDController(Constants.JoystickControls.kPJoystick, Constants.JoystickControls.kIJoystick, Constants.JoystickControls.kDJoystick, Constants.JoystickControls.kFJoystick);
     addRequirements(drivetrain);
   }
 
@@ -82,26 +87,23 @@ public class SwerveJoystickCommand extends CommandBase {
     // }
 
     SmartDashboard.putBoolean("Field Oriented", drivetrain.fieldOriented);
-    
+    boolean isTurnBroken = false;
+    // apply heading correction to the robot
+    double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
+    double desired_heading = MathUtils.betterATanDeg(vX, vY); // deg
+    double omega_offset = desired_heading - thetaController.calculate(true_heading, desired_heading);
+    SmartDashboard.putNumber("Omega Offset", omega_offset);
+    double v_omega = vW;
+    if(!isTurnBroken){
+      v_omega = vW + omega_offset;
+    }
     if (drivetrain.fieldOriented) {
-      drivetrain.setSpeedsFieldOriented(vX, vY, vW, Constants.SwerveDrivetrain.rotatePoints[0]);
+      drivetrain.setSpeedsFieldOriented(vX, vY, v_omega, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
     else {
-      drivetrain.setSpeeds(vX, vY, vW, Constants.SwerveDrivetrain.rotatePoints[0]);
+      drivetrain.setSpeeds(vX, vY, v_omega, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
 
-    // apply heading correction to the robot
-    // double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
-    // double vx = chassisSpeeds.vxMetersPerSecond;
-    // if(vx < 0.1 && vx > -0.1){vx = Math.signum(vx)*0.1;}
-    // double desired_heading = Math.atan(chassisSpeeds.vyMetersPerSecond / (vx));
-    // double omega_offset = desired_heading - drivetrain.thetaController.calculate(true_heading, desired_heading);
-    // omega_offset *= Constants.SwerveDrivetrain.kTeleopHeadingCorrectionScale;
-    // SmartDashboard.putNumber("Omega Offset", omega_offset);
-
-    // if(Double.isNaN(omega_offset))
-    //   omega_offset = 0;
-    // double v_omega = chassisSpeeds.omegaRadiansPerSecond;// + omega_offset;
     
     
     SmartDashboard.putNumber("vX", vX);
