@@ -18,7 +18,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,7 +48,8 @@ public class Localization extends SubsystemBase {
     Pose2d camPose = weightTargets();
     if(camPose!=null){
       //update here rotation to whatever gyro gives us
-      camPose
+      camPose = new Pose2d(camPose.getX(), camPose.getY(), swerveDrivetrain.getRotation2d());
+      SmartDashboard.putNumber("chicken", swerveDrivetrain.getRotation2d().getDegrees());
 
       debugPID();
       SmartDashboard.putString("weightedCamPose", camPose.toString());
@@ -84,6 +84,18 @@ public class Localization extends SubsystemBase {
     //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     field.setRobotPose(getCurrentPose());
     log();
+
+    Pose2d robotPose = getCurrentPose();
+    if(robotPose==null){
+      SmartDashboard.putBoolean("pose is null", true);
+      return;
+    }
+
+    Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
+    SmartDashboard.putNumber("chicken gyro rot", swerveDrivetrain.getRotation2d().getDegrees());
+    SmartDashboard.putNumber("chicken robo rot", robotPose.getRotation().getDegrees());
+    SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
+    SmartDashboard.putNumber("chicken error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getRotation2d().getDegrees());
   }
 
   /**
@@ -135,10 +147,11 @@ public class Localization extends SubsystemBase {
     SmartDashboard.putNumber("Cam2 Theta Raw", cam2Result.getBestTarget().getBestCameraToTarget().getRotation().toRotation2d().getDegrees());
     SmartDashboard.putNumber("Cam1 Theta FieldRelative", cam1Pose.getRotation().getDegrees());
     SmartDashboard.putNumber("Cam2 Theta Field Relative", cam2Pose.getRotation().getDegrees());
-    SmartDashboard.putNumber("Average FieldRelative Theta", tAvg);
+    //SmartDashboard.putNumber("Average FieldRelative Theta", tAvg);
     //End of debugging
 
-    return new Pose2d(xAvg, yAvg, new Rotation2d(tAvg));
+    //just use gyro angle
+    return new Pose2d(xAvg, yAvg, swerveDrivetrain.getRotation2d());
   }
 
   /**
