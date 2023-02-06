@@ -48,6 +48,9 @@ public class Localization extends SubsystemBase {
   public void periodic() {
     Pose2d camPose = weightTargets();
     if(camPose!=null){
+      //update here rotation to whatever gyro gives us
+      camPose
+
       debugPID();
       SmartDashboard.putString("weightedCamPose", camPose.toString());
       //If aligning, reset pose to whatever camera gives us
@@ -126,7 +129,6 @@ public class Localization extends SubsystemBase {
     
     double xAvg = (cam1Pose.getX() + cam2Pose.getX()) / 2;
     double yAvg = (cam1Pose.getY() + cam2Pose.getY()) / 2;
-    double tAvg = (cam1Pose.getRotation().getRadians() + cam2Pose.getRotation().getRadians()) / 2;
     
     //For debugging theta
     SmartDashboard.putNumber("Cam1 Theta Raw", cam1Result.getBestTarget().getBestCameraToTarget().getRotation().toRotation2d().getDegrees());
@@ -221,6 +223,10 @@ public class Localization extends SubsystemBase {
     return Math.sqrt(Math.pow(initialPose.getX()-finalPose.getX(),2)+Math.pow(initialPose.getY()-finalPose.getY(),2));
   }
 
+  public double cardinalizeAngle(double degrees){
+    return degrees%=360;
+    //if(degrees<0)    //return Math.signum(radians)*(Math.PI-Math.abs(radians));
+  }
   /**
    * Returns whether the robot is currently aligning or not
    * @return whether or not the robot is currently aligning
