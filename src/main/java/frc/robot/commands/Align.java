@@ -11,7 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -31,9 +30,9 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseToGoTo = poseToGoTo;
 
-    pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
-    pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
-    pidTheta = new PIDController(5, 0, 0); // pid t-coor
+    pidX = new PIDController(1.2, 0, 0); // pid x-coor 1.2
+    pidY = new PIDController(1.2, 0, 0); // pid y-coor 1.2
+    pidTheta = new PIDController(5, 0, 0); // pid t-coor 5
   }
 
   // Called when the command is initially scheduled.
@@ -46,22 +45,14 @@ public class Align extends CommandBase {
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-    //SmartDashboard.putString("Target", localization.getClosestScoringLoc().toString());
-    //SmartDashboard.putString("currP")
-    //if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
-      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.6; // pos, setpoint
-      double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY())*0.7;
+    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.6;
+    double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY())*0.7;
 
-      double outTheta = pidTheta.calculate(robotPose.getRotation().getRadians(), poseToGoTo.getRotation().getRadians());
-    
-      SmartDashboard.putNumber("chicken out theta", outTheta);
-    
-      ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-outX, outY, outTheta, new Rotation2d(-robotPose.getRotation().getRadians()));
-      SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
-      swerve.setModuleStates(states);
-
-      SmartDashboard.putNumber("gryo out theta", outTheta);
-   // }
+    double outTheta = pidTheta.calculate(robotPose.getRotation().getRadians(), poseToGoTo.getRotation().getRadians());
+  
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-outX, outY, outTheta, new Rotation2d(-robotPose.getRotation().getRadians()));
+    SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
+    swerve.setModuleStates(states);
   }
 
   // Called once the command ends or is interrupted.
