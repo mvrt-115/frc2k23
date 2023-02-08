@@ -141,7 +141,6 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_backRightEncoderOffset,
       modulePositions[3]);
 
-    odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
     field = new Field2d();
 
     xController = new PIDController(Constants.SwerveDrivetrain.m_x_control_P, Constants.SwerveDrivetrain.m_x_control_I, Constants.SwerveDrivetrain.m_x_control_D);
@@ -157,8 +156,11 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS, 
       Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     trajectoryConfig.setKinematics(swerveKinematics);
+    
     state = DrivetrainState.JOYSTICK_DRIVE; 
+
     driveSimData = new DriveSimulationData(new SwerveDriveOdometry(swerveKinematics, new Rotation2d(), modulePositions), field);
+    odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
   }
 
   public SwerveModulePosition[] getModulePositions(){
@@ -194,6 +196,9 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @return heading angle in degrees
    */
   public double getHeading() {
+    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
+      return Math.IEEEremainder(driveSimData.getHeading(), 360.0);
+    }
     return -Math.IEEEremainder(gyro.getYaw() - gyroOffset_deg, 360.0);
   }
 
@@ -337,7 +342,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot, Translation2d rotatePoint) {
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, this.getRotation2d());
     SmartDashboard.putString("ChassisSpeedsFO", speeds.toString());
-    SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds, new Translation2d(0, 0));
+    SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds, rotatePoint);
     setModuleStates(moduleStates);
   }
 
