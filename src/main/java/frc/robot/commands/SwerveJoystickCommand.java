@@ -44,7 +44,7 @@ public class SwerveJoystickCommand extends CommandBase {
     this.yLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     this.wLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kTurnMaxAcceleration);
     this.joystick = joystick;
-    thetaController = new PIDController(Constants.JoystickControls.kPJoystick, Constants.JoystickControls.kIJoystick, Constants.JoystickControls.kDJoystick, Constants.JoystickControls.kFJoystick);
+    thetaController = new PIDController(Constants.JoystickControls.kPJoystick, Constants.JoystickControls.kIJoystick, Constants.JoystickControls.kDJoystick);
     addRequirements(drivetrain);
   }
 
@@ -87,7 +87,7 @@ public class SwerveJoystickCommand extends CommandBase {
     // }
 
     SmartDashboard.putBoolean("Field Oriented", drivetrain.fieldOriented);
-    boolean isTurnBroken = false;
+    boolean isTurnBroken = true;
     // apply heading correction to the robot
     double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
     double desired_heading = MathUtils.betterATanDeg(vX, vY); // deg
@@ -97,6 +97,9 @@ public class SwerveJoystickCommand extends CommandBase {
     if(!isTurnBroken){
       v_omega = vW + omega_offset;
     }
+
+    ChassisSpeeds chassisSpeeds;
+
     if (drivetrain.fieldOriented) {
       drivetrain.setSpeedsFieldOriented(vX, vY, v_omega, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
@@ -112,8 +115,8 @@ public class SwerveJoystickCommand extends CommandBase {
 
     if (MathUtils.withinEpsilon(vX, 0, 0.01) && MathUtils.withinEpsilon(vY, 0, 0.01) && MathUtils.withinEpsilon(vW, 0, 0.01)) {
       drivetrain.stopModules();
-      drivetrain.setRotationPointIdx(0);
-      drivetrain.resetModules();
+      // drivetrain.setRotationPointIdx(0);
+      // drivetrain.resetModules();
     }
   }
 
