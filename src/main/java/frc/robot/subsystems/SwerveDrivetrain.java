@@ -194,7 +194,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @return heading angle in degrees
    */
   public double getHeading() {
-    return Math.IEEEremainder(gyro.getYaw() - gyroOffset_deg, 360.0);
+    return -Math.IEEEremainder(gyro.getYaw() - gyroOffset_deg, 360.0);
   }
 
   /**
@@ -337,7 +337,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot, Translation2d rotatePoint) {
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, this.getRotation2d());
     SmartDashboard.putString("ChassisSpeedsFO", speeds.toString());
-    SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds, rotatePoint);
+    SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds, new Translation2d(0, 0));
     setModuleStates(moduleStates);
   }
 
