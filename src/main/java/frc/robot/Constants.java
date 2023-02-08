@@ -26,7 +26,7 @@ public final class Constants {
     public static final int MOTOR_ID2 = 14;
     
     public static final int kPIDIdx = 0;
-    public static final double P = 0;
+    public static final double P = 0;//.01;
     public static final double I = 0;
     public static final double D = 0;
     public static final double F = 0;
@@ -64,13 +64,13 @@ public final class Constants {
     public static final double KDt = 0.01;
 
     // constraints
-    public static final double MAX_VELOCITY = 5;
-    public static final double MAX_ACCELERATION = 2.5;
+    public static final double MAX_VELOCITY = 10.5;
+    public static final double MAX_ACCELERATION = 6.5;
 
     // initial elevator stages
     public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
 
-	public static final double ERROR = 0.2; 
+	public static final double ERROR = 50; 
 
     public static final double GEAR_RATIO = 3;
 

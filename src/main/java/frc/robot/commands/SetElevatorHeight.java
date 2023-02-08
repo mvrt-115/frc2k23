@@ -21,13 +21,13 @@ public class SetElevatorHeight extends CommandBase
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
     this.height = height; 
-    startTime = Timer.getFPGATimestamp();
     addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    startTime = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

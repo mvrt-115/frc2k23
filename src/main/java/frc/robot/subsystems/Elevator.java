@@ -43,9 +43,9 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile.Constraints constraints; // max velocity and acceleration for motion magic
   private double startTime; // time that the motion magic starts 
   // trapezoid profile goal and current
-  private TrapezoidProfile.State goal;
-  private TrapezoidProfile.State setpoint;
-  private TrapezoidProfile profile;
+  // private TrapezoidProfile.State goal;
+ // private TrapezoidProfile.State setpoint;
+ // private TrapezoidProfile profile;
   private DigitalInput inductiveSensor; // inductive sensor to check that the elevators at the bottom
 
   // sim fields
@@ -119,6 +119,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
     SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
     SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
+   // elev_motor.set
   }
   
   public void keepAtHeight() {
@@ -138,14 +139,14 @@ public class Elevator extends SubsystemBase {
     } 
     else if(isWithinError(targetHeight, 0) && currentIsWithinError()) {
       currState = ElevatorState.ZEROED;
-      keepAtHeight();
+     // keepAtHeight();
     }
     else if(!currentIsWithinError()) {
       currState = ElevatorState.GO_TO_SETPOINT;
     }
     else {
       currState = ElevatorState.AT_SETPOINT;
-      keepAtHeight();
+      //keepAtHeight();
     }
   }
 
@@ -162,9 +163,9 @@ public class Elevator extends SubsystemBase {
    // targetHeight = targetHeight < Constants.Elevator.MIN_HEIGHT ? Constants.Elevator.MIN_HEIGHT:targetHeight;
 
    // SmartDashboard.putNumber("Elevator target height", targetHeight);
-   goal = new TrapezoidProfile.State(targetHeight, 0);
-   setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition(), elev_motor.getSelectedSensorVelocity());
-   profile = new TrapezoidProfile(constraints, goal, setpoint);
+ //  goal = new TrapezoidProfile.State(targetHeight, 0);
+  // setpoint = new TrapezoidProfile.State();
+   //profile = new TrapezoidProfile(constraints, goal, setpoint);
     setHeightRaw(targetHeight);
   }
   
@@ -173,20 +174,24 @@ public class Elevator extends SubsystemBase {
    */ 
   private void setHeightRaw(double targetHeightRaw)
   {
-     
-   // TrapezoidProfile.State goal = new TrapezoidProfile.State(targetHeightRaw, 0);
-   // TrapezoidProfile.State setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition(), elev_motor.getSelectedSensorVelocity());
-   // TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, setpoint);
+    System.out.println("hi");
+    TrapezoidProfile.State goal = new TrapezoidProfile.State(targetHeightRaw, 0);
+    TrapezoidProfile.State setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition(), elev_motor.getSelectedSensorVelocity());
+    TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, setpoint);
+    SmartDashboard.putNumber("target height", targetHeightRaw);
     SmartDashboard.putNumber("goal position", goal.position);
     //SmartDashboard.putNumber("profile info", profile);
+    // SmartDashboard.putString("setpoint", setpoint.to) 
     setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime);
     SmartDashboard.putNumber("setpoint position", setpoint.position);
     
-    double feedforward = eFeedforward.calculate(setpoint.velocity/Constants.Elevator.INCHES_PER_TICK*10);
+    double feedforward = eFeedforward.calculate(setpoint.velocity);
     SmartDashboard.putNumber("feedforward", feedforward);
+    //pid.setSetpoint(setpoint.position);
     SmartDashboard.putNumber("pid", pid.calculate(setpoint.velocity));
+    SmartDashboard.putNumber("setpoint velocity", setpoint.velocity);
     SmartDashboard.putNumber("velocity", (feedforward+pid.calculate(setpoint.velocity))/12);
-    elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, feedforward/12);
+    elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);
     //SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
     // sim
     //  elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));

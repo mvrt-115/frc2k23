@@ -61,10 +61,10 @@ public class RobotContainer {
    // m_driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
    // m_driverController.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
   //  m_driverController.x().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.MIN_HEIGHT));
-  // m_driverController.b().whileTrue(new SetElevatorHeight(elevator, 100));
-  // m_driverController.a().whileTrue(new SetElevatorHeight(elevator, 6000));
-  m_driverController.b().whileTrue(new ManualElevator(elevator, -0.1));
-  m_driverController.a().whileTrue(new ManualElevator(elevator, 0.4));
+   m_driverController.b().onTrue(new SetElevatorHeight(elevator, 100));
+   m_driverController.a().onTrue(new SetElevatorHeight(elevator, 2000));
+ // m_driverController.b().whileTrue(new ManualElevator(elevator, -0.1));
+ // m_driverController.a().whileTrue(new ManualElevator(elevator, 0.4));
 
   // sim
   //  SmartDashboard.putData("go to mid", new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
