@@ -50,7 +50,13 @@ public final class Constants {
     public static final boolean xBoxControl = false;
     public static final boolean invertJoystickX = true;
     public static final boolean invertJoystickY = true;
-    public static final boolean invertJoystickW = false;
+    public static final boolean invertJoystickW = true;
+
+    public static final double kPJoystick = 0.2;
+    public static final double kIJoystick = 0.0;
+    public static final double kDJoystick = 0.0;
+    public static final double kFJoystick = 0.0;
+
   }
 
   public static class SwerveDrivetrain {
@@ -91,12 +97,12 @@ public final class Constants {
     public static final int m_backRightEncoderID = 12;
 
     // Comp Bot Encoder Offsets
-    public static final boolean isCompBot = false;
+    public static final boolean isCompBot = true;
 
-    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(29.53);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(182.37);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(343.30);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(146.87);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.31);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(317.02);// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(37.00);// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(126.38);// + Math.PI/2.0;
 
     // Practice Bot Encoder Offsets
     public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(33.62);// + Math.PI/2.0;
@@ -131,7 +137,7 @@ public final class Constants {
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
     public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
-    public static final double kDriveMaxAcceleration = 5;
+    public static final double kDriveMaxAcceleration = 2;
     public static final double kTurnMaxAcceleration = 1.5 * Math.PI;
     public static final double kDriveMaxSpeedMPS = 3;
     public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
@@ -164,10 +170,11 @@ public final class Constants {
     public static final double kVoltageComp = 10.0;
     public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(true, 40,
         50, 3.8);
+
   }
 
   public static class SwerveModule {
-    public static final double gear_ratio_turn = 7.0/150.0;
+    public static final double gear_ratio_turn = 7.0 / 150;
     public static final double gear_ratio_drive = 6.75 / 1.0;
     public static final double radius = 0.05; // meters
     public static final double kwheelCircumference = 2 * Math.PI * radius; // meters
