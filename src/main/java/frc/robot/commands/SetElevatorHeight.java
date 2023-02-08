@@ -30,7 +30,7 @@ public class SetElevatorHeight extends CommandBase
   @Override
   public void execute()
   {
-    elevator.setTargetHeight(height);
+    //elevator.setTargetHeight(height);
   }
 
   // Called once the command ends or is interrupted.

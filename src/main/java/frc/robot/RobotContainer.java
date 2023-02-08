@@ -9,6 +9,14 @@ import frc.robot.commands.AlignAndExtend;
 import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
+import frc.robot.commands.Autos;
+import frc.robot.commands.DriveForward;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Leveling;
+import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.commands.SetElevatorHeight;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.JoystickIO;
 
@@ -25,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -41,6 +50,8 @@ public class RobotContainer {
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
+
+  private final Trigger levelTrigger;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -65,6 +76,12 @@ public class RobotContainer {
       
     // Configure the trigger bindings
     configureBindings();
+    //elevator = new Elevator();
+    //elevator.setDefaultCommand(new SetElevatorHeight(elevator));
+
+    levelTrigger = driveJoystick.button(2);
+    levelTrigger.onTrue( new DriveForward(swerveDrivetrain, 1, 0.5).andThen(new Leveling(swerveDrivetrain)) );
+    
   }
 
   /**
