@@ -197,7 +197,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public double getHeading() {
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
-      return Math.IEEEremainder(driveSimData.getHeading(), 360.0);
+      return Math.IEEEremainder(Math.toDegrees(driveSimData.getHeading()), 360.0);
     }
     return -Math.IEEEremainder(gyro.getYaw() - gyroOffset_deg, 360.0);
   }
@@ -261,8 +261,10 @@ public class SwerveDrivetrain extends SubsystemBase {
        m.logMeasuredData();
     }
 
-    logger.recordOutput("NavXHeading", getRotation2d().getDegrees());
-    logger.recordOutput("OdometryHeading", getPose().getRotation().getDegrees());
+    logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
+    logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
+    logger.recordOutput("OdometryHeadingRad", getPose().getRotation().getRadians());
+    logger.recordOutput("OdometryHeadingDeg", getPose().getRotation().getDegrees());
 
     odometry.update(getRotation2d(), modulePositions);
 
@@ -340,7 +342,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot) {
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, this.getRotation2d());
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getRotation2d());
     SmartDashboard.putString("ChassisSpeedsFO", speeds.toString());
     SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds);
     setModuleStates(moduleStates);

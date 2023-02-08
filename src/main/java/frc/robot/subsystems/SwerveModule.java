@@ -34,7 +34,6 @@ public class SwerveModule {
   private final CANCoder absEncoder;
   private final boolean absEncoderReversed;
   private final double absEncoderOffsetRad;
-  private final double talonEncoderOffset = 0;
 
   private SwerveModuleState desiredState;
   private SwerveModulePosition modulePosition;
@@ -156,7 +155,6 @@ public class SwerveModule {
    */
   public double getRawEncoderRad() {
     double angle = turnMotor.getSelectedSensorPosition();
-    angle += talonEncoderOffset;
     return MathUtils.ticksToRadians(
         angle,
         Constants.Talon.talonFXTicks,
@@ -171,11 +169,14 @@ public class SwerveModule {
     // turnMotor.setSelectedSensorPosition(0);
     // talonEncoderOffset = 0 - MathUtils.radiansToTicks(getAbsoluteEncoderRad(),
     //     Constants.Talon.talonFXTicks, Constants.SwerveModule.gear_ratio_turn);
+    // if (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM) {
+      
+    // }
     turnMotor.setSelectedSensorPosition(MathUtils.radiansToTicks(
-      getAbsoluteEncoderRad(), 
-      Constants.Talon.talonFXTicks, 
-      Constants.SwerveModule.gear_ratio_turn
-      ));
+        getAbsoluteEncoderRad(), 
+        Constants.Talon.talonFXTicks, 
+        Constants.SwerveModule.gear_ratio_turn
+        ));
   }
 
   /**
@@ -194,14 +195,14 @@ public class SwerveModule {
         MathUtils.radiansToTicks(
             radians,
             Constants.Talon.talonFXTicks,
-            Constants.SwerveModule.gear_ratio_turn) - talonEncoderOffset);
+            Constants.SwerveModule.gear_ratio_turn));
 
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
       turnMotorSim.setIntegratedSensorRawPosition(
         (int) (MathUtils.radiansToTicks(
             radians,
             Constants.Talon.talonFXTicks,
-            Constants.SwerveModule.gear_ratio_turn) - talonEncoderOffset));    
+            Constants.SwerveModule.gear_ratio_turn)));    
     }
   }
 
