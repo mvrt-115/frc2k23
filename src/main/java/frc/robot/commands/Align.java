@@ -30,9 +30,9 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseToGoTo = poseToGoTo;
 
-    pidX = new PIDController(1.2, 0, 0); // pid x-coor 1.2
-    pidY = new PIDController(1.2, 0, 0); // pid y-coor 1.2
-    pidTheta = new PIDController(5, 0, 0); // pid t-coor 5
+    pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
+    pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
+    pidTheta = new PIDController(5, 0, 0); // pid t-coor
   }
 
   // Called when the command is initially scheduled.
@@ -45,29 +45,33 @@ public class Align extends CommandBase {
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.6;
-    double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY())*0.7;
+    //if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
+      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.6; // pos, setpoint
+      double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY())*0.7;
 
-    double outTheta = pidTheta.calculate(robotPose.getRotation().getRadians(), poseToGoTo.getRotation().getRadians());
-  
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-outX, outY, outTheta, new Rotation2d(-robotPose.getRotation().getRadians()));
-    SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
-    swerve.setModuleStates(states);
+      double outTheta = pidTheta.calculate(robotPose.getRotation().getRadians(), poseToGoTo.getRotation().getRadians());
+    
+      SmartDashboard.putNumber("chicken out theta", outTheta);
+    
+      ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-outX, outY, outTheta, new Rotation2d(-robotPose.getRotation().getRadians()));
+      SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
+      swerve.setModuleStates(states);
+   // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    localization.setAligning(true);
+    localization.setAligning(false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    Pose2d robotPose = localization.getCurrentPose();
+    //Pose2d robotPose = localization.getCurrentPose();
 
     //If close enough to target
-    return Math.abs(robotPose.getRotation().minus(poseToGoTo.getRotation()).getRadians())<0.1;
+    return Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) < 10;
     //return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 && Math.abs(robotPose.getX()-poseToGoTo.getX())<0.05 ;
     /* 
     return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance && 

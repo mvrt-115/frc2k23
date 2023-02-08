@@ -47,12 +47,15 @@ public class Localization extends SubsystemBase {
   public void periodic() {
     Pose2d camPose = weightTargets();
     if(camPose!=null){
-      debugPID();
+      //update here rotation to whatever gyro gives us
+      camPose = new Pose2d(camPose.getX(), camPose.getY(), swerveDrivetrain.getRotation2d());
+      SmartDashboard.putNumber("chicken", swerveDrivetrain.getRotation2d().getDegrees());
 
+      debugPID();
+      SmartDashboard.putString("weightedCamPose", camPose.toString());
       //If aligning, reset pose to whatever camera gives us
       if(aligning){
         resetPoseEstimator(camPose);
-        
       }
       else{
         double latency = 0;
@@ -79,13 +82,11 @@ public class Localization extends SubsystemBase {
       field.setRobotPose(currPose); 
     }
     //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
+    field.setRobotPose(getCurrentPose());
     log();
 
     Pose2d robotPose = getCurrentPose();
-    if(robotPose==null){
-      SmartDashboard.putBoolean("pose is null", true);
-      return;
-    }
+    if(robotPose==null) return;
 
     Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
     SmartDashboard.putNumber("chicken gyro rot", swerveDrivetrain.getRotation2d().getDegrees());
@@ -136,6 +137,14 @@ public class Localization extends SubsystemBase {
     
     double xAvg = (cam1Pose.getX() + cam2Pose.getX()) / 2;
     double yAvg = (cam1Pose.getY() + cam2Pose.getY()) / 2;
+    
+    //For debugging theta
+    SmartDashboard.putNumber("Cam1 Theta Raw", cam1Result.getBestTarget().getBestCameraToTarget().getRotation().toRotation2d().getDegrees());
+    SmartDashboard.putNumber("Cam2 Theta Raw", cam2Result.getBestTarget().getBestCameraToTarget().getRotation().toRotation2d().getDegrees());
+    SmartDashboard.putNumber("Cam1 Theta FieldRelative", cam1Pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("Cam2 Theta Field Relative", cam2Pose.getRotation().getDegrees());
+    //SmartDashboard.putNumber("Average FieldRelative Theta", tAvg);
+    //End of debugging
 
     //just use gyro angle
     return new Pose2d(xAvg, yAvg, swerveDrivetrain.getRotation2d());
@@ -254,6 +263,8 @@ public class Localization extends SubsystemBase {
     
     SmartDashboard.putBoolean("Cam 1 can see", camera1.getLatestResult().hasTargets());
     SmartDashboard.putBoolean("Cam 2 can see", camera2.getLatestResult().hasTargets());
+   // Logger.getInstance().recordOutput("Robo X", lastPose.getX());
+    //Logger.getInstance().recordOutput("Robo Y", lastPose.getY());
   }
 
   /**
@@ -266,6 +277,7 @@ public class Localization extends SubsystemBase {
       return;
     }
 
+    // SmartDashboard
     Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
 
     SmartDashboard.putNumber("robo theta", (robotPose.getRotation().getDegrees()));
@@ -278,5 +290,6 @@ public class Localization extends SubsystemBase {
     SmartDashboard.putNumber("distance from final", Localization.distFromTag(robotPose, poseToGoTo));
     SmartDashboard.putNumber("error x", poseToGoTo.getX() - robotPose.getX());
     SmartDashboard.putNumber("error y", poseToGoTo.getY() - robotPose.getY());
-  } 
+  }
+  
 }
