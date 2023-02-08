@@ -73,6 +73,9 @@ public class DriveSimulationData {
         if (Math.abs(angularVelocity) > 0.3) {
             pw = angularVelocity * dt + headingAngle;
         }
+        else {
+            pw = headingAngle;
+        }
         update(modulePositions, pw);
     }
 

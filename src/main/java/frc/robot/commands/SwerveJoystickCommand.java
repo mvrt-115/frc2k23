@@ -93,14 +93,14 @@ public class SwerveJoystickCommand extends CommandBase {
     double desired_heading = MathUtils.betterATanDeg(vX, vY); // deg
     double omega_offset = desired_heading - thetaController.calculate(true_heading, desired_heading);
     SmartDashboard.putNumber("Omega Offset", omega_offset);
-    
+
     double v_omega = vW;
     if(!isTurnBroken){
       v_omega = vW + omega_offset;
     }
 
     if (drivetrain.fieldOriented) {
-      drivetrain.setSpeedsFieldOriented(vX, vY, v_omega, Constants.SwerveDrivetrain.rotatePoints[0]);
+      drivetrain.setSpeedsFieldOriented(vX, vY, v_omega);
     }
     else {
       drivetrain.setSpeeds(vX, vY, v_omega, Constants.SwerveDrivetrain.rotatePoints[0]);
