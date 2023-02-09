@@ -59,8 +59,8 @@ public class SwerveJoystickCommand extends CommandBase {
   @Override
   public void execute() {
     double vX = xSpeedFunc.get(); // as of here, negative X is backwards, positive X is forward
-    double vY = ySpeedFunc.get(); // as of here, negative Y is left, positive Y is right
-    double vW = turnSpeedFunc.get(); // as of here, negative W is up (CW) positive W is down (CCW)
+    double vY = ySpeedFunc.get(); // as of here, positive Y is left, negative Y is right
+    double vW = turnSpeedFunc.get(); // as of here, negative W is down (CW) positive W is up (CCW)
     Logger.getInstance().recordOutput("Controller/vX raw", vX);
     Logger.getInstance().recordOutput("Controller/vY raw", vY);
     Logger.getInstance().recordOutput("Controller/vW raw", vW);
