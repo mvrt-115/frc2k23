@@ -23,6 +23,7 @@ import frc.robot.utils.JoystickIO;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -99,7 +100,7 @@ public class RobotContainer {
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
     
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
-    driveJoystick.button(2).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
+    driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     autonSelector.setDefaultOption("Example", new AutonPathExample(swerveDrivetrain));
     SmartDashboard.putData("Auton Selector", autonSelector);

@@ -277,6 +277,9 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     logger.recordOutput("Robot Location", getPose());
+    logger.recordOutput("Robot Pose X", getPose().getX());
+    logger.recordOutput("Robot Pose Y", getPose().getY());
+    logger.recordOutput("Robot Location W deg", getPose().getRotation().getDegrees());
     logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
   }
 
@@ -407,6 +410,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param pose
    */
   public void resetOdometry(Pose2d pose) {
+    SmartDashboard.putBoolean("Reset Odometry", true);
     odometry.resetPosition(getRotation2d(), modulePositions, pose);
   }
 

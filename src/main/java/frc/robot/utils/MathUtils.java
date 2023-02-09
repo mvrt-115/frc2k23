@@ -51,7 +51,7 @@ public class MathUtils {
     }
 
     public static double ticksToMeter(double ticks, double encoder_ticks, double gear_ratio, double radius) {
-        return (ticks/encoder_ticks) * gear_ratio * 2 * Math.PI * radius;
+        return (ticks/encoder_ticks) / gear_ratio * 2 * Math.PI * radius;
     }
     
     public static double inchesToMeters(double meters){

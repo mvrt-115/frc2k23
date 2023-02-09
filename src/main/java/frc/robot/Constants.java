@@ -133,13 +133,13 @@ public final class Constants {
     public static final double m_backRightEncoderOffset = isCompBot? m_backRightEncoderOffset_Comp:m_backRightEncoderOffset_P;// + Math.PI/2.0;
 
     // Position PID
-    public static final double m_x_control_P = 2;
-    public static final double m_x_control_I = 0.05;
-    public static final double m_x_control_D = 0.05;
-    public static final double m_y_control_P = 2;
-    public static final double m_y_control_I = 0.05;
-    public static final double m_y_control_D = 0.05;
-    public static final double m_r_control_P = 1;
+    public static final double m_x_control_P = 0.1;
+    public static final double m_x_control_I = 0;
+    public static final double m_x_control_D = 0;
+    public static final double m_y_control_P = 0.1;
+    public static final double m_y_control_I = 0;
+    public static final double m_y_control_D = 0;
+    public static final double m_r_control_P = 0.1;
     public static final double m_r_control_I = 0;
     public static final double m_r_control_D = 0;
 
@@ -149,10 +149,10 @@ public final class Constants {
     public static final double kThrottleDeadband = 0.2;
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
-    public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
-    public static final double kDriveMaxAcceleration = 3;
-    public static final double kTurnMaxAcceleration = 1.5 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 3;
+    public static final double kMaxSpeedMPS = 5; // optimize max speed to prioritize translation
+    public static final double kDriveMaxAcceleration = 1.5;
+    public static final double kTurnMaxAcceleration = 1 * Math.PI;
+    public static final double kDriveMaxSpeedMPS = 2;
     public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
@@ -193,12 +193,12 @@ public final class Constants {
     public static final double kwheelCircumference = 2 * Math.PI * radius; // meters
 
     // PID Constants
-    public static final double kP = 0.2; // 3.2364;
-    public static final double kI = 0;
+    public static final double kP = 0.3; // 3.2364;
+    public static final double kI = 0.001;
     public static final double kD = 0;
     public static final double kFF = 0;
 
-    public static final double kPTurn = 0.10;
+    public static final double kPTurn = 0.3;
     public static final double kITurn = 0.0;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
