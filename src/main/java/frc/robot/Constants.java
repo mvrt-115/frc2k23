@@ -15,6 +15,13 @@ import frc.robot.subsystems.Elevator.ElevatorState;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
+
+ public static class DataLogging {
+  public static final Mode currMode = Mode.REAL;
+
+  public static enum Mode { REAL, REPLAY, SIM }
+
+}
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;

@@ -25,6 +25,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.math.system.plant.DCMotor;
+import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
   private ElevatorState currState;
@@ -54,6 +55,7 @@ public class Elevator extends SubsystemBase {
   private EncoderSim encoderSim;
   public static DCMotor gearbox;
   public static TalonFXSimCollection elevMotorSim;
+  private Logger logger;
 
 
   /** Creates a new Elevator. */
@@ -119,6 +121,9 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
     SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
     SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
+    logger.recordOutput("elevator motor 1 height", elev_motor.getSelectedSensorPosition());
+    logger.recordOutput("elevator motor 2 height", elev_motor2.getSelectedSensorPosition());
+    logger.recordOutput("motor velocity", elev_motor.getSelectedSensorVelocity())
    // elev_motor.set
   }
   
@@ -178,6 +183,9 @@ public class Elevator extends SubsystemBase {
     TrapezoidProfile.State goal = new TrapezoidProfile.State(targetHeightRaw, 0);
     TrapezoidProfile.State setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition(), elev_motor.getSelectedSensorVelocity());
     TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, setpoint);
+    Logger.getInstance().recordOutput("elevator target height", targetHeightRaw);
+    Logger.getInstance().recordOutput("elevator setpoint position", setpoint.position);
+    Logger.getInstance().recordOutput("elevator setpoint velocity", setpoint.velocity);
     SmartDashboard.putNumber("target height", targetHeightRaw);
     SmartDashboard.putNumber("goal position", goal.position);
     //SmartDashboard.putNumber("profile info", profile);
