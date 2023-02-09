@@ -25,12 +25,14 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.math.system.plant.DCMotor;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
   private ElevatorState currState;
   private double targetHeight;
   private double currentHeight;
+  private Logger logger;
   // private SupplyCurrentLimitConfiguration currentConfig;
 
   public enum ElevatorState {
@@ -55,7 +57,6 @@ public class Elevator extends SubsystemBase {
   private EncoderSim encoderSim;
   public static DCMotor gearbox;
   public static TalonFXSimCollection elevMotorSim;
-  private Logger logger;
 
 
   /** Creates a new Elevator. */
@@ -96,8 +97,11 @@ public class Elevator extends SubsystemBase {
      elev_motor.config_kF(Constants.Elevator.kPIDIdx, Constants.Elevator.F);
 
     elev_motor.setNeutralMode(NeutralMode.Brake);
+    elev_motor2.setNeutralMode(NeutralMode.Brake);
     elev_motor.setSelectedSensorPosition(0);
     elev_motor2.setSelectedSensorPosition(0);
+
+    logger = Logger.getInstance();
 
     // sim
     encoder = new Encoder(1, 2);
@@ -121,9 +125,9 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
     SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
     SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
-    logger.recordOutput("elevator motor 1 height", elev_motor.getSelectedSensorPosition());
-    logger.recordOutput("elevator motor 2 height", elev_motor2.getSelectedSensorPosition());
-    logger.recordOutput("motor velocity", elev_motor.getSelectedSensorVelocity())
+    logger.recordOutput("Elevator motor 1 position", elev_motor.getSelectedSensorPosition());
+    logger.recordOutput("Elevator motor 2 position", elev_motor2.getSelectedSensorPosition());
+    logger.recordOutput("Elevator motor velocity", elev_motor.getSelectedSensorVelocity());
    // elev_motor.set
   }
   
@@ -183,9 +187,6 @@ public class Elevator extends SubsystemBase {
     TrapezoidProfile.State goal = new TrapezoidProfile.State(targetHeightRaw, 0);
     TrapezoidProfile.State setpoint = new TrapezoidProfile.State(elev_motor.getSelectedSensorPosition(), elev_motor.getSelectedSensorVelocity());
     TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, setpoint);
-    Logger.getInstance().recordOutput("elevator target height", targetHeightRaw);
-    Logger.getInstance().recordOutput("elevator setpoint position", setpoint.position);
-    Logger.getInstance().recordOutput("elevator setpoint velocity", setpoint.velocity);
     SmartDashboard.putNumber("target height", targetHeightRaw);
     SmartDashboard.putNumber("goal position", goal.position);
     //SmartDashboard.putNumber("profile info", profile);
@@ -196,9 +197,14 @@ public class Elevator extends SubsystemBase {
     double feedforward = eFeedforward.calculate(setpoint.velocity);
     SmartDashboard.putNumber("feedforward", feedforward);
     //pid.setSetpoint(setpoint.position);
-    SmartDashboard.putNumber("pid", pid.calculate(setpoint.velocity));
+    //SmartDashboard.putNumber("pid", pid.calculate(setpoint.velocity));
     SmartDashboard.putNumber("setpoint velocity", setpoint.velocity);
     SmartDashboard.putNumber("velocity", (feedforward+pid.calculate(setpoint.velocity))/12);
+    logger.recordOutput("elevator target height", targetHeightRaw);
+    logger.recordOutput("elevator setpoint position", setpoint.position);
+    logger.recordOutput("elevator setpoint velocity", setpoint.velocity);
+    logger.recordOutput("elevator feedforward", feedforward);
+    logger.recordOutput("elevator set velocity", (feedforward+pid.calculate(setpoint.velocity))/12);
     elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward+pid.calculate(setpoint.velocity))/12);
     //SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
     // sim

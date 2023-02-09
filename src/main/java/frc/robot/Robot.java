@@ -11,8 +11,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -22,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -33,30 +32,55 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+    Logger logger = Logger.getInstance();
+
+    logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    
+    // Set up data receivers & replay source
+    switch (Constants.DataLogging.currMode) {
+      // Running on a real robot, log to a USB stick
+      case REAL:
+        logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
+        logger.addDataReceiver(new NT4Publisher());
+        break;
+
+      // Running a simulator, log to local folder
+      case SIM:
+        logger.addDataReceiver(new WPILOGWriter(""));
+        logger.addDataReceiver(new NT4Publisher());
+        break;
+
+      // Replaying a log, set up replay source
+      case REPLAY:
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog();
+        logger.setReplaySource(new WPILOGReader(logPath));
+        logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        break;
+    }
+
+    logger.start();
+
     m_robotContainer = new RobotContainer();
   }
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
   @Override
   public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
+
+    // preLog
     CommandScheduler.getInstance().run();
+    // postLog
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    //all motors on break here so no crashing into trash cans :D
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -89,12 +113,22 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // frontLeft.set(ControlMode.PercentOutput, 0.3);
+    // frontRight.set(ControlMode.PercentOutput, 0.3);
+    // backLeft.set(ControlMode.PercentOutput, 0.3);
+    // backRight.set(ControlMode.PercentOutput, 0.3);
+
+    // SmartDashboard.putNumber("normal", frontLeft.getSelectedSensorVelocity());
+    // SmartDashboard.putNumber("stupid", backLeft.getSelectedSensorVelocity());
+  }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    LiveWindow.setEnabled(false);
+    //m_robotContainer.putTestCommand();
   }
 
   /** This function is called periodically during test mode. */
