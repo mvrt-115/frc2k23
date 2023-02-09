@@ -46,7 +46,12 @@ public class SwerveModule {
   public SwerveModule(String _swerveID, int driveID, int turnID, int encoderID, boolean driveReversed, boolean turnReversed,
       boolean encoderReversed, double encoderOffset, SwerveModulePosition position) {
     driveMotor = TalonFactory.createTalonFX(driveID, driveReversed);
-    turnMotor = TalonFactory.createTalonFX(turnID, turnReversed);
+    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
+      turnMotor = TalonFactory.createTalonFX(turnID, false);
+    }
+    else {
+      turnMotor = TalonFactory.createTalonFX(turnID, turnReversed);
+    }
 
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
       driveMotorSim = ((TalonFX) driveMotor).getSimCollection();
@@ -169,14 +174,13 @@ public class SwerveModule {
     // turnMotor.setSelectedSensorPosition(0);
     // talonEncoderOffset = 0 - MathUtils.radiansToTicks(getAbsoluteEncoderRad(),
     //     Constants.Talon.talonFXTicks, Constants.SwerveModule.gear_ratio_turn);
-    // if (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM) {
-      
-    // }
-    turnMotor.setSelectedSensorPosition(MathUtils.radiansToTicks(
+    if (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM) {
+      turnMotor.setSelectedSensorPosition(MathUtils.radiansToTicks(
         getAbsoluteEncoderRad(), 
         Constants.Talon.talonFXTicks, 
         Constants.SwerveModule.gear_ratio_turn
-        ));
+        )); 
+    }
   }
 
   /**
