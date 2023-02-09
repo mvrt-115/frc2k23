@@ -34,10 +34,10 @@ public class AutonPathExample extends SequentialCommandGroup {
         new Translation2d(2, 0),
         new Translation2d(2, 2)
       ), 
-      new Pose2d(2, 2, Rotation2d.fromDegrees(180.0)),
+      new Pose2d(3, 2, Rotation2d.fromDegrees(180.0)),
       swerveDrivetrain.getTrajectoryConfig());
     
-    // swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
+    swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
 
     swerveControllerCommand = new SwerveControllerCommand(
       trajectory, 

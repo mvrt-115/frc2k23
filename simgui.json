@@ -30,6 +30,10 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "traj": {
+          "arrowSize": 2,
+          "style": "Track"
+        },
         "window": {
           "visible": true
         }

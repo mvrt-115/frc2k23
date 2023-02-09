@@ -133,12 +133,12 @@ public final class Constants {
     public static final double m_backRightEncoderOffset = isCompBot? m_backRightEncoderOffset_Comp:m_backRightEncoderOffset_P;// + Math.PI/2.0;
 
     // Position PID
-    public static final double m_x_control_P = 0.5;
-    public static final double m_x_control_I = 0;
-    public static final double m_x_control_D = 0;
-    public static final double m_y_control_P = 0.5;
-    public static final double m_y_control_I = 0;
-    public static final double m_y_control_D = 0;
+    public static final double m_x_control_P = 2;
+    public static final double m_x_control_I = 0.05;
+    public static final double m_x_control_D = 0.05;
+    public static final double m_y_control_P = 2;
+    public static final double m_y_control_I = 0.05;
+    public static final double m_y_control_D = 0.05;
     public static final double m_r_control_P = 1;
     public static final double m_r_control_I = 0;
     public static final double m_r_control_D = 0;
