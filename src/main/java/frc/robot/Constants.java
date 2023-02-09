@@ -143,9 +143,6 @@ public final class Constants {
     public static final double m_r_control_I = 0;
     public static final double m_r_control_D = 0;
 
-    // Gyro CAN ID
-    public static final int pigeon_id = 1;
-
     // constants for joystick drive
     public static final double kSensitivity = 0.90;
     public static final double kWheelDeadband = 0.2;
