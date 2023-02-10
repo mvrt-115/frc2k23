@@ -187,8 +187,8 @@ public final class Constants {
   }
 
   public static class SwerveModule {
-    public static final double gear_ratio_turn = 7.0 / 150;
-    public static final double gear_ratio_drive = 6.75 / 1.0;
+    public static final double gear_ratio_turn = 150.0 / 7.0; // number of rotations of talon for one turn of wheel
+    public static final double gear_ratio_drive = 6.75 / 1.0; // number of rotations of talon for one rotation of wheel
     public static final double radius = 0.05; // meters
     public static final double kwheelCircumference = 2 * Math.PI * radius; // meters
 

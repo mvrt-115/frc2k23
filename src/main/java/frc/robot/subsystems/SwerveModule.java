@@ -241,7 +241,7 @@ public class SwerveModule {
       dt = Math.min(0.3, dt);
       double position = driveMotor.getSelectedSensorPosition() + MathUtils.rpmToTicks(
         MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
-        Constants.SwerveModule.gear_ratio_drive) * 0.5 * dt;
+        Constants.SwerveModule.gear_ratio_drive) * dt;
       SmartDashboard.putNumber("raw sim sensor pos " + absEncoder.getDeviceID(), position);
       driveMotorSim.setIntegratedSensorRawPosition(
         (int)position
