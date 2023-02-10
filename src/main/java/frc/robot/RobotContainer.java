@@ -32,7 +32,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    intake = new Intake(Intake.INTAKE_TYPE.wheeled); /// SPECIFY WHETHER WHEELED OR CLAW INTAKE
+    intake = new Intake(Intake.INTAKE_TYPE.claw); /// SPECIFY WHETHER WHEELED OR CLAW INTAKE
     configureBindings();
   }
 
@@ -56,7 +56,7 @@ public class RobotContainer {
     m_driverController.a().onTrue(intake.outtakeElement()); //Run outtake when A is pressed
     m_driverController.b().onTrue(intake.intakeElement()); //Intend to intake when B is pressed
 
-    m_driverController.x().onTrue(intake.manualIntake()); //Run manual intake when X is pressed
+    m_driverController.x().whileTrue(intake.manualIntake()).onFalse(intake.manualOuttake()); //Run manual intake when X is pressed
   }
 
   /**
