@@ -61,7 +61,6 @@ public class Intake extends SubsystemBase {
     pidController.setP(Constants.Intake.kP);
     pidController.setI(Constants.Intake.kI);
     pidController.setD(Constants.Intake.kD);
-    pidController.setOutputRange(Constants.Intake.kMinOutput, Constants.Intake.kMaxOutput);
   }
 
   /******************************************COMMANDS***************************************/
@@ -115,6 +114,7 @@ public class Intake extends SubsystemBase {
       return new RunCommand(() -> setMotorSpeed(Constants.Intake.kCompressedSpeed)); //CHANGE HOLD SPEED AS NECESSARY
      }
 
+
      ///////////////////////CLAW//////////////////////////
 
   /*
@@ -149,7 +149,7 @@ public class Intake extends SubsystemBase {
 
     if(!isIntaking) intakeState = INTAKE_STATE.SPEEDING_UP;
 
-    if(!currentProxState && isIntaking || !isIntaking) 
+    if(!currentProxState && isIntaking || !isIntaking)  // ADD SOFT LIMIT HERE USING ENCODER AND ALSO A CURRENT LIMIT
     {
         switch(intakeState)
         {
@@ -202,14 +202,14 @@ public class Intake extends SubsystemBase {
    /**
     * sets constant speed to claw until it reaches the limit of expansion as dictated by an encoder
     */
-   public void expand() {
+   /*public void expand() {
       while(!(encoder.getPosition() <= Constants.Intake.kExpandedTicks + Constants.Intake.kMarginOfError && 
         encoder.getPosition() >= Constants.Intake.kExpandedTicks - Constants.Intake.kMarginOfError ))
       {
         setMotorSpeed(-Constants.Intake.kGoalRPM);
       }
       zeroMotorSpeed();
-   }
+   }*/
 
    /*
    * Sets the motor to speed after entering coast mode
@@ -236,7 +236,7 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean("sensing element in intake", proximityElement.get());
    // SmartDashboard.putBoolean("sensing edge of elevator", proximityClaw.get());
 
-      currentProxState = proximityElement.get();
+      currentProxState = SmartDashboard.getBoolean("prox state", true   );
 
       if(!currentProxState && prevProxState) //goes from no element to yes element
       {
