@@ -422,4 +422,28 @@ public final class Constants {
 
 	public static final double ERROR = 0; 
   }
+
+    //robot as a whole constants
+    public static final boolean debugMode = true;
+
+    public static final double MAX_VOLTAGE = 10.0;
+    
+    public static final int kPIDIdx = 0;
+    public static final int kTimeoutMs = 35;
+    public static final boolean kIsPracticeBot = true;
+    public static final double kVoltageComp = 10.0;
+    public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(true, 40, 50, 3.8); //numbers copied off of 2022 code; change to match this yr's bot
+
+    public static class Intake {
+        public static final double kMarginOfError = 0.03;
+
+        public static final int kProximityPort = 6; //port number for element proximity sensor
+        public static final int kMotorPort = 4; 
+    
+        public static final double kP = 0, kI = 0, kD = 0;
+
+        public static final double kCompressedSpeed = 0.03;
+
+        public static final double kGoalRPM = 0.3; 
+    }
 }

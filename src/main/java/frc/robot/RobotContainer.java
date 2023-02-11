@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 import frc.robot.commands.Align;
 import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.SwerveJoystickCommand;
@@ -18,9 +19,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Autos;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -37,6 +46,24 @@ public class RobotContainer {
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   private final Trigger levelTrigger;
+
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+ /* private final Joystick m_driverController =
+      new Joystick(OperatorConstants.kDriverControllerPort);
+
+      private final JoystickButton intakeButton = new JoystickButton(m_driverController, 1);
+      private final JoystickButton outtakeButton = new JoystickButton(m_driverController, 2);
+      private final JoystickButton manualButton = new JoystickButton(m_driverController, 3);*/
+  
+  private final Joystick driverController = new Joystick(OperatorConstants.kDriverControllerPort);
+
+  private final JoystickButton intakeButton = new JoystickButton(driverController, 1);
+  private final JoystickButton outtakeButton = new JoystickButton(driverController, 2);
+
+  private final JoystickButton manualIntake = new JoystickButton(driverController, 3);
+  private final JoystickButton manualOuttake = new JoystickButton(driverController, 4);
+
+  private Intake intake;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -60,6 +87,7 @@ public class RobotContainer {
       driveJoystick));
       
     // Configure the trigger bindings
+    intake = new Intake(Intake.INTAKE_TYPE.claw); /// SPECIFY WHETHER WHEELED OR CLAW INTAKE
     configureBindings();
     //elevator = new Elevator();
     //elevator.setDefaultCommand(new SetElevatorHeight(elevator));
@@ -91,8 +119,22 @@ public class RobotContainer {
     Pose2d nearestCol = Constants.VisionConstants.kRedScoreCols.get(5);//localization.getClosestScoringLoc();
     driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
     driveJoystick.button(5).onTrue(new SequentialCommandGroup(
-      new Align(swerveDrivetrain, localization, )
-    ))
+      new Align(swerveDrivetrain, localization),
+      new SetElevatorHeight(elevator, )
+    ));
+
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // cancelling on release.
+    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+  //  outtakeButton.whileTrue(intake.outtakeElement()); //Run outtake when A is pressed
+   // intakeButton.whileTrue(intake.intakeElement()); //Intend to intake when B is pressed
+
+  // manualButton.whileTrue(intake.manualIntake()); //Run manual intake when X is pressed
+
+    intakeButton.onTrue(intake.intakeElement());
+    outtakeButton.onFalse(intake.outtakeElement());
+
+    manualIntake.whileTrue(intake.manualIntake()).onFalse(intake.manualOuttake()); //Run manual intake when X is pressed
   }
 
   /**
