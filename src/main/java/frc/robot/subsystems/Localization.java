@@ -79,7 +79,7 @@ public class Localization extends SubsystemBase {
     }
     Pose2d currPose = getCurrentPose();
     if(currPose != null){
-      // field.setRobotPose(currPose); 
+      field.setRobotPose(currPose); 
     }
 
     //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
