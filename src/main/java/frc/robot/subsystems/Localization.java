@@ -79,14 +79,16 @@ public class Localization extends SubsystemBase {
     }
     Pose2d currPose = getCurrentPose();
     if(currPose != null){
-      field.setRobotPose(currPose); 
+      // field.setRobotPose(currPose); 
     }
+
     //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     field.setRobotPose(getCurrentPose());
     log();
 
     Pose2d robotPose = getCurrentPose();
     if(robotPose==null) return;
+
 
     Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
     SmartDashboard.putString("chicken robo pose", getCurrentPose().toString());

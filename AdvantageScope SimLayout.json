@@ -1,0 +1,48 @@
+{
+  "version": "2.2.0",
+  "layout": [
+    {
+      "type": 1,
+      "legends": {
+        "left": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        },
+        "discrete": {
+          "fields": []
+        },
+        "right": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        }
+      },
+      "title": "Line Graph"
+    },
+    {
+      "type": 9,
+      "fields": [
+        "/AdvantageKit/RealOutputs/TrueSwerveDrivetrainModuleStates",
+        "/AdvantageKit/RealOutputs/SwerveModuleStatesDesiredNorm",
+        "/AdvantageKit/RealOutputs/NavXHeadingRad"
+      ],
+      "listFields": [],
+      "options": {
+        "maxSpeed": 4.5,
+        "rotationUnits": "radians",
+        "arrangement": "1,0,2,3",
+        "sizeLeftRight": 0.65,
+        "sizeFrontBack": 0.65,
+        "forwardDirection": "right"
+      },
+      "title": "Swerve"
+    }
+  ]
+}

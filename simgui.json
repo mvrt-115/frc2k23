@@ -11,6 +11,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/SwerveDrivetrain": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
@@ -20,10 +21,19 @@
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Auton Selector": "String Chooser",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/RunChassisTests": "Command",
+      "/SmartDashboard/SwerveModule/BackLeft/RunTurnTest": "Command",
+      "/SmartDashboard/SwerveModule/BackRight/RunTurnTest": "Command",
+      "/SmartDashboard/SwerveModule/FrontLeft/RunTurnTest": "Command",
+      "/SmartDashboard/SwerveModule/FrontRight/RunTurnTest": "Command"
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "traj": {
+          "arrowSize": 2,
+          "style": "Track"
+        },
         "window": {
           "visible": true
         }
@@ -32,7 +42,16 @@
   },
   "NetworkTables": {
     "transitory": {
+      "AdvantageKit": {
+        "RealOutputs": {
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
+        "Field": {
+          "open": true
+        },
         "open": true
       }
     }

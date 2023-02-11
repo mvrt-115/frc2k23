@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems;
 
+import java.sql.Time;
+
+import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -17,11 +22,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.networktables.NetworkTableInstance.NetworkMode;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.TestChassisSpeeds;
+import frc.robot.commands.TestSwerveModule;
+
 
 public class SwerveDrivetrain extends SubsystemBase {
   // state stuff
@@ -34,7 +45,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   // kinematics stuff
   private SwerveDriveKinematics swerveKinematics;
   private SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
-  private SwerveModule[] motors;
+  private SwerveModule[] modules;
   private int rotationPoint = 0;
   public boolean fieldOriented = false;
 
@@ -45,14 +56,19 @@ public class SwerveDrivetrain extends SubsystemBase {
   public PIDController yController;
   public ProfiledPIDController thetaController;
   private TrajectoryConfig trajectoryConfig;
-
   // sensors
   private AHRS gyro;
   // private PigeonIMU gyro;
-  private double gyroOffset = 0; // degrees
+  private double gyroOffset_deg = 0; // degrees
+
+  private Logger logger;
   
+  private DriveSimulationData driveSimData;
+    
   /** Creates a new SwerveDrive. */
   public SwerveDrivetrain() {
+    logger = Logger.getInstance();
+
     gyro = new AHRS(SPI.Port.kMXP);
 
     // reset in new thread since gyro needs some time to boot up and we don't 
@@ -69,8 +85,8 @@ public class SwerveDrivetrain extends SubsystemBase {
     }).start(); 
 
     swerveKinematics = new SwerveDriveKinematics(
-      Constants.SwerveDrivetrain.m_frontLeftLocation, 
       Constants.SwerveDrivetrain.m_frontRightLocation, 
+      Constants.SwerveDrivetrain.m_frontLeftLocation, 
       Constants.SwerveDrivetrain.m_backLeftLocation, 
       Constants.SwerveDrivetrain.m_backRightLocation);
     
@@ -79,57 +95,60 @@ public class SwerveDrivetrain extends SubsystemBase {
     modulePositions[2] = new SwerveModulePosition();
     modulePositions[3] = new SwerveModulePosition();
 
-    motors = new SwerveModule[4];
+    modules = new SwerveModule[4];
 
-    motors[0] = new SwerveModule(
-      Constants.SwerveDrivetrain.m_frontLeftDriveID,
-      Constants.SwerveDrivetrain.m_frontLeftTurnID,
-      Constants.SwerveDrivetrain.m_frontLeftEncoderID,
-      false,
-      false,
-      false,
-      Constants.SwerveDrivetrain.m_frontLeftEncoderOffset,
-      modulePositions[0]);
-
-    motors[2] = new SwerveModule(
+    modules[0] = new SwerveModule(
+      "FrontRight",
       Constants.SwerveDrivetrain.m_frontRightDriveID,
       Constants.SwerveDrivetrain.m_frontRightTurnID,
       Constants.SwerveDrivetrain.m_frontRightEncoderID,
       false,
-      false,
+      true,
       false,
       Constants.SwerveDrivetrain.m_frontRightEncoderOffset,
+      modulePositions[0]);
+
+    modules[1] = new SwerveModule(
+      "FrontLeft",
+      Constants.SwerveDrivetrain.m_frontLeftDriveID,
+      Constants.SwerveDrivetrain.m_frontLeftTurnID,
+      Constants.SwerveDrivetrain.m_frontLeftEncoderID,
+      false,
+      true,
+      false,
+      Constants.SwerveDrivetrain.m_frontLeftEncoderOffset,
       modulePositions[1]);
 
-    motors[1] = new SwerveModule(
+    modules[2] = new SwerveModule(
+      "BackLeft",
       Constants.SwerveDrivetrain.m_backLeftDriveID,
       Constants.SwerveDrivetrain.m_backLeftTurnID,
       Constants.SwerveDrivetrain.m_backLeftEncoderID,
       false,
-      false,
+      true,
       false,
       Constants.SwerveDrivetrain.m_backLeftEncoderOffset,
       modulePositions[2]);
 
-    motors[3] = new SwerveModule(
+    modules[3] = new SwerveModule(
+      "BackRight",
       Constants.SwerveDrivetrain.m_backRightDriveID,
       Constants.SwerveDrivetrain.m_backRightTurnID,
       Constants.SwerveDrivetrain.m_backRightEncoderID,
       false,
-      false,
+      true,
       false,
       Constants.SwerveDrivetrain.m_backRightEncoderOffset,
       modulePositions[3]);
 
-    odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
     field = new Field2d();
 
     xController = new PIDController(Constants.SwerveDrivetrain.m_x_control_P, Constants.SwerveDrivetrain.m_x_control_I, Constants.SwerveDrivetrain.m_x_control_D);
     yController = new PIDController(Constants.SwerveDrivetrain.m_y_control_P, Constants.SwerveDrivetrain.m_y_control_I, Constants.SwerveDrivetrain.m_y_control_D);
     thetaController = new ProfiledPIDController(
-      Constants.SwerveDrivetrain.m_r_control_P, 
-      Constants.SwerveDrivetrain.m_r_control_I, 
-      Constants.SwerveDrivetrain.m_r_control_D, 
+      Constants.SwerveDrivetrain.m_r_control_P,
+      Constants.SwerveDrivetrain.m_r_control_I,
+      Constants.SwerveDrivetrain.m_r_control_D,
       Constants.SwerveDrivetrain.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -137,7 +156,11 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS, 
       Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     trajectoryConfig.setKinematics(swerveKinematics);
-    state = DrivetrainState.JOYSTICK_DRIVE;   
+    
+    state = DrivetrainState.JOYSTICK_DRIVE; 
+
+    driveSimData = new DriveSimulationData(new SwerveDriveOdometry(swerveKinematics, new Rotation2d(), modulePositions), field);
+    odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
   }
 
   public SwerveModulePosition[] getModulePositions(){
@@ -145,26 +168,38 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
   
   /**
+   * drive robo forward
+   * @param mps velocity
+   */
+  public void driveForward(double mps){
+    setSpeeds(mps, 0, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
+  }
+
+  /**
    * Zero the physical gyro
    */
   public void zeroHeading() {
     gyro.reset();
   }
 
+  public void setGyroOffset_deg(double offset_deg){
+    this.gyroOffset_deg = offset_deg;
+  }
+
   /**
-   * get the heading of the physical gyro
+   * <h3>get the heading of the physical gyro </h3> <br></br>
+   * use IEEEremainder because it uses formula:
+   * dividend - (divisor x Math.Round(dividend / divisor))
+   * versus the remainder operator (%) which uses:
+   * (Math.Abs(dividend) - (Math.Abs(divisor) x (Math.Floor(Math.Abs(dividend) / Math.Abs(divisor))))) x Math.Sign(dividend)
+   * 
    * @return heading angle in degrees
    */
   public double getHeading() {
-    return Math.IEEEremainder(gyro.getYaw() - gyroOffset, 360);
-    //.getAngle()
-
-    /**
-     * use IEEEremainder because it uses formula:
-     * dividend - (divisor x Math.Round(dividend / divisor))
-     * versus the remainder operator (%) which uses:
-     * (Math.Abs(dividend) - (Math.Abs(divisor) x (Math.Floor(Math.Abs(dividend) / Math.Abs(divisor))))) x Math.Sign(dividend)
-     */
+    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
+      return Math.IEEEremainder(Math.toDegrees(driveSimData.getHeading()), 360.0);
+    }
+    return -Math.IEEEremainder(gyro.getYaw() - gyroOffset_deg, 360.0);
   }
 
   /**
@@ -173,9 +208,37 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public double getRelativeHeading() {
     SwerveModuleState[] states = getOutputModuleStates();
+
+    // logger.recordOutput("Current SwerveDriveState [LF, LB, RF, RB]", states);
+
     ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(states);
     double angle = Math.atan(speeds.vyMetersPerSecond/speeds.vxMetersPerSecond);
     return Math.toDegrees(angle);
+  }
+
+  /**
+   * Gets the angle the robot is tilted
+   *
+   * @return the pitch degree
+   */
+  public double getPitchAngle(){
+    return gyro.getPitch();
+  }
+
+  /**
+   * gets the current gyro yaw value
+   * @return yaw in degrees
+   */
+  public double getYaw(){
+    return gyro.getYaw();
+  }
+
+  /**
+   * gets the current gyro roll value
+   * @return roll in degrees
+   */
+  public double getRoll(){
+    return gyro.getRoll();
   }
 
   /**
@@ -192,30 +255,65 @@ public class SwerveDrivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Robot Heading", getHeading());
+    // SmartDashboard.putNumber("Robot Heading", getHeading()); //i don't think we need to know this
     SmartDashboard.putData("Field", field);
-    for (SwerveModule m : motors) {
-      SmartDashboard.putString(m.getName(), m.getStateSummary());
+    for (SwerveModule m : modules) {
+       m.logMeasuredData();
     }
-    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-    SmartDashboard.putNumber("xvel", getLinearVelocity().getX());
-    SmartDashboard.putNumber("yvel", getLinearVelocity().getY());
+
+    logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
+    logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
+    logger.recordOutput("OdometryHeadingRad", getPose().getRotation().getRadians());
+    logger.recordOutput("OdometryHeadingDeg", getPose().getRotation().getDegrees());
 
     odometry.update(getRotation2d(), modulePositions);
-    field.setRobotPose(
-      odometry.getPoseMeters().getX(),
-      odometry.getPoseMeters().getY(),
-      getRotation2d()
-    );
+
+    if(Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM){
+      field.setRobotPose(
+        odometry.getPoseMeters().getX(),
+        odometry.getPoseMeters().getY(),
+        getRotation2d()
+      );
+    }
+
+    logger.recordOutput("Robot Location", getPose());
+    logger.recordOutput("Robot Pose X", getPose().getX());
+    logger.recordOutput("Robot Pose Y", getPose().getY());
+    logger.recordOutput("Robot Location W deg", getPose().getRotation().getDegrees());
+    logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
+  }
+
+  public void simulationPeriodic() {
+    SmartDashboard.putNumber("Chassis Turn Speed", swerveKinematics.toChassisSpeeds(getOutputModuleStates()).omegaRadiansPerSecond);
+    driveSimData.quadrature(swerveKinematics.toChassisSpeeds(getOutputModuleStates()).omegaRadiansPerSecond, modulePositions);
   }
 
   /**
    * stop the swerve modules
    */
   public void stopModules() {
-    for (SwerveModule m : motors) {
+    for (SwerveModule m : modules) {
       m.disableModule();
     }
+  }
+
+  /**
+   * show commands of the tests on each of the modules
+   */
+  public void setupTests(){
+    for(SwerveModule m: modules) {
+      SmartDashboard.putData(m.getSwerveID() + "/RunTurnTest", new TestSwerveModule(this, m));
+    }
+    SmartDashboard.putData("RunChassisTests", new TestChassisSpeeds(this));
+  }
+
+  /**
+   * get the swerve module
+   * @param moduleID
+   * @return SwerveModule [0 = FR, 1 = FL, 2 = BL, 3 = BR]
+   */
+  public SwerveModule getModule(int moduleID) {
+    return modules[moduleID];
   }
 
   /**
@@ -223,11 +321,14 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param states
    */
   public void setModuleStates(SwerveModuleState[] states) {
+    Logger.getInstance().recordOutput("SwerveModuleStatesDesired", states);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.SwerveDrivetrain.kMaxSpeedMPS);
-    for (int i = 0; i < motors.length; i++)
+    Logger.getInstance().recordOutput("SwerveModuleStatesDesiredNorm", states);
+    for (int i = 0; i < modules.length; i++)
     {
-      motors[i].setDesiredState(states[i]);
+      modules[i].setDesiredState(states[i]);
     }
+    // TODO add a log of the array of post optimized and pre-optimized states
   }
 
   /**
@@ -240,10 +341,14 @@ public class SwerveDrivetrain extends SubsystemBase {
   public void setSpeeds(double v_forwardMps, double v_sideMps, double v_rot, Translation2d rotatePoint) {
     ChassisSpeeds speeds = new ChassisSpeeds(v_forwardMps, v_sideMps, v_rot);
     SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds, rotatePoint);
-    for (int i = 0; i < 4; i++)
-    {
-      motors[i].setDesiredState(moduleStates[i]);
-    }
+    setModuleStates(moduleStates);
+  }
+
+  public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot) {
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getRotation2d());
+    SmartDashboard.putString("ChassisSpeedsFO", speeds.toString());
+    SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds);
+    setModuleStates(moduleStates);
   }
 
   /**
@@ -260,10 +365,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public Translation2d getLinearVelocity() {
     ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(
-        motors[0].getState(),
-        motors[1].getState(),
-        motors[2].getState(),
-        motors[3].getState()
+        getOutputModuleStates()
     );
     return new Translation2d(
         speeds.vxMetersPerSecond,
@@ -277,24 +379,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public double getRotationalVelocity() {
     ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(
-        motors[0].getState(),
-        motors[1].getState(),
-        motors[2].getState(),
-        motors[3].getState()
-    );
-    return speeds.omegaRadiansPerSecond;
-  }
-
-  /**
-   * get the desired rotational velocity of the robot
-   * @return desired rotational velocity rad/sec
-   */
-  public double getDesiredRotationalVelocity() {
-    ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(
-        motors[0].getDesiredState(),
-        motors[1].getDesiredState(),
-        motors[2].getDesiredState(),
-        motors[3].getDesiredState()
+        getOutputModuleStates()
     );
     return speeds.omegaRadiansPerSecond;
   }
@@ -307,11 +392,11 @@ public class SwerveDrivetrain extends SubsystemBase {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (int i = 0; i < 4; i++)
     {
-      states[i] = motors[i].getState();
+      states[i] = modules[i].getState();
     }
     return states;
   }
-
+ 
   /**
    * get the position of the robot
    * @return Pose2d pose
@@ -325,7 +410,11 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param pose
    */
   public void resetOdometry(Pose2d pose) {
+    SmartDashboard.putBoolean("Reset Odometry", true);
     odometry.resetPosition(getRotation2d(), modulePositions, pose);
+    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
+      driveSimData.resetOdometry(getRotation2d(), modulePositions, pose);
+    }
   }
 
   /**
@@ -385,9 +474,21 @@ public class SwerveDrivetrain extends SubsystemBase {
    * Reset the modules encoders
    */
   public void resetModules() {
-    for (SwerveModule m:motors) {
+    for (SwerveModule m:modules) {
       m.resetEncoders();
     }
+  }
+
+  /**
+   * set the modes
+   * @param mode the mode
+   */
+  public void setModes(NeutralMode mode){
+    for (SwerveModule m:modules) {
+      m.setMode(mode);
+    }
+    SmartDashboard.putBoolean("Brake Mode", (mode == NeutralMode.Brake));
+    logger.recordOutput("Brake Mode", (mode == NeutralMode.Brake));
   }
 
   /**
@@ -395,5 +496,14 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public void toggleMode() {
     this.fieldOriented = !this.fieldOriented;
+  }
+
+  /**
+   * uses PID to try and hold the current heading of the robot
+   * @param heading
+   */
+  public void holdHeading(Rotation2d heading) {
+    double v_w = thetaController.calculate(getRotation2d().getRadians());
+    this.setSpeeds(0, 0, v_w, Constants.SwerveDrivetrain.rotatePoints[this.getRotationPointIdx()]);
   }
 }
