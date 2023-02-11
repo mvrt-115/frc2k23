@@ -412,6 +412,9 @@ public class SwerveDrivetrain extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     SmartDashboard.putBoolean("Reset Odometry", true);
     odometry.resetPosition(getRotation2d(), modulePositions, pose);
+    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
+      driveSimData.resetOdometry(getRotation2d(), modulePositions, pose);
+    }
   }
 
   /**
@@ -493,5 +496,14 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public void toggleMode() {
     this.fieldOriented = !this.fieldOriented;
+  }
+
+  /**
+   * uses PID to try and hold the current heading of the robot
+   * @param heading
+   */
+  public void holdHeading(Rotation2d heading) {
+    double v_w = thetaController.calculate(getRotation2d().getRadians());
+    this.setSpeeds(0, 0, v_w, Constants.SwerveDrivetrain.rotatePoints[this.getRotationPointIdx()]);
   }
 }

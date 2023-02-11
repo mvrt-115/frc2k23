@@ -11,8 +11,10 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -29,6 +31,8 @@ public class SwerveJoystickCommand extends CommandBase {
   private final Trigger fieldOrientedFunc;
   private final SlewRateLimiter xLimiter, yLimiter, wLimiter;
   private final JoystickIO joystick;
+  private Timer timer;
+  private Rotation2d heading;
 
   public PIDController thetaController;
 
@@ -53,6 +57,10 @@ public class SwerveJoystickCommand extends CommandBase {
   public void initialize() {
     drivetrain.setJoystick();
     fieldOrientedFunc.onTrue(new InstantCommand(() -> drivetrain.toggleMode())); //.debounce(0.1);
+    timer = new Timer();
+    timer.reset();
+    timer.start();
+    heading = drivetrain.getRotation2d();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -105,8 +113,6 @@ public class SwerveJoystickCommand extends CommandBase {
     else {
       drivetrain.setSpeeds(vX, vY, v_omega, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
-
-    
     
     SmartDashboard.putNumber("vX", vX);
     SmartDashboard.putNumber("vY", vY);
@@ -115,7 +121,16 @@ public class SwerveJoystickCommand extends CommandBase {
     if (MathUtils.withinEpsilon(vX, 0, 0.01) && MathUtils.withinEpsilon(vY, 0, 0.01) && MathUtils.withinEpsilon(vW, 0, 0.01)) {
       drivetrain.stopModules();
       drivetrain.setRotationPointIdx(0);
-      drivetrain.resetModules();
+      if (timer.advanceIfElapsed(5))
+      {
+        drivetrain.resetModules();
+      }
+      // drivetrain.holdHeading(heading);
+    }
+    else {
+      timer.start();
+      heading = drivetrain.getRotation2d();
+      drivetrain.thetaController.reset(heading.getRadians());
     }
   }
 

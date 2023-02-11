@@ -95,4 +95,14 @@ public class DriveSimulationData {
     public void setHeading(double radians) {
         headingAngle = radians;
     }
+
+    /**
+     * reset odometry
+     * @param rotation2d
+     * @param modulePositions
+     * @param pose
+     */
+    public void resetOdometry(Rotation2d rotation2d, SwerveModulePosition[] modulePositions, Pose2d pose) {
+        m_odometry.resetPosition(rotation2d, modulePositions, pose);
+    }
 }

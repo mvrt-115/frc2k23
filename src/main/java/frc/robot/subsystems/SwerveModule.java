@@ -239,10 +239,12 @@ public class SwerveModule {
       
       double dt = Timer.getFPGATimestamp() - DriveSimulationData.prevTime;
       dt = Math.min(0.3, dt);
-      double position = driveMotor.getSelectedSensorPosition() + MathUtils.rpmToTicks(
+      double position = driveMotor.getSelectedSensorPosition() + 10 * MathUtils.rpmToTicks(
         MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
-        Constants.SwerveModule.gear_ratio_drive) * dt;
+        Constants.SwerveModule.gear_ratio_drive) * dt; // 10 because ticks per 100 milliseconds * 10 = ticks per second and then we multiply by dt in seconds
       SmartDashboard.putNumber("raw sim sensor pos " + absEncoder.getDeviceID(), position);
+      SmartDashboard.putNumber("raw sim module vmps" + absEncoder.getDeviceID(), v_mps);
+      SmartDashboard.putNumber("raw sim pos meter" + absEncoder.getDeviceID(), 2 * Math.PI * 0.05 * position / 2048 / Constants.SwerveModule.gear_ratio_drive);
       driveMotorSim.setIntegratedSensorRawPosition(
         (int)position
       );
