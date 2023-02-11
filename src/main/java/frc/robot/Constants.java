@@ -372,9 +372,9 @@ public final class Constants {
     public static final int MOTOR_ID2 = 14;
     
     public static final int kPIDIdx = 0;
-    public static final double P = 0;//.01;
-    public static final double I = 0;
-    public static final double D = 0;
+    public static final double P = 0.53;//.01;
+    public static final double I = 0.000006;
+    public static final double D = 0.001;
     public static final double F = 0;
 
     // Wtvr it is
@@ -386,13 +386,13 @@ public final class Constants {
     public static final double MIN_HEIGHT = 0;
 
     public static final double ZERO_HEIGHT = 0;
-    public static final double SHELF_HEIGHT = 0;
+    public static final double SHELF_HEIGHT = 0; //ticks
 
-    // MID, HIGH heights parwa cone (in inches)
-    public static final double CONE_MID_HEIGHT = 34;
-    public static final double CONE_HIGH_HEIGHT = 46;
+    // MID, HIGH heights parwa cone (in ticks)
+    public static final double CONE_MID_HEIGHT = 15000;
+    public static final double CONE_HIGH_HEIGHT = 22000;
 
-    // MID, HIGH heights para cube (in inches)
+    // MID, HIGH heights para cube (in ticks)
     public static final double CUBE_MID_HEIGHT = 23.5;
     public static final double CUBE_HIGH_HEIGHT = 35.5;
 

@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 
 public class SetElevatorHeight extends CommandBase
@@ -49,11 +50,12 @@ public class SetElevatorHeight extends CommandBase
   @Override
   public void end(boolean interrupted)
   {
+   // elevator.keepAtHeight();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
