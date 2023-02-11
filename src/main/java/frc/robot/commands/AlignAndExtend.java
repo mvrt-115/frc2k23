@@ -34,7 +34,7 @@ public class AlignAndExtend extends CommandBase {
   @Override
   public void execute() {
     if (!forget && align.isFinished()){
-      //setHeight = new SetElevatorHeight(elevator, height);
+      setHeight = new SetElevatorHeight(elevator, height);
       forget = true;
     }
   }

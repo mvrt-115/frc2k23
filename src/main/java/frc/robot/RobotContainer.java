@@ -82,15 +82,17 @@ public class RobotContainer {
     // new Trigger(m_exampleSubsystem::exampleCondition)
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
     
-    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
+    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
     driveJoystick.button(2).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     autonSelector.setDefaultOption("Example", new AutonPathExample(swerveDrivetrain));
     SmartDashboard.putData("Auton Selector", autonSelector);
-  
     //Align to nearest column on click
     Pose2d nearestCol = Constants.VisionConstants.kRedScoreCols.get(5);//localization.getClosestScoringLoc();
     driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(5).onTrue(new SequentialCommandGroup(
+      new Align(swerveDrivetrain, localization, )
+    ))
   }
 
   /**

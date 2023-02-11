@@ -44,7 +44,6 @@ public class Align extends CommandBase {
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-
     //if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
       double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.7; // pos, setpoint
       double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
