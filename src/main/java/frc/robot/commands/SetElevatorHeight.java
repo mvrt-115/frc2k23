@@ -49,11 +49,13 @@ public class SetElevatorHeight extends CommandBase
   @Override
   public void end(boolean interrupted)
   {
+    //elevator.keepAtHeight();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
+   // return Math.abs(elevator.getHeight()-height) <= 25;
   }
 }
