@@ -89,6 +89,7 @@ public class Localization extends SubsystemBase {
     if(robotPose==null) return;
 
     Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
+    SmartDashboard.putString("chicken robo pose", getCurrentPose().toString());
     SmartDashboard.putNumber("chicken gyro rot", swerveDrivetrain.getRotation2d().getDegrees());
     SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
     SmartDashboard.putNumber("chicken error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getRotation2d().getDegrees());
@@ -114,6 +115,7 @@ public class Localization extends SubsystemBase {
   * @return the weighted Pose2d
   */
   private Pose2d weightTargets() {
+    SmartDashboard.putBoolean("chicken field oriented", swerveDrivetrain.fieldOriented);
     Pose2d cam1Pose = null;
     Pose2d cam2Pose = null;
     PhotonPipelineResult cam1Result = camera1.getLatestResult();
@@ -143,8 +145,6 @@ public class Localization extends SubsystemBase {
     SmartDashboard.putNumber("Cam2 Theta Raw", cam2Result.getBestTarget().getBestCameraToTarget().getRotation().toRotation2d().getDegrees());
     SmartDashboard.putNumber("Cam1 Theta FieldRelative", cam1Pose.getRotation().getDegrees());
     SmartDashboard.putNumber("Cam2 Theta Field Relative", cam2Pose.getRotation().getDegrees());
-    //SmartDashboard.putNumber("Average FieldRelative Theta", tAvg);
-    //End of debugging
 
     //just use gyro angle
     return new Pose2d(xAvg, yAvg, swerveDrivetrain.getRotation2d());
@@ -179,7 +179,7 @@ public class Localization extends SubsystemBase {
       Pose3d robotPose = ComputerVisionUtil.objectToRobotPose(tag, transforms[i], camPose);
       weightedX += weights[i] * robotPose.getX();
       weightedY += weights[i] * robotPose.getY();
-      weightedRot += weights[i] * robotPose.getRotation().getAngle();
+      weightedRot += weights[i] * swerveDrivetrain.getRotation2d().getRadians();
     }
 
     weightedX /= totalSum;
@@ -280,9 +280,9 @@ public class Localization extends SubsystemBase {
     // SmartDashboard
     Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
 
-    SmartDashboard.putNumber("robo theta", (robotPose.getRotation().getDegrees()));
+    SmartDashboard.putNumber("robo theta", (swerveDrivetrain.getRotation2d().getDegrees()));
     SmartDashboard.putNumber("score theta",  (poseToGoTo.getRotation().getDegrees()));
-    SmartDashboard.putNumber("error theta", (poseToGoTo.getRotation().getDegrees()) - (robotPose.getRotation().getDegrees()));
+    SmartDashboard.putNumber("error theta", (poseToGoTo.getRotation().getDegrees()) - (swerveDrivetrain.getRotation2d().getDegrees()));
     SmartDashboard.putNumber("scoring x", poseToGoTo.getX());
     SmartDashboard.putNumber("scoring y", poseToGoTo.getY());
     SmartDashboard.putNumber("robo x", robotPose.getX());
