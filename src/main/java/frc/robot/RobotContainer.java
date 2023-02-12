@@ -82,7 +82,7 @@ public class RobotContainer {
     // new Trigger(m_exampleSubsystem::exampleCondition)
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
     
-    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
+    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
     driveJoystick.button(2).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     autonSelector.setDefaultOption("Example", new AutonPathExample(swerveDrivetrain));

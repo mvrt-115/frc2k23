@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,7 +51,7 @@ public class Localization extends SubsystemBase {
       //update here rotation to whatever gyro gives us
       camPose = new Pose2d(camPose.getX(), camPose.getY(), swerveDrivetrain.getRotation2d());
       SmartDashboard.putNumber("chicken", swerveDrivetrain.getRotation2d().getDegrees());
-
+      SmartDashboard.putNumber("time", Timer.getFPGATimestamp());
       debugPID();
       SmartDashboard.putString("weightedCamPose", camPose.toString());
       //If aligning, reset pose to whatever camera gives us
@@ -168,7 +169,8 @@ public class Localization extends SubsystemBase {
     for(int i = 0; i < transforms.length; i++) {
       Transform3d relLoc = targets.get(i).getBestCameraToTarget();
       transforms[i] = relLoc;
-      weights[i] = 1/relLoc.getTranslation().getNorm();
+      weights[i] = (10-relLoc.getTranslation().getNorm());
+      //weights[i] = 1/relLoc.getTranslation().getNorm();
       totalSum += weights[i];
     }
     

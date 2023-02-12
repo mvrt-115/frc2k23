@@ -58,7 +58,6 @@ public final class Constants {
     public static final double kFJoystick = 0.0;
 
   }
-
   public static class SwerveDrivetrain {
     // Physical Constants
     public static final double chassisWidth = Units.inchesToMeters(28);
@@ -96,24 +95,24 @@ public final class Constants {
     public static final double maxAngularSpeed = 0;
 
     // Motor ID
-    public static final int m_frontLeftDriveID = 3;
     public static final int m_frontRightDriveID = 1;
+    public static final int m_frontLeftDriveID = 3;
     public static final int m_backLeftDriveID = 5;
     public static final int m_backRightDriveID = 7;
 
-    public static final int m_frontLeftTurnID = 4;
     public static final int m_frontRightTurnID = 2;
+    public static final int m_frontLeftTurnID = 4;
     public static final int m_backLeftTurnID = 6;
     public static final int m_backRightTurnID = 8;
 
     // Abs Encoder ID
-    public static final int m_frontLeftEncoderID = 10;
     public static final int m_frontRightEncoderID = 9;
+    public static final int m_frontLeftEncoderID = 10;
     public static final int m_backLeftEncoderID = 11;
     public static final int m_backRightEncoderID = 12;
 
     // Comp Bot Encoder Offsets
-    public static final boolean isCompBot = false;
+    public static final boolean isCompBot = true;
 
     public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.31);// + Math.PI/2.0;
     public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(317.02);// + Math.PI/2.0;
@@ -168,10 +167,8 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kTurnMaxSpeedRPS, kTurnMaxAcceleration);
 
-    public static final double kTeleopHeadingCorrectionScale = 0.1;
-  }
-
-  public static class Talon {
+    public static final double kTeleopHeadingCorrectionScale = 0;
+  }  public static class Talon {
     public static final int talonFXTicks = 2048;
     public static final int talonSRXTicks = 4096;
 
