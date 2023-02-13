@@ -121,13 +121,14 @@ public class SwerveJoystickCommand extends CommandBase {
     if (MathUtils.withinEpsilon(vX, 0, 0.01) && MathUtils.withinEpsilon(vY, 0, 0.01) && MathUtils.withinEpsilon(vW, 0, 0.01)) {
       drivetrain.stopModules();
       drivetrain.setRotationPointIdx(0);
-      if (timer.advanceIfElapsed(5))
+      if (timer.advanceIfElapsed(1))
       {
         drivetrain.resetModules();
       }
       // drivetrain.holdHeading(heading);
     }
     else {
+      timer.reset();
       timer.start();
       heading = drivetrain.getRotation2d();
       drivetrain.thetaController.reset(heading.getRadians());

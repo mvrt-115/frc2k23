@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.TalonFactory;
 
 public class FalconOrchestra extends SubsystemBase {
-  int[] ids = {5, 8, 12};
+  int[] ids = {1, 2, 3, 4, 5, 6, 7, 8};
   TalonFX[] talons;
   private Orchestra music;
   private boolean play = false;

@@ -345,7 +345,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot) {
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getRotation2d());
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getPose().getRotation());
     SmartDashboard.putString("ChassisSpeedsFO", speeds.toString());
     SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds);
     setModuleStates(moduleStates);
