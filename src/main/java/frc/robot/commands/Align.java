@@ -31,7 +31,6 @@ public class Align extends CommandBase {
     this.poseToGoTo = poseToGoTo;
 
     pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
-    
     pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
     pidTheta = new PIDController(0.2, 0, 0); // pid t-coor
   }

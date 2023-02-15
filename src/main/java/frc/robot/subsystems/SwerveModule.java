@@ -34,7 +34,6 @@ public class SwerveModule {
   private final CANCoder absEncoder;
   private final boolean absEncoderReversed;
   private final double absEncoderOffsetRad;
-  private final double talonEncoderOffset = 0;
 
   private SwerveModuleState desiredState;
   private SwerveModulePosition modulePosition;
@@ -47,7 +46,12 @@ public class SwerveModule {
   public SwerveModule(String _swerveID, int driveID, int turnID, int encoderID, boolean driveReversed, boolean turnReversed,
       boolean encoderReversed, double encoderOffset, SwerveModulePosition position) {
     driveMotor = TalonFactory.createTalonFX(driveID, driveReversed);
-    turnMotor = TalonFactory.createTalonFX(turnID, turnReversed);
+    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
+      turnMotor = TalonFactory.createTalonFX(turnID, false);
+    }
+    else {
+      turnMotor = TalonFactory.createTalonFX(turnID, turnReversed);
+    }
 
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
       driveMotorSim = ((TalonFX) driveMotor).getSimCollection();
@@ -156,7 +160,6 @@ public class SwerveModule {
    */
   public double getRawEncoderRad() {
     double angle = turnMotor.getSelectedSensorPosition();
-    angle += talonEncoderOffset;
     return MathUtils.ticksToRadians(
         angle,
         Constants.Talon.talonFXTicks,
@@ -171,11 +174,13 @@ public class SwerveModule {
     // turnMotor.setSelectedSensorPosition(0);
     // talonEncoderOffset = 0 - MathUtils.radiansToTicks(getAbsoluteEncoderRad(),
     //     Constants.Talon.talonFXTicks, Constants.SwerveModule.gear_ratio_turn);
-    turnMotor.setSelectedSensorPosition(MathUtils.radiansToTicks(
-      getAbsoluteEncoderRad(), 
-      Constants.Talon.talonFXTicks, 
-      Constants.SwerveModule.gear_ratio_turn
-      ));
+    if (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM) {
+      turnMotor.setSelectedSensorPosition(MathUtils.radiansToTicks(
+        getAbsoluteEncoderRad(), 
+        Constants.Talon.talonFXTicks, 
+        Constants.SwerveModule.gear_ratio_turn
+        )); 
+    }
   }
 
   /**
@@ -194,14 +199,14 @@ public class SwerveModule {
         MathUtils.radiansToTicks(
             radians,
             Constants.Talon.talonFXTicks,
-            Constants.SwerveModule.gear_ratio_turn) - talonEncoderOffset);
+            Constants.SwerveModule.gear_ratio_turn));
 
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
       turnMotorSim.setIntegratedSensorRawPosition(
         (int) (MathUtils.radiansToTicks(
             radians,
             Constants.Talon.talonFXTicks,
-            Constants.SwerveModule.gear_ratio_turn) - talonEncoderOffset));    
+            Constants.SwerveModule.gear_ratio_turn)));    
     }
   }
 
@@ -234,10 +239,12 @@ public class SwerveModule {
       
       double dt = Timer.getFPGATimestamp() - DriveSimulationData.prevTime;
       dt = Math.min(0.3, dt);
-      double position = driveMotor.getSelectedSensorPosition() + MathUtils.rpmToTicks(
+      double position = driveMotor.getSelectedSensorPosition() + 10 * MathUtils.rpmToTicks(
         MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
-        Constants.SwerveModule.gear_ratio_drive) * 0.1 * dt;
+        Constants.SwerveModule.gear_ratio_drive) * dt; // 10 because ticks per 100 milliseconds * 10 = ticks per second and then we multiply by dt in seconds
       SmartDashboard.putNumber("raw sim sensor pos " + absEncoder.getDeviceID(), position);
+      SmartDashboard.putNumber("raw sim module vmps" + absEncoder.getDeviceID(), v_mps);
+      SmartDashboard.putNumber("raw sim pos meter" + absEncoder.getDeviceID(), 2 * Math.PI * 0.05 * position / 2048 / Constants.SwerveModule.gear_ratio_drive);
       driveMotorSim.setIntegratedSensorRawPosition(
         (int)position
       );

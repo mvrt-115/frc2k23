@@ -4,44 +4,42 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.FalconOrchestra;
 
-public class SetElevatorHeight extends CommandBase
-{
-  private Elevator elevator;
-  private double height;
-
-  /** Creates a new SetElevatorHeight. */
-  public SetElevatorHeight(Elevator elevator, double height)
-  {
+public class PlaySelectedSong extends CommandBase {
+  private FalconOrchestra orchestra;
+  private String song;
+  private boolean executed = false;
+  /** Creates a new PlaySelectedSong. */
+  public PlaySelectedSong(FalconOrchestra orchestra, String song) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.elevator = elevator;
-    this.height = height; 
-    addRequirements(this.elevator);
+    this.orchestra = orchestra;
+    this.song = song;
+    addRequirements(orchestra);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    orchestra.setMusic(song);
+    executed = false;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
-  {
-    //elevator.setTargetHeight(height);
+  public void execute() {
+    orchestra.playMusic();
+    executed = true;
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted)
-  {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return executed;
   }
 }

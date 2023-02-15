@@ -52,7 +52,7 @@ public final class Constants {
     public static final boolean invertJoystickY = true;
     public static final boolean invertJoystickW = true;
 
-    public static final double kPJoystick = 0.2;
+    public static final double kPJoystick = 0.1;
     public static final double kIJoystick = 0.0;
     public static final double kDJoystick = 0.0;
     public static final double kFJoystick = 0.0;
@@ -78,6 +78,22 @@ public final class Constants {
       m_backLeftLocation,
       m_backRightLocation
     };
+
+    // Leveling PID
+    public static final double levelkP = 0.05;
+    public static final double levelkI = 0;
+    public static final double levelkD = 0;
+    public static final double rotatekP = 0;
+    public static final double rotatekI = 0;
+    public static final double rotatekD = 0;
+    public static final double angleTolerance = 1.5;
+    public static final double speedTolerance = 0.5;
+    public static final double levelVelocityMPS = 1;
+    public static final double yawAlligned = 0; // TBD
+    public static final double pitchAlligned = 0; // TBD
+    public static final double rollAlligned = 0; // TBD
+
+    public static final double maxAngularSpeed = 0;
 
     // Motor ID
     public static final int m_frontRightDriveID = 1;
@@ -117,18 +133,15 @@ public final class Constants {
     public static final double m_backRightEncoderOffset = isCompBot? m_backRightEncoderOffset_Comp:m_backRightEncoderOffset_P;// + Math.PI/2.0;
 
     // Position PID
-    public static final double m_x_control_P = 0.5;
+    public static final double m_x_control_P = 0.1;
     public static final double m_x_control_I = 0;
     public static final double m_x_control_D = 0;
-    public static final double m_y_control_P = 0.5;
+    public static final double m_y_control_P = 0.1;
     public static final double m_y_control_I = 0;
     public static final double m_y_control_D = 0;
-    public static final double m_r_control_P = 1;
+    public static final double m_r_control_P = 0.1;
     public static final double m_r_control_I = 0;
     public static final double m_r_control_D = 0;
-
-    // Gyro CAN ID
-    public static final int pigeon_id = 1;
 
     // constants for joystick drive
     public static final double kSensitivity = 0.90;
@@ -136,10 +149,10 @@ public final class Constants {
     public static final double kThrottleDeadband = 0.2;
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
-    public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
-    public static final double kDriveMaxAcceleration = 2;
-    public static final double kTurnMaxAcceleration = 1.5 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 3;
+    public static final double kMaxSpeedMPS = 8; // optimize max speed to prioritize translation
+    public static final double kDriveMaxAcceleration = 3;
+    public static final double kTurnMaxAcceleration = 1 * Math.PI;
+    public static final double kDriveMaxSpeedMPS = 4;
     public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
@@ -174,18 +187,18 @@ public final class Constants {
   }
 
   public static class SwerveModule {
-    public static final double gear_ratio_turn = 7.0 / 150;
-    public static final double gear_ratio_drive = 6.75 / 1.0;
+    public static final double gear_ratio_turn = 150.0 / 7.0; // number of rotations of talon for one turn of wheel
+    public static final double gear_ratio_drive = 6.75 / 1.0; // number of rotations of talon for one rotation of wheel
     public static final double radius = 0.05; // meters
     public static final double kwheelCircumference = 2 * Math.PI * radius; // meters
 
     // PID Constants
-    public static final double kP = 0.2; // 3.2364;
-    public static final double kI = 0;
+    public static final double kP = 0.3; // 3.2364;
+    public static final double kI = 0.001;
     public static final double kD = 0;
     public static final double kFF = 0;
 
-    public static final double kPTurn = 0.10;
+    public static final double kPTurn = 0.3;
     public static final double kITurn = 0.0;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
@@ -386,19 +399,15 @@ public final class Constants {
     public static final double ZERO_HEIGHT = 0;
     public static final double SHELF_HEIGHT = 0;
 
-    // MID, HIGH heights parwa cone (in inches)
-    public static final double CONE_MID_HEIGHT = 46;
-    public static final double CONE_HIGH_HEIGHT = 34;
+    // MID, HIGH heights parwa cone
+    public static final double MID_HEIGHT = 0;
+    public static final double HIGH_HEIGHT = 0;
 
-    // MID, HIGH heights para cube (in inches)
-    public static final double CUBE_MID_HEIGHT = 35.5;
-    public static final double CUBE_HIGH_HEIGHT = 23.5;
-
-    // feed forward constants
-    public static final double kS = 0.0;
-    public static final double kG = 0.0;
-    public static final double kV = 0.0;
-    public static final double kA = 0.0;
+    // TrapezoidProfile State constants
+    public static final TrapezoidProfile.State ZERO_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State MID_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State HIGH_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    public static final TrapezoidProfile.State SHEL_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
 
     // Game Object Heights
     public static final double CONE_HEIGHT = 6;

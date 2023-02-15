@@ -9,11 +9,21 @@ import frc.robot.commands.AlignAndExtend;
 import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
+import frc.robot.commands.Autos;
+import frc.robot.commands.DriveForward;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Leveling;
+import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.commands.SetElevatorHeight;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.utils.JoystickIO;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -38,25 +49,40 @@ public class RobotContainer {
   private Elevator elevator;
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
-  private final CommandJoystick driveJoystick = new CommandJoystick(Constants.SwerveDrivetrain.kDriveJoystickPort);
+  private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
+
+  private final Trigger levelTrigger;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    if (Constants.JoystickControls.invertJoystickX)
+      driveJoystick.invertJoystickX();
+    if (Constants.JoystickControls.invertJoystickY)
+      driveJoystick.invertJoystickY();
+    if (Constants.JoystickControls.invertJoystickW)
+      driveJoystick.invertJoystickW();
+    driveJoystick.invertLeftStick();
     //elevator = new Elevator();
 
   //  localization = new Localization(swerveDrivetrain);
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
-      () -> ((Constants.JoystickControls.invertJoystickX) ?-1:1)* driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveXAxis), 
-      () -> ((Constants.JoystickControls.invertJoystickY) ?-1:1)* driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveYAxis), 
-      () -> ((Constants.JoystickControls.invertJoystickW) ?-1:1) *  driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveWAxis), 
+      () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveXAxis), 
+      () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveYAxis), 
+      () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveWAxis), 
       driveJoystick.button(Constants.SwerveDrivetrain.kDriveFieldOrientButtonIdx),
       driveJoystick));
       
     // Configure the trigger bindings
     configureBindings();
+    //elevator = new Elevator();
+    //elevator.setDefaultCommand(new SetElevatorHeight(elevator));
+
+    levelTrigger = driveJoystick.button(2);
+    levelTrigger.onTrue( new DriveForward(swerveDrivetrain, 1, 0.5).andThen(new Leveling(swerveDrivetrain)) );
+    
   }
 
   /**
@@ -74,7 +100,7 @@ public class RobotContainer {
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
     
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
-    driveJoystick.button(2).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
+    driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     autonSelector.setDefaultOption("Example", new AutonPathExample(swerveDrivetrain));
     SmartDashboard.putData("Auton Selector", autonSelector);
