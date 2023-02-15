@@ -381,8 +381,8 @@ public final class Constants {
     public static final int MOTOR_ID2 = 14;
     
     public static final int kPIDIdx = 0;
-    public static final double P = 0.53;//.01;
-    public static final double I = 0.000006;
+    public static final double P = 0.025\;//.1;//.01;
+    public static final double I = 0;//.000006;
     public static final double D = 0.001;
     public static final double F = 0;
 
@@ -406,11 +406,11 @@ public final class Constants {
     public static final double CUBE_HIGH_HEIGHT = 35.5;
 
     // feed forward constants
-    public static final double kS = -0.55996;
+    public static final double kS = -0.086653;//-0.55996;//-0.086653;//-0.55996;
 //    public static final double kG = 1;
-    public static final double kG = 1.2265;
-    public static final double kV = 0.035258;
-    public static final double kA = 0.0053228;
+    public static final double kG =  0.79635; //1.2265;
+    public static final double kV = 0.016763; //0.035258;
+    public static final double kA = 0.0031226; //0.0053228;
  //   public static final double kA = 0;
     // Game Object Heights
     public static final double CONE_HEIGHT = 6;
@@ -420,8 +420,8 @@ public final class Constants {
     public static final double KDt = 0.01;
 
     // constraints
-    public static final double MAX_VELOCITY = 60;
-    public static final double MAX_ACCELERATION = 135;
+    public static final double MAX_VELOCITY = 25;
+    public static final double MAX_ACCELERATION = 7;
 
     // initial elevator stages
     public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;

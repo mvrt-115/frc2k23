@@ -65,13 +65,14 @@ public class Elevator extends SubsystemBase {
     
     elev_motor = elevatorMotor;
     elev_motor2 = elevatorMotor2;
+    elev_motor.configFactoryDefault();
+    elev_motor2.configFactoryDefault();
+
     elev_motor.setInverted(false);
     elev_motor2.setInverted(false);
     elev_motor2.follow(elev_motor);
-    int forwardLimit = 20000;
-    int reverseLimit = 50;
-    elev_motor.configFactoryDefault();
-    elev_motor2.configFactoryDefault();
+    int forwardLimit = 22050;
+    int reverseLimit = -50;
     elev_motor.configVoltageCompSaturation(10);
     elev_motor2.configVoltageCompSaturation(10);
     elev_motor.configForwardSoftLimitThreshold(forwardLimit);
@@ -98,9 +99,6 @@ public class Elevator extends SubsystemBase {
      elev_motor.config_kD(Constants.Elevator.kPIDIdx, Constants.Elevator.D);
      elev_motor.config_kF(Constants.Elevator.kPIDIdx, Constants.Elevator.F);
      
-
-    elev_motor.setNeutralMode(NeutralMode.Brake);
-    elev_motor2.setNeutralMode(NeutralMode.Brake);
     elev_motor.setSelectedSensorPosition(0);
     elev_motor2.setSelectedSensorPosition(0);
 
@@ -125,20 +123,22 @@ public class Elevator extends SubsystemBase {
     // SmartDashboard.putNumber("Elevator Level", getLevel());
     // SmartDashboard.putNumber("Elevator Target Heighr", targetHeight);
    // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
-    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
-    SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
+    // SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
+    // SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
+    // SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
     logger.recordOutput("Elevator/motor1/position_ticks", elev_motor.getSelectedSensorPosition());
-    logger.recordOutput("Elevator/motor2/position_ticks", elev_motor2.getSelectedSensorPosition());
+//    logger.recordOutput("Elevator/motor2/position_ticks", elev_motor2.getSelectedSensorPosition());
     logger.recordOutput("Elevator/motor1/position_inches", ticksToInches(elev_motor.getSelectedSensorPosition()));
-    logger.recordOutput("Elevator/motor2/position_inches", ticksToInches(elev_motor2.getSelectedSensorPosition()));
+//   logger.recordOutput("Elevator/motor2/position_inches", ticksToInches(elev_motor2.getSelectedSensorPosition()));
     logger.recordOutput("Elevator/motor1/velocity", elev_motor.getSelectedSensorVelocity());
-    logger.recordOutput("Elevator/motor1/closed_loop_error", elev_motor.getClosedLoopError());
+//    logger.recordOutput("Elevator/motor1/closed_loop_error", elev_motor.getClosedLoopError());
+    logger.recordOutput("Elevator/motor1/percent_output", elev_motor.getMotorOutputPercent());
+    logger.recordOutput("Elevator/motor2/percent_output", elev_motor2.getMotorOutputPercent());
    // elev_motor.set
   }
   
   public void keepAtHeight() {
-    elev_motor.set(ControlMode.PercentOutput, (Constants.Elevator.kG)/12);
+    elev_motor.set(ControlMode.PercentOutput, (Constants.Elevator.kG)/10);
   }
 
   /* updates the height  */
@@ -218,14 +218,15 @@ public class Elevator extends SubsystemBase {
      logger.recordOutput("Elevator/targetheight_in", ticksToInches(targetHeightRaw));
      logger.recordOutput("Elevator/targetheight_ticks", (targetHeightRaw));
      logger.recordOutput("Elevator/feedforward", feedforward);
-     logger.recordOutput("Elevator/setvelocity", ((feedforward+pid.calculate(setpoint.velocity))/12));
+     logger.recordOutput("Elevator/setvelocity", ((feedforward+pid.calculate(setpoint.velocity))/10));
      logger.recordOutput("Elevator/pidvalue", pid.calculate(setpoint.velocity));
     // elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward)/12);
     // //SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
     // sim
     //  elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));
     currentHeight = getHeight();
-    elev_motor.set(ControlMode.Position, targetHeightRaw, DemandType.ArbitraryFeedForward, feedforward);
+    elev_motor.set(ControlMode.Position, targetHeightRaw, DemandType.ArbitraryFeedForward, feedforward/10); //DemandType.ArbitraryFeedForward, feedforward/10);
+//    elev_motor2.set(ControlMode.Position, targetHeightRaw, DemandType.ArbitraryFeedForward, (Constants.Elevator.kG/10));//, DemandType.ArbitraryFeedForward, feedforward);
 
     // double velocity = elev_motor.getSelectedSensorVelocity(); 
     //elev_motor.set(ControlMode.PercentOutput, ((pid.calculate(getHeight(), targetHeightRaw)) + feedforward) / 10);

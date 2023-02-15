@@ -73,10 +73,11 @@ public class RobotContainer {
     // elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
     // new Trigger(m_exampleSubsystem::exampleCondition)
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
-    driverController.b().onTrue(new SetElevatorHeight(elevator, 100)).onFalse(new ManualElevator(elevator, 0));
+    driverController.x().whileTrue(new ManualElevator(elevator, 0.2)).onFalse(new ManualElevator(elevator, 0));
+    driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(new ManualElevator(elevator, 0));
     driverController.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)).onFalse(new ManualElevator(elevator, 0));
-    driverController.x().whileTrue(intake.runIn()).onFalse(intake.stop());
-    driverController.y().whileTrue(intake.runOut()).onFalse(intake.stop());
+  //  driverController.x().whileTrue(intake.runIn()).onFalse(intake.stop());
+  //  driverController.y().whileTrue(intake.runOut()).onFalse(intake.stop());
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
