@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -37,6 +40,13 @@ public class AutonPathExample extends SequentialCommandGroup {
       ), 
       new Pose2d(0, 2, Rotation2d.fromDegrees(0.0)),
       swerveDrivetrain.getTrajectoryConfig());
+    
+    try {
+      trajectory = TrajectoryUtil.fromPathweaverJson(Path.of("pathplanner/ScoreAndLevel.path"));
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
     
     swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
 
