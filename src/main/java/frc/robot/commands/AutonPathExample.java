@@ -31,9 +31,11 @@ public class AutonPathExample extends SequentialCommandGroup {
     trajectory = TrajectoryGenerator.generateTrajectory(
       new Pose2d(0, 0, new Rotation2d(0)),
       List.of(
-        new Translation2d(1.5, 0)
+        new Translation2d(1, 0),
+        new Translation2d(1, 1),
+        new Translation2d(0, 1)
       ), 
-      new Pose2d(2, 0, Rotation2d.fromDegrees(180.0)),
+      new Pose2d(0, 2, Rotation2d.fromDegrees(0.0)),
       swerveDrivetrain.getTrajectoryConfig());
     
     swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);

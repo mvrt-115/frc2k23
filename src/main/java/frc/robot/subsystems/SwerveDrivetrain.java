@@ -153,8 +153,8 @@ public class SwerveDrivetrain extends SubsystemBase {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     trajectoryConfig = new TrajectoryConfig(
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS, 
-      Constants.SwerveDrivetrain.kDriveMaxAcceleration);
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS/4.0, 
+      Constants.SwerveDrivetrain.kDriveMaxAcceleration/4.0);
     trajectoryConfig.setKinematics(swerveKinematics);
     
     state = DrivetrainState.JOYSTICK_DRIVE; 
