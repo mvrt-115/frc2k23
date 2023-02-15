@@ -4,17 +4,24 @@
 
 package frc.robot.commands;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class AutonPathExample extends SequentialCommandGroup {
@@ -28,15 +35,19 @@ public class AutonPathExample extends SequentialCommandGroup {
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
 
-    trajectory = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(0, 0, new Rotation2d(0)),
-      List.of(
-        new Translation2d(1, 0),
-        new Translation2d(1, 1),
-        new Translation2d(0, 1)
-      ), 
-      new Pose2d(0, 2, Rotation2d.fromDegrees(0.0)),
-      swerveDrivetrain.getTrajectoryConfig());
+    // trajectory = TrajectoryGenerator.generateTrajectory(
+    //   new Pose2d(0, 0, new Rotation2d(0)),
+    //   List.of(
+    //     new Translation2d(1, 0),
+    //     new Translation2d(1, 1),
+    //     new Translation2d(0, 1)
+    //   ), 
+    //   new Pose2d(0, 2, Rotation2d.fromDegrees(0.0)),
+    //   swerveDrivetrain.getTrajectoryConfig());
+
+    trajectory = PathPlanner.loadPath("ScoreAndLevel", new PathConstraints(
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS/4.0, 
+      Constants.SwerveDrivetrain.kDriveMaxAcceleration/4.0));
     
     swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
 
