@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -83,6 +84,9 @@ public class Elevator extends SubsystemBase {
     elev_motor2.configReverseSoftLimitThreshold(reverseLimit);
     elev_motor2.configForwardSoftLimitEnable(true, 0);
     elev_motor2.configReverseSoftLimitEnable(true, 0);
+    SupplyCurrentLimitConfiguration clc = new SupplyCurrentLimitConfiguration(true, 40, 50, 3.8);  
+    elev_motor.configSupplyCurrentLimit(clc);
+
     elev_motor.setNeutralMode(NeutralMode.Brake);
     elev_motor2.setNeutralMode(NeutralMode.Brake);
 
@@ -135,6 +139,14 @@ public class Elevator extends SubsystemBase {
     logger.recordOutput("Elevator/motor1/percent_output", elev_motor.getMotorOutputPercent());
     logger.recordOutput("Elevator/motor2/percent_output", elev_motor2.getMotorOutputPercent());
    // elev_motor.set
+  }
+
+  public double convertMetersToTicks(double meters) {
+    return ((meters / 0.0254) * (1 / (2*0.75636 * Math.PI)) * 4096);
+  }
+
+  public double convertTicksToMeters(double ticks) {
+    return (ticks / 2048) / Constants.Elevator.GEAR_RATIO;
   }
   
   public void keepAtHeight() {
@@ -336,6 +348,7 @@ public class Elevator extends SubsystemBase {
   public void stopMotors() {
     elev_motor.set(ControlMode.PercentOutput, 0);
   }
+}
 
   /* public void simulationPeriodic() {
     super.simulationPeriodic();
@@ -350,4 +363,3 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition() * Constants.Elevator.INCHES_PER_TICK);
     //SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
   } */
-}
