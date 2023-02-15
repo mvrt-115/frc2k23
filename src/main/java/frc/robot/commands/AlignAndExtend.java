@@ -19,7 +19,7 @@ public class AlignAndExtend extends CommandBase {
 
   //Assumes is already at correct location
   public AlignAndExtend(SwerveDrivetrain swerve, Localization localization, Elevator elevator, Pose2d poseToGoTo, double height) {
-    align = new Align(swerve, localization, poseToGoTo);
+    align = new Align(swerve, localization);
     this.elevator = elevator;
     this.height = height;
   }

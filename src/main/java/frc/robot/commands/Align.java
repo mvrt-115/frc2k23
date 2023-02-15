@@ -24,10 +24,10 @@ public class Align extends CommandBase {
   private PIDController pidTheta;
 
   /** Creates a new Align. */
-  public Align(SwerveDrivetrain swerve, Localization localization, Pose2d poseToGoTo) {
+  public Align(SwerveDrivetrain swerve, Localization localization) {
     this.swerve = swerve;
     this.localization = localization;
-    this.poseToGoTo = poseToGoTo;
+    this.poseToGoTo = localization.getClosestScoringLoc();
 
     pidX = new PIDController(1.2, 0, 0); // pid x-coor 1.2
     pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
