@@ -52,7 +52,7 @@ public final class Constants {
     public static final boolean invertJoystickY = true;
     public static final boolean invertJoystickW = true;
 
-    public static final double kPJoystick = 0.2;
+    public static final double kPJoystick = 0.1;
     public static final double kIJoystick = 0.0;
     public static final double kDJoystick = 0.0;
     public static final double kFJoystick = 0.0;
@@ -149,10 +149,10 @@ public final class Constants {
     public static final double kThrottleDeadband = 0.2;
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
-    public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
-    public static final double kDriveMaxAcceleration = 1.5;
+    public static final double kMaxSpeedMPS = 8; // optimize max speed to prioritize translation
+    public static final double kDriveMaxAcceleration = 3;
     public static final double kTurnMaxAcceleration = 1 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 5;
+    public static final double kDriveMaxSpeedMPS = 4;
     public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;

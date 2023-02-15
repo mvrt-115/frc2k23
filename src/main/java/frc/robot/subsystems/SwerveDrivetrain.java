@@ -502,8 +502,9 @@ public class SwerveDrivetrain extends SubsystemBase {
    * uses PID to try and hold the current heading of the robot
    * @param heading
    */
-  public void holdHeading(Rotation2d heading) {
-    double v_w = thetaController.calculate(getRotation2d().getRadians());
-    this.setSpeeds(0, 0, v_w, Constants.SwerveDrivetrain.rotatePoints[this.getRotationPointIdx()]);
+  public double holdHeading(Rotation2d heading) {
+    double v_w = Constants.JoystickControls.kPJoystick * (getRotation2d().getRadians() - heading.getRadians()); //thetaController.calculate(getRotation2d().getRadians());
+    // this.setSpeeds(0, 0, v_w, Constants.SwerveDrivetrain.rotatePoints[this.getRotationPointIdx()]);
+    return v_w;
   }
 }

@@ -83,6 +83,16 @@ public class SwerveJoystickCommand extends CommandBase {
     vY = yLimiter.calculate(vY) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
     vW = wLimiter.calculate(vW) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPS;
 
+    if (MathUtils.withinEpsilon(vW, 0, 0.01)) {
+      double v_w_compensate = drivetrain.holdHeading(heading);
+      vW += v_w_compensate;
+      SmartDashboard.putBoolean("Holding Heading", true);
+    }
+    else {
+      heading = drivetrain.getRotation2d();
+      SmartDashboard.putBoolean("Holding Heading", false);
+    }
+
     // configure rotate point
     drivetrain.setRotationPointIdx(0);
     // int POV = joystick.getPOV();
@@ -125,13 +135,10 @@ public class SwerveJoystickCommand extends CommandBase {
       {
         drivetrain.resetModules();
       }
-      // drivetrain.holdHeading(heading);
     }
     else {
       timer.reset();
       timer.start();
-      heading = drivetrain.getRotation2d();
-      drivetrain.thetaController.reset(heading.getRadians());
     }
   }
 
