@@ -36,6 +36,15 @@ import frc.robot.subsystems.Elevator.ElevatorState;
 
 public final class Constants {
 
+    public static final boolean debugMode = true;
+
+    public static final double MAX_VOLTAGE = 10.0;
+    
+    public static final int kPIDIdx = 0;
+    public static final int kTimeoutMs = 35;
+    public static final boolean kIsPracticeBot = true;
+    public static final double kVoltageComp = 10.0;
+    public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(true, 40, 50, 3.8);
   public static class DataLogging {
     public static final Mode currMode = RobotBase.isSimulation()? Mode.SIM : Mode.REAL;
 
@@ -386,22 +395,23 @@ public final class Constants {
     public static final double MIN_HEIGHT = 0;
 
     public static final double ZERO_HEIGHT = 0;
-    public static final double SHELF_HEIGHT = 0; //ticks
+    public static final double SHELF_HEIGHT = 0;
 
     // MID, HIGH heights parwa cone (in ticks)
     public static final double CONE_MID_HEIGHT = 15000;
     public static final double CONE_HIGH_HEIGHT = 22000;
 
-    // MID, HIGH heights para cube (in ticks)
+    // MID, HIGH heights para cube (in inches)
     public static final double CUBE_MID_HEIGHT = 23.5;
     public static final double CUBE_HIGH_HEIGHT = 35.5;
 
     // feed forward constants
     public static final double kS = -0.55996;
+//    public static final double kG = 1;
     public static final double kG = 1.2265;
     public static final double kV = 0.035258;
-   // public static final double kA = 0.0053228;
-    public static final double kA = 0;
+    public static final double kA = 0.0053228;
+ //   public static final double kA = 0;
     // Game Object Heights
     public static final double CONE_HEIGHT = 6;
     public static final double CUBE_HIEGHT = 8;
@@ -410,8 +420,8 @@ public final class Constants {
     public static final double KDt = 0.01;
 
     // constraints
-    public static final double MAX_VELOCITY = 10.5;
-    public static final double MAX_ACCELERATION = 6.5;
+    public static final double MAX_VELOCITY = 60;
+    public static final double MAX_ACCELERATION = 135;
 
     // initial elevator stages
     public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
@@ -428,4 +438,17 @@ public final class Constants {
     public static final double PULLEY_RADIUS = 2;
 
   }
+
+  public static class Intake {
+    public static final double kMarginOfError = 0.03;
+
+    public static final int kProximityPort = 6; //port number for element proximity sensor
+    public static final int kMotorPort = 4; 
+
+    public static final double kP = 0, kI = 0, kD = 0;
+
+    public static final double kCompressedSpeed = 0.03;
+
+    public static final double kGoalRPM = 0.3; 
+}
 }

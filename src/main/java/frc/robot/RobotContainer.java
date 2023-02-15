@@ -15,8 +15,13 @@ import frc.robot.subsystems.ExampleSubsystem;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake2;
+import frc.robot.subsystems.Intake2.INTAKE_TYPE;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -29,10 +34,23 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private Elevator elevator;
+  private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
+ /* private final Joystick m_driverController =
+      new Joystick(OperatorConstants.kDriverControllerPort);
+
+      private final JoystickButton intakeButton = new JoystickButton(m_driverController, 1);
+      private final JoystickButton outtakeButton = new JoystickButton(m_driverController, 2);
+      private final JoystickButton manualButton = new JoystickButton(m_driverController, 3);*/
+  
+      private final CommandXboxController driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  // private final JoystickButton intakeButton = new JoystickButton(driverController, 1);
+  // private final JoystickButton outtakeButton = new JoystickButton(driverController, 2);
+
+  // private final JoystickButton manualIntake = new JoystickButton(driverController, 3);
+  // private final JoystickButton manualOuttake = new JoystickButton(driverController, 4);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -53,24 +71,17 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // new Trigger(m_exampleSubsystem::exampleCondition)
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
+    driverController.b().onTrue(new SetElevatorHeight(elevator, 100)).onFalse(new ManualElevator(elevator, 0));
+    driverController.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)).onFalse(new ManualElevator(elevator, 0));
+    driverController.x().whileTrue(intake.runIn()).onFalse(intake.stop());
+    driverController.y().whileTrue(intake.runOut()).onFalse(intake.stop());
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-   // m_driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
-   // m_driverController.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
-  //  m_driverController.x().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.MIN_HEIGHT));
-  m_driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT));
-  m_driverController.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT));
-  m_driverController.x().onTrue(new SetElevatorHeight(elevator, 0));
-  // m_driverController.b().whileTrue(new ManualElevator(elevator, -0.1));
-  // m_driverController.a().whileTrue(new ManualElevator(elevator, 0.4));
 
-  // sim
-  //  SmartDashboard.putData("go to mid", new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT + Constants.Elevator.CONE_HEIGHT));
-  //  SmartDashboard.putData("go to high", new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT + Constants.Elevator.CONE_HEIGHT));
-  //  SmartDashboard.putData("zero", new SetElevatorHeight(elevator, Constants.Elevator.MIN_HEIGHT));
+//    driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**

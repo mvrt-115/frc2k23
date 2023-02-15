@@ -29,6 +29,7 @@ public class SetElevatorHeight extends CommandBase
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
+    elevator.setTargetHeight(height, startTime);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,7 +40,7 @@ public class SetElevatorHeight extends CommandBase
     //   elevator.setTargetHeight(0);
     // }
     // else {
-      elevator.setTargetHeight(height, startTime);
+      elevator.setHeightRaw(height);
 //      System.out.println("executeeeee");
     //  System.out.println("target height: " + height);
     // }
