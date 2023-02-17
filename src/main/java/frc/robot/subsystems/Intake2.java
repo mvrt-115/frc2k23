@@ -45,7 +45,7 @@ public class Intake2 extends SubsystemBase {
   public Intake2(INTAKE_TYPE type) {
     this.type = type;
 
-    motor = TalonFactory.createSparkMax(Constants.Intake.kMotorPort, true);
+    motor = TalonFactory.createSparkMax(Constants.Intake.kMotorPort, false);
     encoder = motor.getEncoder(); 
 
     prox = new DigitalInput(Constants.Intake.kProximityPort); 
@@ -69,7 +69,8 @@ public class Intake2 extends SubsystemBase {
   }
 
   public RunCommand runIn(){
-    return new RunCommand(() -> runMotor(true));
+    logger.recordOutput("Intake/isIntake", "hi");
+    return new RunCommand(() -> motor.set(-0.3));//runMotor(true));
   }
   
   public RunCommand runOut(){
@@ -77,22 +78,26 @@ public class Intake2 extends SubsystemBase {
   }
 
   public RunCommand stop(){
-    return new RunCommand(() -> motor.set(-Constants.Intake.kCompressedSpeed));
+    return new RunCommand(() -> stopIntaking());
   }
 
   /******************************************METHODS***************************************/
 
+  public void stopIntaking()
+  {
+   /* if(prox.get())*/ motor.set(-Constants.Intake.kCompressedSpeed);
+  }
+
   public void runMotor(boolean isIntaking)
   {
     double speed = isIntaking ? -Constants.Intake.kGoalRPM : Constants.Intake.kGoalRPM;
-    //if(!isIntaking || isIntaking && !prox.get()) 
-    motor.set(speed);
+   /* if(!isIntaking || isIntaking && !prox.get())*/ motor.set(speed);
   }
 
   public void smoothRun(boolean isIntaking)
   {
     double goalSpeed = isIntaking ? Constants.Intake.kGoalRPM : -Constants.Intake.kGoalRPM;
-    if(!isIntaking || isIntaking && !prox.get()) pidController.setReference(goalSpeed, CANSparkMax.ControlType.kVelocity);
+    /*if(!isIntaking || isIntaking && !prox.get())*/ pidController.setReference(goalSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
   /******************************************PERIODIC***************************************/
@@ -102,6 +107,8 @@ public class Intake2 extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("item in intake", !prox.get());
     logger.recordOutput("intake/current", motor.getOutputCurrent());
+    logger.recordOutput("intake/element", !prox.get());
+    logger.recordOutput("intake/voltage", motor.getAppliedOutput());
   }
 
   /******************************************CALCULATIONS***************************************/

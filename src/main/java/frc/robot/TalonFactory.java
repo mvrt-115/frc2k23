@@ -33,7 +33,8 @@ public class TalonFactory {
     public static CANSparkMax createSparkMax(int id, boolean inversion) {
         CANSparkMax neo = new CANSparkMax(id, CANSparkMax.MotorType.kBrushless);
 
-        neo.setOpenLoopRampRate(0.4);
+        // neo.setOpenLoopRampRate(0.4);
+        neo.restoreFactoryDefaults();
         neo.setInverted(inversion);       
         
         return neo;

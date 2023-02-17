@@ -76,6 +76,8 @@ public class Elevator extends SubsystemBase {
     int reverseLimit = -50;
     elev_motor.configVoltageCompSaturation(10);
     elev_motor2.configVoltageCompSaturation(10);
+    elev_motor.enableVoltageCompensation(true);
+    elev_motor2.enableVoltageCompensation(true);
     elev_motor.configForwardSoftLimitThreshold(forwardLimit);
     elev_motor.configReverseSoftLimitThreshold(reverseLimit);
     elev_motor.configForwardSoftLimitEnable(true, 0);
@@ -84,8 +86,7 @@ public class Elevator extends SubsystemBase {
     elev_motor2.configReverseSoftLimitThreshold(reverseLimit);
     elev_motor2.configForwardSoftLimitEnable(true, 0);
     elev_motor2.configReverseSoftLimitEnable(true, 0);
-    SupplyCurrentLimitConfiguration clc = new SupplyCurrentLimitConfiguration(true, 40, 50, 3.8);  
-    elev_motor.configSupplyCurrentLimit(clc);
+    elev_motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 50, 3.8));
 
     elev_motor.setNeutralMode(NeutralMode.Brake);
     elev_motor2.setNeutralMode(NeutralMode.Brake);
@@ -193,7 +194,7 @@ public class Elevator extends SubsystemBase {
  //  goal = new TrapezoidProfile.State(targetHeight, 0);
   // setpoint = new TrapezoidProfile.State();
    //profile = new TrapezoidProfile(constraints, goal, setpoint);
-    goal = new TrapezoidProfile.State(ticksToInches(targetHeight), 0);
+    goal = new TrapezoidProfile.State(ticksToInches(goalHeight), 0);
     initial = new TrapezoidProfile.State(ticksToInches(elev_motor.getSelectedSensorPosition()), ticksToInches(elev_motor.getSelectedSensorVelocity())*10);
     profile = new TrapezoidProfile(constraints, goal, initial);
   }
@@ -209,6 +210,7 @@ public class Elevator extends SubsystemBase {
     // SmartDashboard.putNumber("goal position", goal.position);
     // //SmartDashboard.putNumber("profile info", profile);
     // // SmartDashboard.putString("setpoint", setpoint.to)
+    logger.recordOutput("Elevator/motor1/targetHeight", (targetHeightRaw));
     double t = Timer.getFPGATimestamp() - startTime; 
     TrapezoidProfile.State setpoint = profile.calculate(t);
     // SmartDashboard.putNumber("setpoint position", setpoint.position);
@@ -250,6 +252,10 @@ public class Elevator extends SubsystemBase {
   public double getHeight()
   {
     return elev_motor.getSelectedSensorPosition();
+  }
+
+  public double getVelocity() {
+    return elev_motor.getSelectedSensorVelocity();
   }
 
   /* resets the encoder */

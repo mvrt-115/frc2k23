@@ -7,7 +7,9 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.IntakeHPStation;
 import frc.robot.commands.ManualElevator;
+import frc.robot.commands.Score;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -73,11 +75,13 @@ public class RobotContainer {
     // elevator.setDefaultCommand(new SetElevatorHeight(elevator, 0.0));
     // new Trigger(m_exampleSubsystem::exampleCondition)
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
-    driverController.x().whileTrue(new ManualElevator(elevator, 0.2)).onFalse(new ManualElevator(elevator, 0));
+    //driverController.x().whileTrue(new ManualElevator(elevator, 0.2)).onFalse(new ManualElevator(elevator, 0));
     driverController.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(new ManualElevator(elevator, 0));
     driverController.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)).onFalse(new ManualElevator(elevator, 0));
   //  driverController.x().whileTrue(intake.runIn()).onFalse(intake.stop());
   //  driverController.y().whileTrue(intake.runOut()).onFalse(intake.stop());
+    driverController.x().onTrue(new IntakeHPStation(elevator, intake)).onFalse(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()));
+    driverController.y().onTrue(new Score(elevator, intake, Constants.Elevator.CONE_MID_HEIGHT)).onFalse(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.

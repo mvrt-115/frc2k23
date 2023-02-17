@@ -381,7 +381,7 @@ public final class Constants {
     public static final int MOTOR_ID2 = 14;
     
     public static final int kPIDIdx = 0;
-    public static final double P = 0.025\;//.1;//.01;
+    public static final double P = 0.025;//.1;//.01;
     public static final double I = 0;//.000006;
     public static final double D = 0.001;
     public static final double F = 0;
@@ -400,6 +400,7 @@ public final class Constants {
     // MID, HIGH heights parwa cone (in ticks)
     public static final double CONE_MID_HEIGHT = 15000;
     public static final double CONE_HIGH_HEIGHT = 22000;
+    public static final double INTAKE_HEIGHT = 15750;
 
     // MID, HIGH heights para cube (in inches)
     public static final double CUBE_MID_HEIGHT = 23.5;
@@ -408,20 +409,21 @@ public final class Constants {
     // feed forward constants
     public static final double kS = -0.086653;//-0.55996;//-0.086653;//-0.55996;
 //    public static final double kG = 1;
-    public static final double kG =  0.79635; //1.2265;
+    public static final double kG =  0.67635; //0.79635: claw intake; //1.2265;
     public static final double kV = 0.016763; //0.035258;
     public static final double kA = 0.0031226; //0.0053228;
  //   public static final double kA = 0;
     // Game Object Heights
     public static final double CONE_HEIGHT = 6;
     public static final double CUBE_HIEGHT = 8;
+    
 
     public static final int SENSOR_PORT = 0;
     public static final double KDt = 0.01;
 
     // constraints
-    public static final double MAX_VELOCITY = 25;
-    public static final double MAX_ACCELERATION = 7;
+    public static final double MAX_VELOCITY = 50;
+    public static final double MAX_ACCELERATION = 15;
 
     // initial elevator stages
     public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
@@ -443,7 +445,7 @@ public final class Constants {
     public static final double kMarginOfError = 0.03;
 
     public static final int kProximityPort = 6; //port number for element proximity sensor
-    public static final int kMotorPort = 4; 
+    public static final int kMotorPort = 15; 
 
     public static final double kP = 0, kI = 0, kD = 0;
 
