@@ -30,13 +30,13 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.BetterSwerveControllerCommand;
 
-public class AutonPathExample extends SequentialCommandGroup {
+public class AutonScoreTwoAndLevel extends SequentialCommandGroup {
   /** Creates a new AutonPathExample. */
   private final SwerveDrivetrain swerveDrivetrain;
   private BetterSwerveControllerCommand swerveControllerCommand;
   private PathPlannerTrajectory trajectory;
 
-  public AutonPathExample(SwerveDrivetrain drivetrain) {
+  public AutonScoreTwoAndLevel(SwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
