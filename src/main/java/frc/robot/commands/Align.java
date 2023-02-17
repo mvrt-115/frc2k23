@@ -29,7 +29,7 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseToGoTo = localization.getClosestScoringLoc();
 
-    pidX = new PIDController(1.2, 0, 0); // pid x-coor 1.2
+    pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
     pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
     pidTheta = new PIDController(0, 0, 0); // pid t-coor 5
   }
@@ -45,7 +45,7 @@ public class Align extends CommandBase {
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
     //if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
-      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.7; // pos, setpoint
+      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
       double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
       double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(), poseToGoTo.getRotation().getRadians());
         //swerve screwed up field oriented switched y axis; shoud be -outX
@@ -69,7 +69,7 @@ public class Align extends CommandBase {
     //If close enough to target
     //return Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) < 10;
     //return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 && Math.abs(robotPose.getX()-poseToGoTo.getX())<0.05 ;
-    return Math.abs(robotPose.getX()-poseToGoTo.getX())<0.05 ;
+    return false;//Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 ;
     /* 
     return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance && 
       Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance && 

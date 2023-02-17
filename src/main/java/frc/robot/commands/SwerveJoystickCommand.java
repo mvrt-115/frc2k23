@@ -61,6 +61,7 @@ public class SwerveJoystickCommand extends CommandBase {
     timer.reset();
     timer.start();
     heading = drivetrain.getRotation2d();
+    drivetrain.resetModules();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -84,8 +85,8 @@ public class SwerveJoystickCommand extends CommandBase {
     vW = wLimiter.calculate(vW) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPS;
 
     if (MathUtils.withinEpsilon(vW, 0, 0.01)) {
-      double v_w_compensate = drivetrain.holdHeading(heading);
-      vW += v_w_compensate;
+      // double v_w_compensate = drivetrain.holdHeading(heading);
+      // vW += v_w_compensate;
       SmartDashboard.putBoolean("Holding Heading", true);
     }
     else {
@@ -105,7 +106,6 @@ public class SwerveJoystickCommand extends CommandBase {
     // }
 
     SmartDashboard.putBoolean("Field Oriented", drivetrain.fieldOriented);
-    boolean isTurnBroken = true;
     // apply heading correction to the robot
     double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
     double desired_heading = MathUtils.betterATanDeg(vX, vY); // deg
@@ -113,9 +113,6 @@ public class SwerveJoystickCommand extends CommandBase {
     SmartDashboard.putNumber("Omega Offset", omega_offset);
 
     double v_omega = vW;
-    if(!isTurnBroken){
-      v_omega = vW + omega_offset;
-    }
 
     if (drivetrain.fieldOriented) {
       drivetrain.setSpeedsFieldOriented(vX, vY, v_omega);

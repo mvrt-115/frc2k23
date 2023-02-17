@@ -6,7 +6,8 @@ package frc.robot;
 
 
 import frc.robot.commands.Align;
-import frc.robot.commands.AutonPathExample;
+import frc.robot.commands.AlignAndExtend;
+import frc.robot.commands.AutonScoreTwoAndLevel;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
 import frc.robot.commands.DriveForward;
@@ -113,7 +114,7 @@ public class RobotContainer {
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
     driveJoystick.button(2).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
-    autonSelector.setDefaultOption("Example", new AutonPathExample(swerveDrivetrain));
+    autonSelector.setDefaultOption("Example", new AutonScoreTwoAndLevel(swerveDrivetrain));
     SmartDashboard.putData("Auton Selector", autonSelector);
     //Align to nearest column on click
     Pose2d nearestCol = Constants.VisionConstants.kRedScoreCols.get(5);//localization.getClosestScoringLoc();
