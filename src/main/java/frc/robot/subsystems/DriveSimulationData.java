@@ -104,5 +104,6 @@ public class DriveSimulationData {
      */
     public void resetOdometry(Rotation2d rotation2d, SwerveModulePosition[] modulePositions, Pose2d pose) {
         m_odometry.resetPosition(rotation2d, modulePositions, pose);
+        headingAngle = pose.getRotation().getRadians();
     }
 }

@@ -153,8 +153,8 @@ public class SwerveDrivetrain extends SubsystemBase {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     trajectoryConfig = new TrajectoryConfig(
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS, 
-      Constants.SwerveDrivetrain.kDriveMaxAcceleration);
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS/4.0, 
+      Constants.SwerveDrivetrain.kDriveMaxAcceleration/4.0);
     trajectoryConfig.setKinematics(swerveKinematics);
     
     state = DrivetrainState.JOYSTICK_DRIVE; 
@@ -345,7 +345,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot) {
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getRotation2d());
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getPose().getRotation());
     SmartDashboard.putString("ChassisSpeedsFO", speeds.toString());
     SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds);
     setModuleStates(moduleStates);
@@ -502,8 +502,9 @@ public class SwerveDrivetrain extends SubsystemBase {
    * uses PID to try and hold the current heading of the robot
    * @param heading
    */
-  public void holdHeading(Rotation2d heading) {
-    double v_w = thetaController.calculate(getRotation2d().getRadians());
-    this.setSpeeds(0, 0, v_w, Constants.SwerveDrivetrain.rotatePoints[this.getRotationPointIdx()]);
+  public double holdHeading(Rotation2d heading) {
+    double v_w = Constants.JoystickControls.kPJoystick * (getRotation2d().getRadians() - heading.getRadians()); //thetaController.calculate(getRotation2d().getRadians());
+    // this.setSpeeds(0, 0, v_w, Constants.SwerveDrivetrain.rotatePoints[this.getRotationPointIdx()]);
+    return v_w;
   }
 }
