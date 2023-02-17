@@ -10,7 +10,11 @@ import java.util.List;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,16 +23,18 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.utils.BetterSwerveControllerCommand;
 
 public class AutonPathExample extends SequentialCommandGroup {
   /** Creates a new AutonPathExample. */
   private final SwerveDrivetrain swerveDrivetrain;
-  private SwerveControllerCommand swerveControllerCommand;
-  private Trajectory trajectory;
+  private BetterSwerveControllerCommand swerveControllerCommand;
+  private PathPlannerTrajectory trajectory;
 
   public AutonPathExample(SwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -42,29 +48,32 @@ public class AutonPathExample extends SequentialCommandGroup {
     //     new Translation2d(1, 1),
     //     new Translation2d(0, 1)
     //   ), 
-    //   new Pose2d(0, 2, Rotation2d.fromDegrees(0.0)),
+    //   new Pose2d(0, 2, Rotation2d.fromDegrees(90.0)),
     //   swerveDrivetrain.getTrajectoryConfig());
 
-    trajectory = PathPlanner.loadPath("ScoreAndLevel", new PathConstraints(
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS/4.0, 
-      Constants.SwerveDrivetrain.kDriveMaxAcceleration/4.0));
+    trajectory = PathPlanner.loadPath("ScoreAndLevel", 
+      new PathConstraints(
+        Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
+        Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration));
     
     swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
 
-    swerveControllerCommand = new SwerveControllerCommand(
-      trajectory, 
-      swerveDrivetrain::getPose, 
-      swerveDrivetrain.getKinematics(), 
-      swerveDrivetrain.xController, 
-      swerveDrivetrain.yController, 
-      swerveDrivetrain.thetaController, 
-      swerveDrivetrain::setModuleStates,
-      swerveDrivetrain);
+    // swerveControllerCommand = new BetterSwerveControllerCommand(
+    //   trajectory, 
+    //   swerveDrivetrain::getPose, 
+    //   swerveDrivetrain.getKinematics(), 
+    //   swerveDrivetrain.xController, 
+    //   swerveDrivetrain.yController, 
+    //   swerveDrivetrain.thetaController,
+    //   swerveDrivetrain::setModuleStates,
+    //   swerveDrivetrain);
     
     addCommands(
       new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
-      new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialPose())),
-      swerveControllerCommand,
+      new InstantCommand(() -> swerveDrivetrain.resetModules()),
+      new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
+      new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
+      swerveDrivetrain.getAutonPathCommand(trajectory),
       new InstantCommand(() -> swerveDrivetrain.stopModules()),
       new InstantCommand(() -> swerveDrivetrain.setDisabled()));
   }

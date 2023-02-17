@@ -18,6 +18,7 @@
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Auton Selector": "String Chooser",
@@ -31,7 +32,9 @@
     "windows": {
       "/SmartDashboard/Field": {
         "traj": {
-          "arrowSize": 2,
+          "arrowSize": 11,
+          "arrowWeight": 10.0,
+          "selectable": false,
           "style": "Track"
         },
         "window": {

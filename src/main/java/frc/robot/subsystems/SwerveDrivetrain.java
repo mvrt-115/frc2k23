@@ -10,6 +10,8 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -153,8 +155,8 @@ public class SwerveDrivetrain extends SubsystemBase {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     trajectoryConfig = new TrajectoryConfig(
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS/4.0, 
-      Constants.SwerveDrivetrain.kDriveMaxAcceleration/4.0);
+      Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
+      Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration);
     trajectoryConfig.setKinematics(swerveKinematics);
     
     state = DrivetrainState.JOYSTICK_DRIVE; 
@@ -506,5 +508,24 @@ public class SwerveDrivetrain extends SubsystemBase {
     double v_w = Constants.JoystickControls.kPJoystick * (getRotation2d().getRadians() - heading.getRadians()); //thetaController.calculate(getRotation2d().getRadians());
     // this.setSpeeds(0, 0, v_w, Constants.SwerveDrivetrain.rotatePoints[this.getRotationPointIdx()]);
     return v_w;
+  }
+
+  public PPSwerveControllerCommand getAutonPathCommand(PathPlannerTrajectory trajectory) {
+    // new PPSwerveControllerCommand(
+    //   trajectory, 
+    //   this::getPose,
+    //   this.swerveKinematics, 
+    //   this.xController, yController, xController, null, fieldOriented, null)
+    return new PPSwerveControllerCommand(
+      trajectory, 
+      this::getPose,
+      this.swerveKinematics,
+      this.xController, 
+      this.yController,
+      new PIDController(1, 0, 0), 
+      this::setModuleStates,
+      false,
+      this
+    );
   }
 }
