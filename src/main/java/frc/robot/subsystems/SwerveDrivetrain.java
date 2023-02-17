@@ -57,6 +57,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   public PIDController xController;
   public PIDController yController;
   public ProfiledPIDController thetaController;
+  public PIDController rotationControllerFeedBack;
   private TrajectoryConfig trajectoryConfig;
   // sensors
   private AHRS gyro;
@@ -153,6 +154,10 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_r_control_D,
       Constants.SwerveDrivetrain.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    rotationControllerFeedBack = new PIDController(
+      Constants.SwerveDrivetrain.m_r_control_P,
+      Constants.SwerveDrivetrain.m_r_control_I,
+      Constants.SwerveDrivetrain.m_r_control_D);
 
     trajectoryConfig = new TrajectoryConfig(
       Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
@@ -522,7 +527,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       this.swerveKinematics,
       this.xController, 
       this.yController,
-      new PIDController(1, 0, 0), 
+      this.rotationControllerFeedBack,
       this::setModuleStates,
       false,
       this
