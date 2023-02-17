@@ -210,8 +210,8 @@ public final class Constants {
     public static final double thetaTolerance = 0.05;
 
     //Camera position on robot
-    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, Units.inchesToMeters(-2.00), 0), new Rotation3d());
-    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0, Units.inchesToMeters(5 + 3/8), 0), new Rotation3d());
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, 0.035, 0), new Rotation3d());
+    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0, 0.06, 0), new Rotation3d());
     /**
      * Key:
      * Orientation: facing red community from blue community 
