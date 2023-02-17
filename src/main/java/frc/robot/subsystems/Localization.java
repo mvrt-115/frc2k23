@@ -83,7 +83,7 @@ public class Localization extends SubsystemBase {
       field.setRobotPose(currPose); 
     }
 
-    //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
+    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     field.setRobotPose(getCurrentPose());
     log();
 
