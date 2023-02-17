@@ -210,7 +210,7 @@ public final class Constants {
     public static final double thetaTolerance = 0.05;
 
     //Camera position on robot
-    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, -0.035, 0), new Rotation3d());
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, -0.1, 0), new Rotation3d());
     public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0, 0.16, 0), new Rotation3d());
     /**
      * Key:
