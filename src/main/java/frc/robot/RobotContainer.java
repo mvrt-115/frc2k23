@@ -45,7 +45,7 @@ public class RobotContainer {
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
-  private final Trigger levelTrigger;
+  //private final Trigger levelTrigger;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
  /* private final Joystick m_driverController =
@@ -87,13 +87,13 @@ public class RobotContainer {
       driveJoystick));
       
     // Configure the trigger bindings
-    intake = new Intake(Intake.INTAKE_TYPE.claw); /// SPECIFY WHETHER WHEELED OR CLAW INTAKE
+    //intake = new Intake(Intake.INTAKE_TYPE.claw); /// SPECIFY WHETHER WHEELED OR CLAW INTAKE
     configureBindings();
-    elevator = new Elevator();
+    //elevator = new Elevator();
     //elevator.setDefaultCommand(new SetElevatorHeight(elevator));
 
-    levelTrigger = driveJoystick.button(2);
-    levelTrigger.onTrue( new DriveForward(swerveDrivetrain, 1, 0.5).andThen(new Leveling(swerveDrivetrain)) );
+    //levelTrigger = driveJoystick.button(2);
+    //levelTrigger.onTrue( new DriveForward(swerveDrivetrain, 1, 0.5).andThen(new Leveling(swerveDrivetrain)) );
   }
 
   /**
@@ -118,11 +118,11 @@ public class RobotContainer {
     //Align to nearest column on click
     Pose2d nearestCol = Constants.VisionConstants.kRedScoreCols.get(5);//localization.getClosestScoringLoc();
     driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
-    driveJoystick.button(5).onTrue(new SequentialCommandGroup(
-      new Align(swerveDrivetrain, localization),
-      new SetElevatorHeight(elevator, 0),
-      intake.intakeElement()
-    ));
+    //driveJoystick.button(5).onTrue(new SequentialCommandGroup(
+    //  new Align(swerveDrivetrain, localization),
+    //  new SetElevatorHeight(elevator, 0),
+    //  intake.intakeElement()
+    //));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
@@ -132,10 +132,10 @@ public class RobotContainer {
 
   // manualButton.whileTrue(intake.manualIntake()); //Run manual intake when X is pressed
 
-    intakeButton.onTrue(intake.intakeElement());
-    outtakeButton.onFalse(intake.outtakeElement());
+    //intakeButton.onTrue(intake.intakeElement());
+    //outtakeButton.onFalse(intake.outtakeElement());
 
-    manualIntake.whileTrue(intake.manualIntake()).onFalse(intake.manualOuttake()); //Run manual intake when X is pressed
+    //manualIntake.whileTrue(intake.manualIntake()).onFalse(intake.manualOuttake()); //Run manual intake when X is pressed
   }
 
   /**
