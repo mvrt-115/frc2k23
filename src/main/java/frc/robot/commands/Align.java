@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,9 +31,9 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseToGoTo = localization.getClosestScoringLoc();
 
-    pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
+    pidX = new PIDController(1.2, 0, 0); // pid x-coor 1.2
     pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
-    pidTheta = new PIDController(0, 0, 0); // pid t-coor 5
+    pidTheta = new PIDController(5, 0, 0); // pid t-coor 5
   }
 
   // Called when the command is initially scheduled.
@@ -69,11 +71,11 @@ public class Align extends CommandBase {
     //If close enough to target
     //return Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) < 10;
     //return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 && Math.abs(robotPose.getX()-poseToGoTo.getX())<0.05 ;
-    return false;//Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 ;
-    /* 
+    //return false;//Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 ;
+     
     return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance && 
-      Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance && 
-      Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;*/
+      //Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance && 
+      Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;
   }
 
 
