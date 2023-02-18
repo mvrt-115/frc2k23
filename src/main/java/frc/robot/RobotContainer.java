@@ -14,24 +14,16 @@ import frc.robot.commands.DriveForward;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Leveling;
 import frc.robot.commands.SwerveJoystickCommand;
-import frc.robot.commands.IntakeHPStation;
-import frc.robot.commands.ManualElevator;
-import frc.robot.commands.Score;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ExampleSubsystem;
-
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake2;
-import frc.robot.subsystems.Intake2.INTAKE_TYPE;
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.Intake2.INTAKE_TYPE;
 import frc.robot.utils.JoystickIO;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -45,7 +37,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -63,6 +54,7 @@ public class RobotContainer {
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
+  private final JoystickIO operatorJoystick = new JoystickIO(1);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   private final Trigger levelTrigger;

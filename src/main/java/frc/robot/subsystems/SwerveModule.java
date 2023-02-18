@@ -68,7 +68,7 @@ public class SwerveModule {
     turnMotor.config_kD(Constants.Talon.kPIDIdx, Constants.SwerveModule.kDTurn);
     turnMotor.config_kF(Constants.Talon.kPIDIdx, Constants.SwerveModule.kFTurn);
 
-    // turnMotor.setNeutralMode(NeutralMode.Brake);
+    turnMotor.setNeutralMode(NeutralMode.Brake);
 
     if (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM) {
       absEncoderOffsetRad = encoderOffset;
