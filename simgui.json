@@ -31,6 +31,7 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "image": "C:\\Users\\amanj\\OneDrive\\MVRT 2023 Software\\frc2k23\\resizedfieldimage.png",
         "traj": {
           "arrowSize": 11,
           "arrowWeight": 10.0,
