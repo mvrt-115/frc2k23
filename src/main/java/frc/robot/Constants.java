@@ -16,7 +16,21 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import java.util.Map;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.subsystems.Elevator.ElevatorState;
@@ -29,18 +43,31 @@ import frc.robot.subsystems.Elevator.ElevatorState;
  * globally (i.e. public static). Do not put anything functional in this class.
  *
  * <p>
+ * 
  * It is advised to statically import this class (or one of its inner classes)
+ *
  * wherever the
  * constants are needed, to reduce verbosity.
  */
+
 public final class Constants {
 
+    public static final boolean debugMode = true;
+
+    public static final double MAX_VOLTAGE = 10.0;
+    
+    public static final int kPIDIdx = 0;
+    public static final int kTimeoutMs = 35;
+    public static final boolean kIsPracticeBot = true;
+    public static final double kVoltageComp = 10.0;
+    public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(true, 40, 50, 3.8);
   public static class DataLogging {
     public static final Mode currMode = RobotBase.isSimulation()? Mode.SIM : Mode.REAL;
 
     public static enum Mode { REAL, REPLAY, SIM }
 
   }
+  
   
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -52,7 +79,7 @@ public final class Constants {
     public static final boolean invertJoystickY = true;
     public static final boolean invertJoystickW = true;
 
-    public static final double kPJoystick = 0.1;
+    public static final double kPJoystick = 0.2;
     public static final double kIJoystick = 0.0;
     public static final double kDJoystick = 0.0;
     public static final double kFJoystick = 0.0;
@@ -113,7 +140,7 @@ public final class Constants {
     public static final int m_backRightEncoderID = 12;
 
     // Comp Bot Encoder Offsets
-    public static final boolean isCompBot = true;
+    public static final boolean isCompBot = false;
 
     public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.31);// + Math.PI/2.0;
     public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(317.02);// + Math.PI/2.0;
@@ -187,18 +214,18 @@ public final class Constants {
   }
 
   public static class SwerveModule {
-    public static final double gear_ratio_turn = 150.0 / 7.0; // number of rotations of talon for one turn of wheel
-    public static final double gear_ratio_drive = 6.75 / 1.0; // number of rotations of talon for one rotation of wheel
+    public static final double gear_ratio_turn = 7.0 / 150;
+    public static final double gear_ratio_drive = 6.75 / 1.0;
     public static final double radius = 0.05; // meters
     public static final double kwheelCircumference = 2 * Math.PI * radius; // meters
 
     // PID Constants
-    public static final double kP = 0.3; // 3.2364;
-    public static final double kI = 0.001;
+    public static final double kP = 0.1; // 3.2364;
+    public static final double kI = 0;
     public static final double kD = 0;
     public static final double kFF = 0;
 
-    public static final double kPTurn = 0.3;
+    public static final double kPTurn = 0.10;
     public static final double kITurn = 0.0;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
@@ -380,49 +407,80 @@ public final class Constants {
   }
 
   public static class Elevator {
-    public static final int MOTOR_ID = 0;
+    public static final int MOTOR_ID = 13;
+    public static final int MOTOR_ID2 = 14;
     
     public static final int kPIDIdx = 0;
-    public static final int P = 0;
-    public static final int I = 0;
-    public static final int D = 0;
-    public static final int F = 0;
+    public static final double P = 0.025;//.1;//.01;
+    public static final double I = 0;//.000006;
+    public static final double D = 0.001;
+    public static final double F = 0;
 
     // Wtvr it is
-    public static final int METERS_PER_TICK = 0;
-    public static final int INCHES_PER_TICK = 0;
+    public static final double METERS_PER_TICK = .500;
+    public static final double INCHES_PER_TICK = 10.6224;
 
     // Min/Max heights for the elevator (in inches)
-    public static final double MAX_HEIGHT = 20;
+    public static final double MAX_HEIGHT = 55;
     public static final double MIN_HEIGHT = 0;
 
     public static final double ZERO_HEIGHT = 0;
     public static final double SHELF_HEIGHT = 0;
 
-    // MID, HIGH heights parwa cone
-    public static final double MID_HEIGHT = 0;
-    public static final double HIGH_HEIGHT = 0;
+    // MID, HIGH heights parwa cone (in ticks)
+    public static final double CONE_MID_HEIGHT = 15000;
+    public static final double CONE_HIGH_HEIGHT = 22000;
+    public static final double INTAKE_HEIGHT = 15750;
 
-    // TrapezoidProfile State constants
-    public static final TrapezoidProfile.State ZERO_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State MID_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State HIGH_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State SHEL_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
+    // MID, HIGH heights para cube (in inches)
+    public static final double CUBE_MID_HEIGHT = 23.5;
+    public static final double CUBE_HIGH_HEIGHT = 35.5;
 
+    // feed forward constants
+    public static final double kS = -0.086653;//-0.55996;//-0.086653;//-0.55996;
+//    public static final double kG = 1;
+    public static final double kG =  0.67635; //0.79635: claw intake; //1.2265;
+    public static final double kV = 0.016763; //0.035258;
+    public static final double kA = 0.0031226; //0.0053228;
+ //   public static final double kA = 0;
     // Game Object Heights
     public static final double CONE_HEIGHT = 6;
     public static final double CUBE_HIEGHT = 8;
+    
 
     public static final int SENSOR_PORT = 0;
     public static final double KDt = 0.01;
 
     // constraints
-    public static final double MAX_VELOCITY = 0;
-    public static final double MAX_ACCELERATION = 0;
+    public static final double MAX_VELOCITY = 50;
+    public static final double MAX_ACCELERATION = 15;
 
     // initial elevator stages
     public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
 
-	public static final double ERROR = 0; 
+	public static final double ERROR = 50; 
+
+    public static final double GEAR_RATIO = 3;
+
+    public static final double MASS = 8;
+    public static final double BOTTOM = 0;
+    public static final double MIDDLE = 10;
+    public static final double TOP = 15;
+
+    public static final double PULLEY_RADIUS = 2;
+
   }
+
+  public static class Intake {
+    public static final double kMarginOfError = 0.03;
+
+    public static final int kProximityPort = 6; //port number for element proximity sensor
+    public static final int kMotorPort = 15; 
+
+    public static final double kP = 0, kI = 0, kD = 0;
+
+    public static final double kCompressedSpeed = 0.03;
+
+    public static final double kGoalRPM = 0.3; 
+}
 }

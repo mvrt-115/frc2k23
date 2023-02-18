@@ -14,9 +14,20 @@ import frc.robot.commands.DriveForward;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Leveling;
 import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.commands.IntakeHPStation;
+import frc.robot.commands.ManualElevator;
+import frc.robot.commands.Score;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ExampleSubsystem;
+
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake2;
+import frc.robot.subsystems.Intake2.INTAKE_TYPE;
+import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.JoystickIO;
 
@@ -35,6 +46,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -47,6 +59,7 @@ public class RobotContainer {
   // private final Localization localization; //Utils camera
 
   private Elevator elevator;
+  private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
@@ -76,6 +89,7 @@ public class RobotContainer {
       driveJoystick));
       
     // Configure the trigger bindings
+    elevator = new Elevator(new TalonFX(Constants.Elevator.MOTOR_ID), new TalonFX(Constants.Elevator.MOTOR_ID2));
     configureBindings();
     //elevator = new Elevator();
     //elevator.setDefaultCommand(new SetElevatorHeight(elevator));

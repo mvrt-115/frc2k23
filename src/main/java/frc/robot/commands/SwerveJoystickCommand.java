@@ -84,8 +84,8 @@ public class SwerveJoystickCommand extends CommandBase {
     vW = wLimiter.calculate(vW) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPS;
 
     if (MathUtils.withinEpsilon(vW, 0, 0.01)) {
-      double v_w_compensate = drivetrain.holdHeading(heading);
-      vW += v_w_compensate;
+      // double v_w_compensate = drivetrain.holdHeading(heading);
+      // vW += v_w_compensate;
       SmartDashboard.putBoolean("Holding Heading", true);
     }
     else {
