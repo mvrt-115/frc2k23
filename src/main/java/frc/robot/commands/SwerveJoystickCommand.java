@@ -61,6 +61,7 @@ public class SwerveJoystickCommand extends CommandBase {
     timer.reset();
     timer.start();
     heading = drivetrain.getRotation2d();
+    drivetrain.resetModules();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

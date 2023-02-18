@@ -79,7 +79,7 @@ public final class Constants {
     public static final boolean invertJoystickY = true;
     public static final boolean invertJoystickW = true;
 
-    public static final double kPJoystick = 0.2;
+    public static final double kPJoystick = 0.01;
     public static final double kIJoystick = 0.0;
     public static final double kDJoystick = 0.0;
     public static final double kFJoystick = 0.0;
@@ -161,13 +161,13 @@ public final class Constants {
 
     // Position PID
     public static final double m_x_control_P = 0.3;
-    public static final double m_x_control_I = 0;
-    public static final double m_x_control_D = 0;
+    public static final double m_x_control_I = 0.0;
+    public static final double m_x_control_D = 0.0;
     public static final double m_y_control_P = 0.3;
-    public static final double m_y_control_I = 0;
-    public static final double m_y_control_D = 0;
-    public static final double m_r_control_P = 0.3;
-    public static final double m_r_control_I = 0;
+    public static final double m_y_control_I = 0.0;
+    public static final double m_y_control_D = 0.0;
+    public static final double m_r_control_P = 0.545;
+    public static final double m_r_control_I = 0.005;
     public static final double m_r_control_D = 0;
 
     // constants for joystick drive
@@ -180,7 +180,7 @@ public final class Constants {
     public static final double kDriveMaxAcceleration = 3;
     public static final double kTurnMaxAcceleration = 1 * Math.PI;
     public static final double kDriveMaxSpeedMPS = 4;
-    public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
+    public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
     public static final int kDriveYAxis = 1;
@@ -192,8 +192,14 @@ public final class Constants {
     public static final double kV = 0; // 1.30485 //2.6097 //units: Volts * Seconds / Meters
     public static final double kA = 0; // 0.35228 //units: Volts * Seconds^2 / Meters
 
+    // Auton Constants
+    public static final double kMaxAutonDriveSpeed = 2; // mps
+    public static final double kMaxAutonDriveAcceleration = 1.5; //mps2
+    public static final double kMaxAutonThetaVelocity = kMaxAutonDriveSpeed / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps
+    public static final double kMaxAutonThetaAcceleration = kMaxAutonDriveAcceleration / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps^2
+
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kTurnMaxSpeedRPS, kTurnMaxAcceleration);
+        kMaxAutonThetaVelocity, kMaxAutonThetaAcceleration);
 
     public static final double kTeleopHeadingCorrectionScale = 0;
   }

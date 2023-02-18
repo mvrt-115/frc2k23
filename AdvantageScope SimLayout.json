@@ -27,6 +27,35 @@
       "title": "Line Graph"
     },
     {
+      "type": 5,
+      "fields": [],
+      "listFields": [
+        [
+          {
+            "type": "Robot",
+            "key": "/AdvantageKit/RealOutputs/Robot Location",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Trajectory",
+            "key": "/SmartDashboard/Field/traj",
+            "fieldTypeIndex": 0
+          }
+        ]
+      ],
+      "options": {
+        "game": "2023",
+        "unitDistance": "meters",
+        "unitRotation": "radians",
+        "origin": "right",
+        "size": 0.75,
+        "allianceBumpers": "auto",
+        "allianceOrigin": "blue",
+        "orientation": "blue left, red right"
+      },
+      "title": "Odometry"
+    },
+    {
       "type": 9,
       "fields": [
         "/AdvantageKit/RealOutputs/TrueSwerveDrivetrainModuleStates",

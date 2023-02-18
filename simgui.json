@@ -2,11 +2,37 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Go to high": "Command",
-      "/SmartDashboard/Go to mid": "Command",
-      "/SmartDashboard/Go to shelf": "Command",
-      "/SmartDashboard/go to high": "Command",
-      "/SmartDashboard/go to mid": "Command"
+      "/LiveWindow/SwerveDrivetrain": "Subsystem",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/SmartDashboard/Auton Selector": "String Chooser",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/RunChassisTests": "Command",
+      "/SmartDashboard/SwerveModule/BackLeft/RunTurnTest": "Command",
+      "/SmartDashboard/SwerveModule/BackRight/RunTurnTest": "Command",
+      "/SmartDashboard/SwerveModule/FrontLeft/RunTurnTest": "Command",
+      "/SmartDashboard/SwerveModule/FrontRight/RunTurnTest": "Command"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "image": "C:\\Users\\amanj\\OneDrive\\MVRT 2023 Software\\frc2k23\\resizedfieldimage.png",
+        "traj": {
+          "arrowSize": 11,
+          "arrowWeight": 10.0,
+          "selectable": false,
+          "style": "Track"
+        },
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
