@@ -31,7 +31,7 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseToGoTo = localization.getClosestScoringLoc();
     addRequirements(localization, swerve);
-    pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
+    pidX = new PIDController(1.2, 0, 0); // pid x-coor 1.2
     pidY = new PIDController(1.2, 0, 0); // pid y-coor 1.2
     pidTheta = new PIDController(0, 0, 0); // pid t-coor 5
   }
@@ -49,7 +49,7 @@ public class Align extends CommandBase {
     // if(Localization.distFromTag(robotPose, poseToGoTo) >
     // Constants.VisionConstants.minDistFromTag){
     double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
-    double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY()) * 0.5;
+    double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
     double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(), poseToGoTo.getRotation().getRadians());
     // swerve screwed up field oriented switched y axis; shoud be -outX
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta,

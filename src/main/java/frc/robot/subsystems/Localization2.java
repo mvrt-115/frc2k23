@@ -66,13 +66,16 @@ public class Localization2 extends SubsystemBase {
     Optional<EstimatedRobotPose> result =
                 camera1Estimator.update();
 
+    SmartDashboard.putBoolean("chicken present", result.isPresent());
+    //Pose2d camPose = camera1Estimator.update().get().estimatedPose.toPose2d();
     if(result.isPresent()){
-      Pose2d camPose = camera1Estimator.update().get().estimatedPose.toPose2d();
+      Pose2d camPose = result.get().estimatedPose.toPose2d();
       //update here rotation to whatever gyro gives us
+      
       camPose = new Pose2d(camPose.getX(), camPose.getY(), swerveDrivetrain.getRotation2d());
       SmartDashboard.putNumber("chicken", swerveDrivetrain.getRotation2d().getDegrees());
       SmartDashboard.putNumber("time", Timer.getFPGATimestamp());
-      debugPID();
+      
       SmartDashboard.putString("weightedCamPose", camPose.toString());
       //If aligning, reset pose to whatever camera gives us
       if(aligning){
@@ -116,7 +119,8 @@ public class Localization2 extends SubsystemBase {
     SmartDashboard.putNumber("chicken gyro rot", swerveDrivetrain.getRotation2d().getDegrees());
     SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
     SmartDashboard.putNumber("chicken error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getRotation2d().getDegrees());
-}
+    debugPID();
+  }
 
   /**
    * Initializes pose estimator and configures stdevs
