@@ -75,7 +75,7 @@ public class Localization extends SubsystemBase {
               latency/=2;
             }
         }
-        poseEstimator.addVisionMeasurement(camPose, latency);
+        //poseEstimator.addVisionMeasurement(camPose, latency);
       }
     }
     Pose2d currPose = getCurrentPose();
@@ -89,13 +89,6 @@ public class Localization extends SubsystemBase {
 
     Pose2d robotPose = getCurrentPose();
     if(robotPose==null) return;
-
-
-    Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
-    SmartDashboard.putString("chicken robo pose", getCurrentPose().toString());
-    SmartDashboard.putNumber("chicken gyro rot", swerveDrivetrain.getRotation2d().getDegrees());
-    SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
-    SmartDashboard.putNumber("chicken error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getRotation2d().getDegrees());
   }
 
   /**
@@ -168,9 +161,17 @@ public class Localization extends SubsystemBase {
     
     for(int i = 0; i < transforms.length; i++) {
       Transform3d relLoc = targets.get(i).getBestCameraToTarget();
+
+      if (targets.get(i).getPoseAmbiguity() > 0.5){
+        relLoc = targets.get(i).getAlternateCameraToTarget();
+      }
+
       transforms[i] = relLoc;
-      weights[i] = (10-relLoc.getTranslation().getNorm());
-      //weights[i] = 1/relLoc.getTranslation().getNorm();
+      //Smar
+      SmartDashboard.putString("chicken alt BEST", relLoc.toString());
+      SmartDashboard.putString("chicken alternate", targets.get(i).getAlternateCameraToTarget().toString());
+      //weights[i] = (10-relLoc.getTranslation().getNorm());
+      weights[i] = 1/relLoc.getTranslation().getNorm();
       totalSum += weights[i];
     }
     
@@ -180,7 +181,11 @@ public class Localization extends SubsystemBase {
     
     for(int i = 0; i < targets.size(); i++) {
       Pose3d tag = Constants.VisionConstants.aprilTags.get(2);
+      SmartDashboard.putString("chicken tag fluc", tag.toString());
+      SmartDashboard.putString("chicken trans fluc", transforms[i].toString());
+      SmartDashboard.putString("chicken campose fluc", camPose.toString());
       Pose3d robotPose = ComputerVisionUtil.objectToRobotPose(tag, transforms[i], camPose);
+      SmartDashboard.putString("chicken should be field rel", robotPose.toString());
       weightedX += weights[i] * robotPose.getX();
       weightedY += weights[i] * robotPose.getY();
       weightedRot += weights[i] * swerveDrivetrain.getRotation2d().getRadians();
