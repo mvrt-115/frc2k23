@@ -10,12 +10,15 @@ import frc.robot.commands.AlignAndExtend;
 import frc.robot.commands.AutonScoreTwoAndLevel;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
+import frc.robot.subsystems.Localization2;
 import frc.robot.commands.DriveForward;
 import frc.robot.commands.Leveling;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.utils.JoystickIO;
+
+import java.io.IOException;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -40,7 +43,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Localization localization; //Utils camera
+  private final Localization2 localization; //Utils camera
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
@@ -77,7 +80,7 @@ public class RobotContainer {
     driveJoystick.invertLeftStick();
     //elevator = new Elevator();
 
-    localization = new Localization(swerveDrivetrain);
+    localization = new Localization2(swerveDrivetrain);
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 

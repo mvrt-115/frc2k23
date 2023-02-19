@@ -42,14 +42,23 @@ public class Localization2 extends SubsystemBase {
   private final Field2d field;
   private boolean aligning = true;
 
-  public Localization2(SwerveDrivetrain swerveDrivetrain) throws IOException{
+  public Localization2(SwerveDrivetrain swerveDrivetrain) {
     this.camera1 = new PhotonCamera(Constants.VisionConstants.kCamera1Name);
     this.camera2 = new PhotonCamera(Constants.VisionConstants.kCamera2Name);
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
-    this.fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+    try {
+      this.fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+    } catch(IOException e) {
+      System.err.println("[Localization 2 constructor] Error loading from resource");
+    }
+    poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
+      swerveDrivetrain.getRotation2d(), 
+      swerveDrivetrain.getModulePositions(), 
+      new Pose2d()); //Replace this with the starting pose in auton    
+   
     camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT, camera1, Constants.VisionConstants.cam1ToRobot);
-    resetPoseEstimator(new Pose2d());
+   // resetPoseEstimator(new Pose2d());
   }
 
   @Override
@@ -86,7 +95,7 @@ public class Localization2 extends SubsystemBase {
               latency/=2;
             }
         }
-        poseEstimator.addVisionMeasurement(camPose, latency);
+        // poseEstimator.addVisionMeasurement(camPose, latency);
       }
     }
     Pose2d currPose = getCurrentPose();

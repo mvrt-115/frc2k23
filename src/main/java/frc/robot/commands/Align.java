@@ -4,20 +4,20 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Localization;
+import frc.robot.subsystems.Localization2;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class Align extends CommandBase {
   private SwerveDrivetrain swerve;
-  private Localization localization;
+  private Localization2 localization;
 
   private Pose2d poseToGoTo;
 
@@ -26,7 +26,7 @@ public class Align extends CommandBase {
   private PIDController pidTheta;
 
   /** Creates a new Align. */
-  public Align(SwerveDrivetrain swerve, Localization localization) {
+  public Align(SwerveDrivetrain swerve, Localization2 localization) {
     this.swerve = swerve;
     this.localization = localization;
     this.poseToGoTo = localization.getClosestScoringLoc();
@@ -46,15 +46,17 @@ public class Align extends CommandBase {
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-    //if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
-      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
-      double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY())*0.5;
-      double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(), poseToGoTo.getRotation().getRadians());
-        //swerve screwed up field oriented switched y axis; shoud be -outX
-      ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta, new Rotation2d(-swerve.getRotation2d().getRadians()));
-      SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
-      swerve.setModuleStates(states);
-   // }
+    // if(Localization.distFromTag(robotPose, poseToGoTo) >
+    // Constants.VisionConstants.minDistFromTag){
+    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
+    double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY()) * 0.5;
+    double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(), poseToGoTo.getRotation().getRadians());
+    // swerve screwed up field oriented switched y axis; shoud be -outX
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta,
+        new Rotation2d(-swerve.getRotation2d().getRadians()));
+    SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
+    swerve.setModuleStates(states);
+    // }
   }
 
   // Called once the command ends or is interrupted.
@@ -68,15 +70,19 @@ public class Align extends CommandBase {
   public boolean isFinished() {
     Pose2d robotPose = localization.getCurrentPose();
 
-    //If close enough to target
-    //return Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) < 10;
-    //return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 && Math.abs(robotPose.getX()-poseToGoTo.getX())<0.05 ;
-    //return false;//Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 ;
-     
-    return //Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance && 
-      Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance;// &&
-      //Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;
-  }
+    // If close enough to target
+    // return Math.abs(swerve.getRotation2d().getDegrees() -
+    // poseToGoTo.getRotation().getDegrees()) < 10;
+    // return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 &&
+    // Math.abs(robotPose.getX()-poseToGoTo.getX())<0.05 ;
+    // return false;//Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 ;
 
+    return // Math.abs(robotPose.getX() - poseToGoTo.getX()) <
+           // Constants.VisionConstants.xyTolerance &&
+    Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance;// &&
+    // Math.abs(swerve.getRotation2d().getDegrees() -
+    // poseToGoTo.getRotation().getDegrees()) <
+    // Constants.VisionConstants.thetaTolerance;
+  }
 
 }
