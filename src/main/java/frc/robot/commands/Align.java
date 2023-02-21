@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Localization;
-import frc.robot.subsystems.Localization2;
+import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class Align extends CommandBase {
   private SwerveDrivetrain swerve;
-  private Localization2 localization;
+  private Localization localization;
 
   private Pose2d poseToGoTo;
 
@@ -27,7 +27,7 @@ public class Align extends CommandBase {
   private PIDController pidTheta;
 
   /** Creates a new Align. */
-  public Align(SwerveDrivetrain swerve, Localization2 localization) {
+  public Align(SwerveDrivetrain swerve, Localization localization) {
     this.swerve = swerve;
     this.localization = localization;
     this.poseToGoTo = localization.getClosestScoringLoc();

@@ -6,22 +6,14 @@ package frc.robot;
 
 
 import frc.robot.commands.Align;
-import frc.robot.commands.AlignAndExtend;
 import frc.robot.commands.AutonScoreTwoAndLevel;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
-import frc.robot.subsystems.Localization2;
-import frc.robot.commands.DriveForward;
-import frc.robot.commands.Leveling;
-import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.utils.JoystickIO;
 
-import java.io.IOException;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,7 +23,6 @@ import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -43,7 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Localization2 localization; //Utils camera
+  private final Localization localization; //Utils camera
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
@@ -80,7 +71,7 @@ public class RobotContainer {
     driveJoystick.invertLeftStick();
     //elevator = new Elevator();
 
-    localization = new Localization2(swerveDrivetrain);
+    localization = new Localization(swerveDrivetrain);
     driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
