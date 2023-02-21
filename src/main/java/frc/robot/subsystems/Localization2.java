@@ -56,8 +56,8 @@ public class Localization2 extends SubsystemBase {
       swerveDrivetrain.getRotation2d(), 
       swerveDrivetrain.getModulePositions(), 
       new Pose2d()); //Replace this with the starting pose in auton    
-    camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT, camera1, Constants.VisionConstants.cam1ToRobot);
-    camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT, camera2, Constants.VisionConstants.cam2ToRobot);
+    camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
+    camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
    // resetPoseEstimator(new Pose2d());
     for(int i = 1;i<=8;i++){
       SmartDashboard.putString("WPILIB Apriltag"+i, fieldLayout.getTagPose(i).get().toString());
@@ -75,9 +75,9 @@ public class Localization2 extends SubsystemBase {
     if(result.isPresent()){
       Pose2d camPose = result.get().estimatedPose.toPose2d();
       //update here rotation to whatever gyro gives us
-      
       camPose = new Pose2d(camPose.getX(), camPose.getY(), swerveDrivetrain.getRotation2d());
       SmartDashboard.putString("robot pose", camPose.toString());
+
       //If aligning, reset pose to whatever camera gives us
       if(aligning){
         resetPoseEstimator(camPose);
@@ -107,13 +107,12 @@ public class Localization2 extends SubsystemBase {
       field.setRobotPose(currPose); 
     }
 
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
+    //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     field.setRobotPose(getCurrentPose());
     log();
 
     Pose2d robotPose = getCurrentPose();
     if(robotPose==null) return;
-
 
     Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
     SmartDashboard.putString("robot pose", getCurrentPose().toString());
@@ -131,6 +130,9 @@ public class Localization2 extends SubsystemBase {
     poseEstimator.resetPosition(swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions(), pose);
   }
 
+  public void resetTemp(){
+    camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
+  }
   /**
    * @return current pose according to pose estimator
    */

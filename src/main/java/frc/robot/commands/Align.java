@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Localization;
@@ -31,26 +32,29 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseToGoTo = localization.getClosestScoringLoc();
     addRequirements(localization, swerve);
-    pidX = new PIDController(1.2, 0, 0); // pid x-coor 1.2
-    pidY = new PIDController(1.2, 0, 0); // pid y-coor 1.2
-    pidTheta = new PIDController(0, 0, 0); // pid t-coor 5
+    pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
+    pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
+    pidTheta = new PIDController(5, 0, 0); // pid t-coor 5
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     localization.setAligning(true);
+    localization.resetTemp();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  // Called every time the scheduler runs while the command is scheduled. 
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
     // if(Localization.distFromTag(robotPose, poseToGoTo) >
     // Constants.VisionConstants.minDistFromTag){
-    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
+    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()) * 0.6; // pos, setpoint
     double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
-    double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(), poseToGoTo.getRotation().getRadians());
+    double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(),
+                         poseToGoTo.getRotation().getRadians());
+
     // swerve screwed up field oriented switched y axis; shoud be -outX
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta,
         new Rotation2d(-swerve.getRotation2d().getRadians()));
@@ -77,12 +81,10 @@ public class Align extends CommandBase {
     // Math.abs(robotPose.getX()-poseToGoTo.getX())<0.05 ;
     // return false;//Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 ;
 
-    return // Math.abs(robotPose.getX() - poseToGoTo.getX()) <
-           // Constants.VisionConstants.xyTolerance &&
-    Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance;// &&
-    // Math.abs(swerve.getRotation2d().getDegrees() -
-    // poseToGoTo.getRotation().getDegrees()) <
-    // Constants.VisionConstants.thetaTolerance;
+    // return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance &&
+    // Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance;// &&
+    return Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
+        Constants.VisionConstants.thetaTolerance;
   }
 
 }
