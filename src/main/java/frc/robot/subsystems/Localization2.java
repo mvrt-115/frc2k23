@@ -40,7 +40,7 @@ public class Localization2 extends SubsystemBase {
   private SwerveDrivetrain swerveDrivetrain;
   private AprilTagFieldLayout fieldLayout;
   private final Field2d field;
-  private boolean aligning = true;
+  private boolean aligning;
 
   public Localization2(SwerveDrivetrain swerveDrivetrain) {
     this.camera1 = new PhotonCamera(Constants.VisionConstants.kCamera1Name);
@@ -67,20 +67,18 @@ public class Localization2 extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Optional<EstimatedRobotPose> result =
-                camera1Estimator.update();
+    Pose2d result = combinePoses();
 
-    SmartDashboard.putBoolean("robot present", result.isPresent());
+    SmartDashboard.putBoolean("robot present", result != null);
     //Pose2d camPose = camera1Estimator.update().get().estimatedPose.toPose2d();
-    if(result.isPresent()){
-      Pose2d camPose = result.get().estimatedPose.toPose2d();
+    if(result != null) {
       //update here rotation to whatever gyro gives us
-      camPose = new Pose2d(camPose.getX(), camPose.getY(), swerveDrivetrain.getRotation2d());
-      SmartDashboard.putString("robot pose", camPose.toString());
+      result = new Pose2d(result.getX(), result.getY(), swerveDrivetrain.getRotation2d());
+      SmartDashboard.putString("robot pose", result.toString());
 
       //If aligning, reset pose to whatever camera gives us
       if(aligning){
-        resetPoseEstimator(camPose);
+        resetPoseEstimator(result);
       }
       else{
         double latency = 0;
@@ -99,7 +97,7 @@ public class Localization2 extends SubsystemBase {
               latency/=2;
             }
         }
-        // poseEstimator.addVisionMeasurement(camPose, latency);
+        poseEstimator.addVisionMeasurement(result, latency);
       }
     }
     Pose2d currPose = getCurrentPose();
@@ -140,18 +138,31 @@ public class Localization2 extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-  public Pose2d combinePoses(){
+  public Pose2d combinePoses() {
     Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
+
+    
+    Pose3d first;
+    Pose3d second;
     if(result1.isPresent() && result2.isPresent()){
-      Pose3d first;
-      Pose3d second;
       first = result1.get().estimatedPose;
       second = result2.get().estimatedPose;
+      SmartDashboard.putString("cam1 pose", first.toString());
+      SmartDashboard.putString("cam2 pose", second.toString());
       return new Pose2d((first.getX()+second.getX())/2, (first.getY()+second.getY())/2, new Rotation2d((first.getRotation().getZ()+second.getRotation().getZ())/2));
     }
-    if(result1.isPresent()) return result1.get().estimatedPose.toPose2d();
-    if(result2.isPresent()) return result2.get().estimatedPose.toPose2d();
+    if(result1.isPresent()){
+      first = result1.get().estimatedPose;
+      SmartDashboard.putString("cam1 pose", first.toString());
+      return first.toPose2d();
+    }
+    if(result2.isPresent()){
+      second = result2.get().estimatedPose;
+      SmartDashboard.putString("cam2 pose", second.toString());
+
+      return second.toPose2d();
+    }
     return null;
   }
   /**

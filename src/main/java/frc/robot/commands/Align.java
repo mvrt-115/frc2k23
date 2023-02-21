@@ -86,5 +86,4 @@ public class Align extends CommandBase {
       Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
         Constants.VisionConstants.thetaTolerance;
   }
-
 }
