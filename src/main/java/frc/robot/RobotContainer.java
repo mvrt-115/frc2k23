@@ -15,8 +15,11 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Leveling;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.SetElevatorHeight;
+import frc.robot.commands.SetGroundIntakeArmPos;
+import frc.robot.commands.SetGroundIntakeClawSpeed;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.GroundIntake;
 import frc.robot.subsystems.Intake2;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.Intake2.INTAKE_TYPE;
@@ -49,12 +52,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // private final Localization localization; //Utils camera
 
+  private GroundIntake groundIntake = new GroundIntake();
   private Elevator elevator;
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
-  private final JoystickIO operatorJoystick = new JoystickIO(1);
+  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   private final Trigger levelTrigger;
@@ -120,6 +124,9 @@ public class RobotContainer {
 
     //No braking
     driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
+    
+    operatorJoystick.x().onTrue(new SetGroundIntakeArmPos(groundIntake, 30, false)).onFalse(new SetGroundIntakeArmPos(groundIntake, 0, true));
+    //operatorJoystick.y().onTrue(new SetGroundIntakeClawSpeed(groundIntake, -0.3)).onFalse(new SetGroundIntakeClawSpeed(groundIntake, 0.3));
   }
 
   /**
