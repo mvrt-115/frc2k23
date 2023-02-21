@@ -21,9 +21,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.JoystickIO;
 import frc.robot.utils.MathUtils;
+import org.littletonrobotics.junction.Logger; 
 
 public class SwerveJoystickCommand extends CommandBase {
   private final SwerveDrivetrain drivetrain;
@@ -33,11 +35,13 @@ public class SwerveJoystickCommand extends CommandBase {
   private final JoystickIO joystick;
   private Timer timer;
   private Rotation2d heading;
+  private Logger logger;
+  private Elevator elevator;
 
   public PIDController thetaController;
 
   /** Creates a new SwerveJoystickCommand. */
-  public SwerveJoystickCommand(SwerveDrivetrain drivetrain, Supplier<Double> xSpeedFunc, Supplier<Double> ySpeedFunc, Supplier<Double> angularSpeedFunc, Trigger fieldOrientedFunc, JoystickIO joystick) {
+  public SwerveJoystickCommand(SwerveDrivetrain drivetrain, Supplier<Double> xSpeedFunc, Supplier<Double> ySpeedFunc, Supplier<Double> angularSpeedFunc, Trigger fieldOrientedFunc, JoystickIO joystick, Elevator elev) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.xSpeedFunc = xSpeedFunc;
@@ -50,6 +54,8 @@ public class SwerveJoystickCommand extends CommandBase {
     this.joystick = joystick;
     thetaController = new PIDController(Constants.JoystickControls.kPJoystick, Constants.JoystickControls.kIJoystick, Constants.JoystickControls.kDJoystick);
     addRequirements(drivetrain);
+    logger = Logger.getInstance();
+    elevator = elev;
   }
 
   // Called when the command is initially scheduled.
@@ -70,6 +76,11 @@ public class SwerveJoystickCommand extends CommandBase {
     double vX = xSpeedFunc.get(); // as of here, negative X is backwards, positive X is forward
     double vY = ySpeedFunc.get(); // as of here, positive Y is left, negative Y is right
     double vW = turnSpeedFunc.get(); // as of here, negative W is down (CW) positive W is up (CCW)
+    if(elevator.getHeight() > 10000) {
+      vX *= 0.6;
+      vY *= 0.6;
+      vW *= 0.6;
+    }
     Logger.getInstance().recordOutput("Controller/vX raw", vX);
     Logger.getInstance().recordOutput("Controller/vY raw", vY);
     Logger.getInstance().recordOutput("Controller/vW raw", vW);
@@ -106,6 +117,7 @@ public class SwerveJoystickCommand extends CommandBase {
     // }
 
     SmartDashboard.putBoolean("Field Oriented", drivetrain.fieldOriented);
+    logger.recordOutput("SwerveModule/Field_Oriented", drivetrain.fieldOriented);
     boolean isTurnBroken = true;
     // apply heading correction to the robot
     double true_heading = Math.toRadians(drivetrain.getRelativeHeading());

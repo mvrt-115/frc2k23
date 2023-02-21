@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
@@ -11,8 +13,8 @@ import frc.robot.subsystems.Elevator;
 public class ManualElevator extends CommandBase {
   /** Creates a new ManualElevator. */
   private Elevator e;
-  private double speed;
-  public ManualElevator(Elevator q, double speed) {
+  private Supplier<Double> speed;
+  public ManualElevator(Elevator q, Supplier<Double> speed) {
     e = q;
     addRequirements(e);
     this.speed = speed;
@@ -26,7 +28,11 @@ public class ManualElevator extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    e.runMotor(speed+Constants.Elevator.kG/10);
+    if(e.getHeight() < 200) {
+      e.runMotor(speed.get());
+    }
+    else
+      e.runMotor(speed.get()+Constants.Elevator.kG/10.0);
   }
 
   // Called once the command ends or is interrupted.

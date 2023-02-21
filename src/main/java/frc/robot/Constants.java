@@ -159,10 +159,10 @@ public final class Constants {
         public static final double kThrottleDeadband = 0.2;
         public static final double kWheelGain = 0.05;
         public static final double kWheelNonlinearity = 0.05;
-        public static final double kMaxSpeedMPS = 8; // optimize max speed to prioritize translation
+        public static final double kMaxSpeedMPS = 4; // optimize max speed to prioritize translation
         public static final double kDriveMaxAcceleration = 3;
         public static final double kTurnMaxAcceleration = 1 * Math.PI;
-        public static final double kDriveMaxSpeedMPS = 4;
+        public static final double kDriveMaxSpeedMPS = 2;
         public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
         public static final int kDriveJoystickPort = 0;
         public static final int kDriveXAxis = 0;
@@ -213,8 +213,8 @@ public final class Constants {
         public static final double kwheelCircumference = 2 * Math.PI * radius; // meters
 
         // PID Constants
-        public static final double kP = 0.3; // 3.2364;
-        public static final double kI = 0.001;
+        public static final double kP = 0.1;//0.3; // 3.2364;
+        public static final double kI = 0;//0.001;
         public static final double kD = 0;
         public static final double kFF = 0;
 
@@ -222,6 +222,70 @@ public final class Constants {
         public static final double kITurn = 0.0;
         public static final double kDTurn = 0.0;
         public static final double kFTurn = 0.0;
+    }
+
+    public static class Elevator {
+        public static final int MOTOR_ID = 13;
+        public static final int MOTOR_ID2 = 14;
+
+        public static final int kPIDIdx = 0;
+        public static final double P = 0.05;// .1;//.01;
+        public static final double I = 0;// .000006;
+        public static final double D = 0.007;
+        public static final double F = 0;
+
+        // Wtvr it is
+        public static final double METERS_PER_TICK = .500;
+        public static final double INCHES_PER_TICK = 10.6224;
+
+        // Min/Max heights for the elevator (in inches)
+        public static final double MAX_HEIGHT = 55;
+        public static final double MIN_HEIGHT = 0;
+
+        public static final double ZERO_HEIGHT = 0;
+        public static final double SHELF_HEIGHT = 0;
+
+        // MID, HIGH heights parwa cone (in ticks)
+        public static final double CONE_MID_HEIGHT = 17000;
+        public static final double CONE_HIGH_HEIGHT = 22600;
+        public static final double INTAKE_HEIGHT = 15700;
+
+        // MID, HIGH heights para cube (in inches)
+        public static final double CUBE_MID_HEIGHT = 15000;
+        public static final double CUBE_HIGH_HEIGHT = 21000;
+
+        // feed forward constants
+        public static final double kS = -0.086653;// -0.55996;//-0.086653;//-0.55996;
+        // public static final double kG = 1;
+        public static final double kG = 0.67635; // 0.79635: claw intake; //1.2265;
+        public static final double kV = 0.016763; // 0.035258;
+        public static final double kA = 0.0031226; // 0.0053228;
+        // public static final double kA = 0;
+        // Game Object Heights
+        public static final double CONE_HEIGHT = 6;
+        public static final double CUBE_HIEGHT = 8;
+
+        public static final int SENSOR_PORT = 0;
+        public static final double KDt = 0.01;
+
+        // constraints
+        public static final double MAX_VELOCITY = 50;
+        public static final double MAX_ACCELERATION = 15;
+
+        // initial elevator stages
+        public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
+
+        public static final double ERROR = 50;
+
+        public static final double GEAR_RATIO = 3;
+
+        public static final double MASS = 8;
+        public static final double BOTTOM = 0;
+        public static final double MIDDLE = 10;
+        public static final double TOP = 15;
+
+        public static final double PULLEY_RADIUS = 2;
+
     }
 
     public static class VisionConstants {
@@ -399,80 +463,18 @@ public final class Constants {
                                 new Rotation3d()));
     }
 
-    public static class Elevator {
-        public static final int MOTOR_ID = 13;
-        public static final int MOTOR_ID2 = 14;
-
-        public static final int kPIDIdx = 0;
-        public static final double P = 0.025;// .1;//.01;
-        public static final double I = 0;// .000006;
-        public static final double D = 0.001;
-        public static final double F = 0;
-
-        // Wtvr it is
-        public static final double METERS_PER_TICK = .500;
-        public static final double INCHES_PER_TICK = 10.6224;
-
-        // Min/Max heights for the elevator (in inches)
-        public static final double MAX_HEIGHT = 55;
-        public static final double MIN_HEIGHT = 0;
-
-        public static final double ZERO_HEIGHT = 0;
-        public static final double SHELF_HEIGHT = 0;
-
-        // MID, HIGH heights parwa cone (in ticks)
-        public static final double CONE_MID_HEIGHT = 15000;
-        public static final double CONE_HIGH_HEIGHT = 22000;
-        public static final double INTAKE_HEIGHT = 15750;
-
-        // MID, HIGH heights para cube (in inches)
-        public static final double CUBE_MID_HEIGHT = 23.5;
-        public static final double CUBE_HIGH_HEIGHT = 35.5;
-
-        // feed forward constants
-        public static final double kS = -0.086653;// -0.55996;//-0.086653;//-0.55996;
-        // public static final double kG = 1;
-        public static final double kG = 0.67635; // 0.79635: claw intake; //1.2265;
-        public static final double kV = 0.016763; // 0.035258;
-        public static final double kA = 0.0031226; // 0.0053228;
-        // public static final double kA = 0;
-        // Game Object Heights
-        public static final double CONE_HEIGHT = 6;
-        public static final double CUBE_HIEGHT = 8;
-
-        public static final int SENSOR_PORT = 0;
-        public static final double KDt = 0.01;
-
-        // constraints
-        public static final double MAX_VELOCITY = 50;
-        public static final double MAX_ACCELERATION = 15;
-
-        // initial elevator stages
-        public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
-
-        public static final double ERROR = 50;
-
-        public static final double GEAR_RATIO = 3;
-
-        public static final double MASS = 8;
-        public static final double BOTTOM = 0;
-        public static final double MIDDLE = 10;
-        public static final double TOP = 15;
-
-        public static final double PULLEY_RADIUS = 2;
-
-    }
 
     public static class Intake {
         public static final double kMarginOfError = 0.03;
 
         public static final int kProximityPort = 6; // port number for element proximity sensor
-        public static final int kMotorPort = 15;
+        public static final int kMotorPort = 5;
 
         public static final double kP = 0, kI = 0, kD = 0;
 
-        public static final double kCompressedSpeed = 0.03;
+        public static final double kCompressedSpeed = 0.1;
 
-        public static final double kGoalRPM = 0.3;
+        public static final double kGoalRPM = -0.4;
+        public static final double kOuttakeRPM = 0.05;//0.08;
     }
 }

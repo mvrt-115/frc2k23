@@ -12,7 +12,10 @@ import frc.robot.subsystems.Localization;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveForward;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.IntakeHPStation;
 import frc.robot.commands.Leveling;
+import frc.robot.commands.ManualElevator;
+import frc.robot.commands.Score;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
@@ -21,6 +24,8 @@ import frc.robot.subsystems.Intake2;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.Intake2.INTAKE_TYPE;
 import frc.robot.utils.JoystickIO;
+
+import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -35,6 +40,7 @@ import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -54,7 +60,7 @@ public class RobotContainer {
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
-  private final JoystickIO operatorJoystick = new JoystickIO(1);
+  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   private final Trigger levelTrigger;
@@ -72,16 +78,17 @@ public class RobotContainer {
 
   //  localization = new Localization(swerveDrivetrain);
     driveJoystick.button(0);
+    elevator = new Elevator(new TalonFX(Constants.Elevator.MOTOR_ID), new TalonFX(Constants.Elevator.MOTOR_ID2));
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
       () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveXAxis), 
       () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveYAxis), 
       () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveWAxis), 
       driveJoystick.button(Constants.SwerveDrivetrain.kDriveFieldOrientButtonIdx),
-      driveJoystick));
+      driveJoystick, elevator));
+      elevator.setDefaultCommand(new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.6));
       
     // Configure the trigger bindings
-    elevator = new Elevator(new TalonFX(Constants.Elevator.MOTOR_ID), new TalonFX(Constants.Elevator.MOTOR_ID2));
     configureBindings();
     //elevator = new Elevator();
     //elevator.setDefaultCommand(new SetElevatorHeight(elevator));
@@ -120,6 +127,20 @@ public class RobotContainer {
 
     //No braking
     driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
+   // operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(new ManualElevator(elevator, 0));
+   // operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Csonstants.Elevator.CONE_MID_HEIGHT)).onFalse(new ManualElevator(elevator, 0));
+  //  driverController.x().whileTrue(intake.runIn()).onFalse(intake.stop());
+  //  driverController.y().whileTrue(intake.runOut()).onFalse(intake.stop());
+    operatorJoystick.x().onTrue(new IntakeHPStation(elevator, intake)).onFalse(new SetElevatorHeight(elevator, 400).alongWith(intake.stop()));
+ //   operatorJoystick.b().onTrue(intake.runOut().andThen(new WaitCommand(1).andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()))));
+    operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, 400).alongWith(intake.stop()));
+    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550)).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3700).alongWith(intake.runOut()));//.alongWith(intake.runOut()).andThen(new SetElevatorHeight(elevator, 100)));//.andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop())));
+    operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(intake.runOut());//.onFalse(intake.runOut().andThen(new WaitCommand(1).andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()))));
+    operatorJoystick.button(6).onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT+550)).onFalse(intake.runOut());
+    operatorJoystick.button(5).onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT+550)).onFalse(intake.runOut());
+    // operatorJoystick.b().onTrue(new ManualElevator(elevator, 0.2).alongWith(intake.runIn())).onFalse(new ManualElevator(elevator, -0.2).alongWith(intake.runOut()).andThen(new ManualElevator(elevator, 0)));
+ //   operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT));
+ //   operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, 0));
   }
 
   /**

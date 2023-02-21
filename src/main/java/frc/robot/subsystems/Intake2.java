@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -60,25 +61,25 @@ public class Intake2 extends SubsystemBase {
 
   /******************************************COMMANDS***************************************/
 
-  public RunCommand intake(){
-    return new RunCommand(() -> smoothRun(true));
+  public InstantCommand intake(){
+    return new InstantCommand(() -> smoothRun(true));
   }
 
-  public RunCommand outtake(){
-    return new RunCommand(() -> smoothRun(false));
+  public InstantCommand outtake(){
+    return new InstantCommand(() -> smoothRun(false));
   }
 
-  public RunCommand runIn(){
+  public InstantCommand runIn(){
     logger.recordOutput("Intake/isIntake", "hi");
-    return new RunCommand(() -> motor.set(-0.3));//runMotor(true));
+    return new InstantCommand(() -> runMotor(true));
   }
   
-  public RunCommand runOut(){
-    return new RunCommand(() -> runMotor(false));
+  public InstantCommand runOut(){
+    return new InstantCommand(() -> runMotor(false));
   }
 
-  public RunCommand stop(){
-    return new RunCommand(() -> stopIntaking());
+  public InstantCommand stop(){
+    return new InstantCommand(() -> stopIntaking());
   }
 
   /******************************************METHODS***************************************/
@@ -90,7 +91,7 @@ public class Intake2 extends SubsystemBase {
 
   public void runMotor(boolean isIntaking)
   {
-    double speed = isIntaking ? -Constants.Intake.kGoalRPM : Constants.Intake.kGoalRPM;
+    double speed = isIntaking ? Constants.Intake.kGoalRPM : Constants.Intake.kOuttakeRPM;
    /* if(!isIntaking || isIntaking && !prox.get())*/ motor.set(speed);
   }
 
