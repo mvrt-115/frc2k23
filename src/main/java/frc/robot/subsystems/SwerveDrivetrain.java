@@ -267,7 +267,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     for (SwerveModule m : modules) {
        m.logMeasuredData();
     }
-
+    SmartDashboard.putNumber("Swerve theta", getRotation2d().getDegrees());
     logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
     logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
     logger.recordOutput("OdometryHeadingRad", getPose().getRotation().getRadians());
