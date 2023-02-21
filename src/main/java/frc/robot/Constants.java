@@ -52,7 +52,7 @@ public final class Constants {
     public static final boolean invertJoystickY = true;
     public static final boolean invertJoystickW = true;
 
-    public static final double kPJoystick = 0.01;
+    public static final double kPJoystick = 0.001;
     public static final double kIJoystick = 0.0;
     public static final double kDJoystick = 0.0;
     public static final double kFJoystick = 0.0;
@@ -132,17 +132,6 @@ public final class Constants {
     public static final double m_backLeftEncoderOffset = isCompBot? m_backLeftEncoderOffset_Comp:m_backLeftEncoderOffset_P;// + Math.PI/2.0;
     public static final double m_backRightEncoderOffset = isCompBot? m_backRightEncoderOffset_Comp:m_backRightEncoderOffset_P;// + Math.PI/2.0;
 
-    // Position PID
-    public static final double m_x_control_P = 0.3;
-    public static final double m_x_control_I = 0.0;
-    public static final double m_x_control_D = 0.0;
-    public static final double m_y_control_P = 0.3;
-    public static final double m_y_control_I = 0.0;
-    public static final double m_y_control_D = 0.0;
-    public static final double m_r_control_P = 0.545;
-    public static final double m_r_control_I = 0.005;
-    public static final double m_r_control_D = 0;
-
     // constants for joystick drive
     public static final double kSensitivity = 0.90;
     public static final double kWheelDeadband = 0.2;
@@ -165,11 +154,22 @@ public final class Constants {
     public static final double kV = 0; // 1.30485 //2.6097 //units: Volts * Seconds / Meters
     public static final double kA = 0; // 0.35228 //units: Volts * Seconds^2 / Meters
 
+    // Position PID
+    public static final double m_x_control_P = 10.75;
+    public static final double m_x_control_I = 0.5;
+    public static final double m_x_control_D = 0.0;
+    public static final double m_y_control_P = 10.75;
+    public static final double m_y_control_I = 0.5;
+    public static final double m_y_control_D = 0.0;
+    public static final double m_r_control_P = 1.0;
+    public static final double m_r_control_I = 0.0;
+    public static final double m_r_control_D = 0;
+    
     // Auton Constants
-    public static final double kMaxAutonDriveSpeed = 2; // mps
-    public static final double kMaxAutonDriveAcceleration = 1.5; //mps2
+    public static final double kMaxAutonDriveSpeed = 5; // mps
+    public static final double kMaxAutonDriveAcceleration = 3; //mps2
     public static final double kMaxAutonThetaVelocity = kMaxAutonDriveSpeed / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps
-    public static final double kMaxAutonThetaAcceleration = kMaxAutonDriveAcceleration / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps^2
+    public static final double kMaxAutonThetaAcceleration = 0.5 * kMaxAutonDriveAcceleration / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps^2
 
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAutonThetaVelocity, kMaxAutonThetaAcceleration);
