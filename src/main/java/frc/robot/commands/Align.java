@@ -9,10 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -74,16 +72,9 @@ public class Align extends CommandBase {
   public boolean isFinished() {
     Pose2d robotPose = localization.getCurrentPose();
 
-    // If close enough to target
-    // return Math.abs(swerve.getRotation2d().getDegrees() -
-    // poseToGoTo.getRotation().getDegrees()) < 10;
-    // return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 &&
-    // Math.abs(robotPose.getX()-poseToGoTo.getX())<0.05 ;
-    // return false;//Math.abs(robotPose.getY()-poseToGoTo.getY())<0.05 ;
-
-     return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance &&
-     Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance &&
-      Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
+      return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance &&
+        Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance &&
+        Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
         Constants.VisionConstants.thetaTolerance;
   }
 }
