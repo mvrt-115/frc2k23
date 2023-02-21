@@ -6,26 +6,22 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.EstimatedRobotPose;
 import java.util.Optional;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.ComputerVisionUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -165,85 +161,7 @@ public class Localization extends SubsystemBase {
     }
     return null;
   }
-  /**
-  * Weights multiple targets using distances (linear)
-  * @return the weighted Pose2d
-  */
-  private Pose2d weightTargets() {
-    SmartDashboard.putBoolean("robot field oriented", swerveDrivetrain.fieldOriented);
-    Pose2d cam1Pose = null;
-    Pose2d cam2Pose = null;
-    PhotonPipelineResult cam1Result = camera1.getLatestResult();
-    PhotonPipelineResult cam2Result = camera2.getLatestResult();
-    if(cam1Result.hasTargets()){
-      //log raw value for debugging
-      SmartDashboard.putString("Cam1 Raw", cam1Result.getBestTarget().getBestCameraToTarget().toString());
-      cam1Pose = weightMultiTargets((ArrayList<PhotonTrackedTarget>) cam1Result.targets, Constants.VisionConstants.cam1ToRobot);
-      SmartDashboard.putString("Cam1 FieldRelative", cam1Pose.toString());
-    }
-    if(cam2Result.hasTargets()){
-      //log raw value for debugging
-      SmartDashboard.putString("Cam2 Raw", cam2Result.getBestTarget().getBestCameraToTarget().toString());
-      cam2Pose = weightMultiTargets((ArrayList<PhotonTrackedTarget>) cam2Result.targets, Constants.VisionConstants.cam2ToRobot);
-      SmartDashboard.putString("Cam2 FieldRelative", cam2Pose.toString());
-    }
-    //Handle cases where only one camera can see
-    if(cam1Pose == null && cam2Pose==null) return null;
-    if(cam1Pose == null) return cam2Pose;
-    if(cam2Pose == null) return cam1Pose;
-    
-    double xAvg = (cam1Pose.getX() + cam2Pose.getX()) / 2;
-    double yAvg = (cam1Pose.getY() + cam2Pose.getY()) / 2;
-    
-    //For debugging theta
-    SmartDashboard.putNumber("Cam1 Theta Raw", cam1Result.getBestTarget().getBestCameraToTarget().getRotation().toRotation2d().getDegrees());
-    SmartDashboard.putNumber("Cam2 Theta Raw", cam2Result.getBestTarget().getBestCameraToTarget().getRotation().toRotation2d().getDegrees());
-    SmartDashboard.putNumber("Cam1 Theta FieldRelative", cam1Pose.getRotation().getDegrees());
-    SmartDashboard.putNumber("Cam2 Theta Field Relative", cam2Pose.getRotation().getDegrees());
-
-    //just use gyro angle
-    return new Pose2d(xAvg, yAvg, swerveDrivetrain.getRotation2d());
-  }
-
-  /**
-   * 
-   * @param targets list of apriltag targets
-   * @param camPose camera position
-   * @return new camera position after weighting all targets
-   */
-  private Pose2d weightMultiTargets(ArrayList<PhotonTrackedTarget> targets, Transform3d camPose) {
-    double[] weights = new double[targets.size()];
-
-    //reciprocal of all the distances
-    double totalSum = 0;
-    Transform3d[] transforms = new Transform3d[targets.size()];
-    
-    for(int i = 0; i < transforms.length; i++) {
-      Transform3d relLoc = targets.get(i).getBestCameraToTarget();
-      transforms[i] = relLoc;
-      weights[i] = 1/relLoc.getTranslation().getNorm();
-      totalSum += weights[i];
-    }
-    
-    double weightedX = 0;
-    double weightedY = 0;
-    double weightedRot = 0;
-    
-    for(int i = 0; i < targets.size(); i++) {
-      Pose3d tag = Constants.VisionConstants.aprilTags.get(2);
-      Pose3d robotPose = ComputerVisionUtil.objectToRobotPose(tag, transforms[i], camPose);
-      weightedX += weights[i] * robotPose.getX();
-      weightedY += weights[i] * robotPose.getY();
-      weightedRot += weights[i] * swerveDrivetrain.getRotation2d().getRadians();
-    }
-
-    weightedX /= totalSum;
-    weightedY /= totalSum;
-    weightedRot /= totalSum;
-
-    return new Pose2d(weightedX, weightedY, new Rotation2d(weightedRot));
-  }
-
+  
   /**
    * Gets the closest scoring location using SwerveDrivePoseEstimator
    * @return Returns the Pose2d of the scoring col
