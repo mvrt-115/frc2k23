@@ -1,5 +1,4 @@
 #!/bin/sh
 
-javac -d build *.java
-cd build
+javac *.java
 java Music
