@@ -60,6 +60,7 @@ public class HotPlug
                 event == LibUsb.HOTPLUG_EVENT_DEVICE_ARRIVED ? "Connected" :
                     "Disconnected",
                 descriptor.idVendor(), descriptor.idProduct());
+            System.out.println(descriptor.dump());
             return 0;
         }
     }
