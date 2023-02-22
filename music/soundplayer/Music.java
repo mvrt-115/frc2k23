@@ -1,12 +1,23 @@
 import java.io.File;
 import java.util.Scanner;
+
 import java.util.Arrays;
 import java.util.Collections;
+
+import org.usb4java.Context;
+import org.usb4java.Device;
+import org.usb4java.DeviceDescriptor;
+import org.usb4java.HotplugCallback;
+import org.usb4java.HotplugCallbackHandle;
+import org.usb4java.LibUsb;
+import org.usb4java.LibUsbException;
 
 public class Music {
 
     public static void main(String[] args){
         File folder = new File("\\dev\\sda");
+
+        System.out.println(folder.getAbsolutePath());
 
         //Load from USB
         try {
@@ -40,4 +51,18 @@ public class Music {
         }
     }
 
+    public int processEvent(Context context, Device device, int event,
+        Object userData) {
+        DeviceDescriptor descriptor = new DeviceDescriptor();
+        int result = LibUsb.getDeviceDescriptor(device, descriptor);
+        if (result != LibUsb.SUCCESS) {
+            throw new LibUsbException("Unable to read device descriptor",
+                result);
+        }
+        System.out.format("%s: %04x:%04x%n",
+            event == LibUsb.HOTPLUG_EVENT_DEVICE_ARRIVED ? "Connected" :
+                "Disconnected",
+            descriptor.idVendor(), descriptor.idProduct());
+        return 0;
+    }
 }
