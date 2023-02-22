@@ -1,11 +1,22 @@
 import java.io.File;
+import java.util.Scanner;
 import java.util.Arrays;
 import java.util.Collections;
 
 public class Music {
 
     public static void main(String[] args){
-        File folder = new File("music");
+        File folder = new File("\\dev\\sda");
+
+        //Load from USB
+        try {
+            Scanner reader = new Scanner(folder);
+        
+        } catch (Exception e){
+            System.out.println("Oops! Could not load from USB :(");
+            System.exit(1);
+        }
+
         File[] listOfFiles = folder.listFiles();
         SoundPlayer player = new SoundPlayer();
 
