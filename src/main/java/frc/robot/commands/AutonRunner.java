@@ -15,13 +15,13 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
 // import frc.robot.utils.BetterSwerveControllerCommand;
 
-public class AutonScoreTwoAndLevel extends SequentialCommandGroup {
+public class AutonRunner extends SequentialCommandGroup {
   /** Creates a new AutonPathExample. */
   private final SwerveDrivetrain swerveDrivetrain;
   // private BetterSwerveControllerCommand swerveControllerCommand;
   private PathPlannerTrajectory trajectory;
 
-  public AutonScoreTwoAndLevel(SwerveDrivetrain drivetrain) {
+  public AutonRunner(SwerveDrivetrain drivetrain, String pathName) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
@@ -36,7 +36,7 @@ public class AutonScoreTwoAndLevel extends SequentialCommandGroup {
     //   new Pose2d(0, 2, Rotation2d.fromDegrees(90.0)),
     //   swerveDrivetrain.getTrajectoryConfig());
 
-    trajectory = PathPlanner.loadPath("ScoreAndLevel", 
+    trajectory = PathPlanner.loadPath(pathName, 
       new PathConstraints(
         Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
         Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration));
