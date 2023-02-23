@@ -73,10 +73,10 @@ public class AutonRunner extends SequentialCommandGroup {
       ),
       new SetElevatorHeight(elevator, 400)
     ));
-    eventMap.put("Intake", new PrintCommand("Should Intake Here"));
-    eventMap.put("DriveBackwards", new DriveForward(drivetrain, -4, 1.25));
-    eventMap.put("DriveForwards", new DriveForward(drivetrain, 4, 1.25));
-    eventMap.put("Level", new Leveling(drivetrain));
+    eventMap.put("Intake", new PrintCommand("!!!Should Intake Here!!!"));
+    // eventMap.put("DriveBackwards", new DriveForward(drivetrain, -4, 1.25));
+    // eventMap.put("DriveForwards", new DriveForward(drivetrain, 4, 1.25));
+    // eventMap.put("Level", new Leveling(drivetrain));
 
     FollowPathWithEvents autoEventsCommand = new FollowPathWithEvents(
       swerveDrivetrain.getAutonPathCommand(trajectory), 
