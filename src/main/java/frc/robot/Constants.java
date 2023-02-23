@@ -159,11 +159,11 @@ public final class Constants {
         public static final double kThrottleDeadband = 0.2;
         public static final double kWheelGain = 0.05;
         public static final double kWheelNonlinearity = 0.05;
-        public static final double kMaxSpeedMPS = 4; // optimize max speed to prioritize translation
+        public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
         public static final double kDriveMaxAcceleration = 3;
         public static final double kTurnMaxAcceleration = 1 * Math.PI;
-        public static final double kDriveMaxSpeedMPS = 2;
-        public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
+        public static final double kDriveMaxSpeedMPS = 7;
+        public static final double kTurnMaxSpeedRPS = 4 * Math.PI;
         public static final int kDriveJoystickPort = 0;
         public static final int kDriveXAxis = 0;
         public static final int kDriveYAxis = 1;
@@ -270,7 +270,7 @@ public final class Constants {
 
         // constraints
         public static final double MAX_VELOCITY = 50;
-        public static final double MAX_ACCELERATION = 15;
+        public static final double MAX_ACCELERATION = 4;
 
         // initial elevator stages
         public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;

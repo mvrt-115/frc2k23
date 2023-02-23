@@ -72,7 +72,7 @@ public class Elevator extends SubsystemBase {
     elev_motor.setInverted(false);
     elev_motor2.setInverted(false);
     elev_motor2.follow(elev_motor);
-    int forwardLimit = 23000;
+    int forwardLimit = 15000;//23000;
     int reverseLimit = -50;
     elev_motor.configVoltageCompSaturation(9.5);
     elev_motor2.configVoltageCompSaturation(9.5);
