@@ -4,7 +4,9 @@
 
 package frc.robot.commands;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.PathConstraints;
@@ -30,6 +32,9 @@ public class AutonRunner extends SequentialCommandGroup {
   private final SwerveDrivetrain swerveDrivetrain;
   // private BetterSwerveControllerCommand swerveControllerCommand;
   private PathPlannerTrajectory trajectory;
+  private PathConstraints constraints = new PathConstraints(
+    Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
+    Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration);
 
   public AutonRunner(SwerveDrivetrain drivetrain, Elevator elevator, Intake2 intake, String pathName) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -46,10 +51,9 @@ public class AutonRunner extends SequentialCommandGroup {
     //   new Pose2d(0, 2, Rotation2d.fromDegrees(90.0)),
     //   swerveDrivetrain.getTrajectoryConfig());
 
-    trajectory = PathPlanner.loadPath(pathName, 
-      new PathConstraints(
-        Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
-        Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration));
+    trajectory = PathPlanner.loadPath(
+      pathName, 
+      constraints);
     
     swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
 
@@ -64,25 +68,34 @@ public class AutonRunner extends SequentialCommandGroup {
     //   swerveDrivetrain);
 
     HashMap<String, Command> eventMap = new HashMap<>();
-    eventMap.put("ScoreHigh", new SequentialCommandGroup(
+    eventMap.put("ScoreHigh", (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM)? new SequentialCommandGroup(
       new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550),
       new WaitCommand(0.25),
       new ParallelCommandGroup(
         new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3700),
         intake.runOut()
       ),
-      new SetElevatorHeight(elevator, 400)
-    ));
-    eventMap.put("Intake", new PrintCommand("!!!Should Intake Here!!!"));
-    // eventMap.put("DriveBackwards", new DriveForward(drivetrain, -4, 1.25));
-    // eventMap.put("DriveForwards", new DriveForward(drivetrain, 4, 1.25));
-    // eventMap.put("Level", new Leveling(drivetrain));
-
-    FollowPathWithEvents autoEventsCommand = new FollowPathWithEvents(
-      swerveDrivetrain.getAutonPathCommand(trajectory), 
-      trajectory.getMarkers(),
-      eventMap
+      new SetElevatorHeight(elevator, 400)) : new PrintCommand("!!!Should Score High Here!!!")
     );
+    eventMap.put("Intake", new PrintCommand("!!!Should Intake Here!!!"));
+    eventMap.put("DriveBackwards", new DriveForward(drivetrain, -4, 1.25));
+    eventMap.put("DriveForwards", new DriveForward(drivetrain, 4, 1.25));
+    eventMap.put("Level", new Leveling(drivetrain));
+
+    List<PathPlannerTrajectory> fullTrajectoriesWithStopEvents = PathPlanner.loadPathGroup(
+      pathName, 
+      constraints);
+
+    SmartDashboard.putString("markers", trajectory.getMarkers().toString());
+
+    // If only markers are not stop events: 
+    // FollowPathWithEvents autoEventsCommand = new FollowPathWithEvents(
+    //   swerveDrivetrain.getAutonPathCommand(trajectory), 
+    //   trajectory.getMarkers(),
+    //   eventMap
+    // );
+
+    Command autoEventsCommand = swerveDrivetrain.getAutonBuilder(eventMap).fullAuto(fullTrajectoriesWithStopEvents);
 
     addCommands(
       new InstantCommand(() -> swerveDrivetrain.setAutonomous()),

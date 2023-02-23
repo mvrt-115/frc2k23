@@ -5,12 +5,15 @@
 package frc.robot.subsystems;
 
 import java.sql.Time;
+import java.util.HashMap;
 
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -29,6 +32,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -527,5 +531,18 @@ public class SwerveDrivetrain extends SubsystemBase {
       false,
       this
     );
+  }
+
+  public SwerveAutoBuilder getAutonBuilder(HashMap<String, Command> eventMap) {
+    return new SwerveAutoBuilder(
+      this::getPose,
+      this::resetOdometry,
+      this.swerveKinematics, 
+      new PIDConstants(Constants.SwerveDrivetrain.m_x_control_P, Constants.SwerveDrivetrain.m_x_control_I, Constants.SwerveDrivetrain.m_x_control_D),
+      new PIDConstants(Constants.SwerveDrivetrain.m_r_control_P, Constants.SwerveDrivetrain.m_r_control_I, Constants.SwerveDrivetrain.m_r_control_D), 
+      this::setModuleStates,
+      eventMap, 
+      false,
+      this);
   }
 }
