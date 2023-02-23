@@ -29,7 +29,7 @@ public class Leveling extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pidRotate.enableContinuousInput(-180, 180);
+    // pidRotate.enableContinuousInput(-180, 180);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -46,8 +46,8 @@ public class Leveling extends CommandBase {
 
     SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
 
-    double vX = -Math.min(-currentRoll*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
-    double vXpid = pidLevel.calculate(currentRoll, 0) * Constants.SwerveDrivetrain.levelVelocityMPS;
+    double vX = -Math.min(-currentPitch*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
+    double vXpid = pidLevel.calculate(currentPitch, 0) * Constants.SwerveDrivetrain.levelVelocityMPS;
     double angularSpeed = pidRotate.calculate(currentYaw, 0) * Constants.SwerveDrivetrain.maxAngularSpeed;
     double vY = 0;
 
@@ -64,7 +64,7 @@ public class Leveling extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(swerveDt.getRoll()) < Constants.SwerveDrivetrain.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.SwerveDrivetrain.speedTolerance){
+    if (Math.abs(swerveDt.getPitchAngle()) < Constants.SwerveDrivetrain.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.SwerveDrivetrain.speedTolerance){
       level = false; //true;
     }
     return level; // once the speed of the robot is low enough and the angle is small enough, the command will end 

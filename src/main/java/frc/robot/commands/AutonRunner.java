@@ -10,8 +10,12 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake2;
 import frc.robot.subsystems.SwerveDrivetrain;
 // import frc.robot.utils.BetterSwerveControllerCommand;
 
@@ -21,7 +25,7 @@ public class AutonRunner extends SequentialCommandGroup {
   // private BetterSwerveControllerCommand swerveControllerCommand;
   private PathPlannerTrajectory trajectory;
 
-  public AutonRunner(SwerveDrivetrain drivetrain, String pathName) {
+  public AutonRunner(SwerveDrivetrain drivetrain, Elevator elevator, Intake2 intake, String pathName) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
@@ -58,8 +62,17 @@ public class AutonRunner extends SequentialCommandGroup {
       new InstantCommand(() -> swerveDrivetrain.resetModules()),
       new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
+      //temp scoring preload mid
+      new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550),
+      new WaitCommand(0.25),
+      new ParallelCommandGroup(
+        new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3700),
+        intake.runOut()
+      ),
+      new SetElevatorHeight(elevator, 400),
       swerveDrivetrain.getAutonPathCommand(trajectory),
-      new Leveling(this.swerveDrivetrain),
+      new DriveForward(drivetrain, -4, 1.25),
+      new Leveling(drivetrain),
       new InstantCommand(() -> swerveDrivetrain.stopModules()),
       new InstantCommand(() -> swerveDrivetrain.setDisabled()));
   }

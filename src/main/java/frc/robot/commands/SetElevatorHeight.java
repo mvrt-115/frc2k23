@@ -19,13 +19,13 @@ public class SetElevatorHeight extends CommandBase
   private Logger logger;
 
   /** Creates a new SetElevatorHeight. */
-  public SetElevatorHeight(Elevator elevator, double height)
+  public SetElevatorHeight(Elevator elevator2, double height)
   {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.elevator = elevator;
+    this.elevator = elevator2;
     this.height = height; 
     logger = Logger.getInstance();
-    addRequirements(elevator);
+    addRequirements(elevator2);
   }
 
   // Called when the command is initially scheduled.
@@ -61,6 +61,6 @@ public class SetElevatorHeight extends CommandBase
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(elevator.getHeight() -  height) <= 100 && Math.abs(elevator.getVelocity()) <= 50);
+    return (Math.abs(elevator.getHeight() -  height) <= 500 && Math.abs(elevator.getVelocity()) <= 100);
   }
 }
