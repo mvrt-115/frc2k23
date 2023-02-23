@@ -4,13 +4,18 @@
 
 package frc.robot.commands;
 
+import java.util.HashMap;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
@@ -56,23 +61,34 @@ public class AutonRunner extends SequentialCommandGroup {
     //   swerveDrivetrain.thetaController,
     //   swerveDrivetrain::setModuleStates,
     //   swerveDrivetrain);
-    
-    addCommands(
-      new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
-      new InstantCommand(() -> swerveDrivetrain.resetModules()),
-      new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
-      new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
-      //temp scoring preload mid
+
+    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap.put("ScoreHigh", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550),
       new WaitCommand(0.25),
       new ParallelCommandGroup(
         new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3700),
         intake.runOut()
       ),
-      new SetElevatorHeight(elevator, 400),
-      swerveDrivetrain.getAutonPathCommand(trajectory),
-      new DriveForward(drivetrain, -4, 1.25),
-      new Leveling(drivetrain),
+      new SetElevatorHeight(elevator, 400)
+    ));
+    eventMap.put("Intake", new PrintCommand("Should Intake Here"));
+    eventMap.put("DriveBackwards", new DriveForward(drivetrain, -4, 1.25));
+    eventMap.put("DriveForwards", new DriveForward(drivetrain, 4, 1.25));
+    eventMap.put("Level", new Leveling(drivetrain));
+
+    FollowPathWithEvents autoEventsCommand = new FollowPathWithEvents(
+      swerveDrivetrain.getAutonPathCommand(trajectory), 
+      trajectory.getMarkers(),
+      eventMap
+    );
+
+    addCommands(
+      new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
+      new InstantCommand(() -> swerveDrivetrain.resetModules()),
+      new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
+      new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
+      autoEventsCommand,
       new InstantCommand(() -> swerveDrivetrain.stopModules()),
       new InstantCommand(() -> swerveDrivetrain.setDisabled()));
   }
