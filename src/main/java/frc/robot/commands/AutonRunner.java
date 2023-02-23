@@ -59,6 +59,7 @@ public class AutonRunner extends SequentialCommandGroup {
       new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
       swerveDrivetrain.getAutonPathCommand(trajectory),
+      new Leveling(this.swerveDrivetrain),
       new InstantCommand(() -> swerveDrivetrain.stopModules()),
       new InstantCommand(() -> swerveDrivetrain.setDisabled()));
   }
