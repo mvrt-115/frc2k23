@@ -516,11 +516,6 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   public PPSwerveControllerCommand getAutonPathCommand(PathPlannerTrajectory trajectory) {
-    // new PPSwerveControllerCommand(
-    //   trajectory, 
-    //   this::getPose,
-    //   this.swerveKinematics, 
-    //   this.xController, yController, xController, null, fieldOriented, null)
     return new PPSwerveControllerCommand(
       trajectory, 
       this::getPose,

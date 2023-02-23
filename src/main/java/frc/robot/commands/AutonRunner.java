@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.HashMap;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -86,6 +87,7 @@ public class AutonRunner extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
       new InstantCommand(() -> swerveDrivetrain.resetModules()),
+      new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
       new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
       autoEventsCommand,
