@@ -167,13 +167,13 @@ public final class Constants {
     public static final double m_y_control_P = 10.75;
     public static final double m_y_control_I = 0.5;
     public static final double m_y_control_D = 0.0;
-    public static final double m_r_control_P = 1.0;
+    public static final double m_r_control_P = 2.0;
     public static final double m_r_control_I = 0.0;
     public static final double m_r_control_D = 0;
     
     // Auton Constants
-    public static final double kMaxAutonDriveSpeed = 5; // mps
-    public static final double kMaxAutonDriveAcceleration = 3; //mps2
+    public static final double kMaxAutonDriveSpeed = 1; // mps
+    public static final double kMaxAutonDriveAcceleration = 1; //mps2
     public static final double kMaxAutonThetaVelocity = kMaxAutonDriveSpeed / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps
     public static final double kMaxAutonThetaAcceleration = 0.5 * kMaxAutonDriveAcceleration / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps^2
 

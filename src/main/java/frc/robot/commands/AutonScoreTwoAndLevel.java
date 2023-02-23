@@ -36,7 +36,7 @@ public class AutonScoreTwoAndLevel extends SequentialCommandGroup {
     //   new Pose2d(0, 2, Rotation2d.fromDegrees(90.0)),
     //   swerveDrivetrain.getTrajectoryConfig());
 
-    trajectory = PathPlanner.loadPath("ScoreAndLevel", 
+    trajectory = PathPlanner.loadPath("ScoreTwiceLevel", 
       new PathConstraints(
         Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
         Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration));
