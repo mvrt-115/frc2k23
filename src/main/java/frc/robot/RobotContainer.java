@@ -58,7 +58,7 @@ public class RobotContainer {
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
-  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
+  private final JoystickIO operatorJoystick = new JoystickIO(1);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   private final Trigger levelTrigger;
@@ -125,8 +125,8 @@ public class RobotContainer {
     //No braking
     driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
     
-    operatorJoystick.x().onTrue(new SetGroundIntakeArmPos(groundIntake, 30)).onFalse(new SetGroundIntakeArmPos(groundIntake, 0));
-    operatorJoystick.y().onTrue(new SetGroundIntakeClawSpeed(groundIntake, -0.3)).onFalse(new SetGroundIntakeClawSpeed(groundIntake, 0.3));
+    operatorJoystick.button(1).onTrue(new SetGroundIntakeArmPos(groundIntake, 30)).onFalse(new SetGroundIntakeArmPos(groundIntake, 0));
+    operatorJoystick.button(4).onTrue(new SetGroundIntakeClawSpeed(groundIntake, -0.3)).onFalse(new SetGroundIntakeClawSpeed(groundIntake, 0.3));
   }
 
   /**

@@ -479,7 +479,7 @@ public final class Constants {
     public static class GroundIntake{
         public static final double kP = 0.3, kI = 0, kD = 0.4;
         public static final double kG = 0.39551;
-        public static final double initialAngle = -30;
+        public static final double initialAngle = -62;
         public static final double clawSpeed = 0.3;
     }
 }

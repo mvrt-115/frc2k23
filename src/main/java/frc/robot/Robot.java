@@ -11,6 +11,9 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -23,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
+  TalonFX motor; 
 
   private RobotContainer m_robotContainer;
 
@@ -33,6 +37,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     Logger logger = Logger.getInstance();
+    motor = new TalonFX(11);
 
     logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -65,7 +70,7 @@ public class Robot extends LoggedRobot {
 
     logger.start();
 
-    m_robotContainer = new RobotContainer();
+    // m_robotContainer = new RobotContainer();
   }
 
   @Override
@@ -114,6 +119,7 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    motor.set(ControlMode.PercentOutput, 0.75);
     // frontLeft.set(ControlMode.PercentOutput, 0.3);
     // frontRight.set(ControlMode.PercentOutput, 0.3);
     // backLeft.set(ControlMode.PercentOutput, 0.3);

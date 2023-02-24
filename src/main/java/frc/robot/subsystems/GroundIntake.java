@@ -8,6 +8,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXPIDSetConfiguration;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -22,21 +25,27 @@ import org.littletonrobotics.junction.Logger;
 public class GroundIntake extends SubsystemBase{
 
     //private SparkMaxPIDController pidController;
-    private TalonFX armMotor;
-    private CANSparkMax clawMotor;
+    private TalonFX intakeMotor;
+    private CANSparkMax armMotor;
     private Logger logger;
+    private SparkMaxPIDController armPIDController;
 
     public GroundIntake(){
-        armMotor = TalonFactory.createTalonFX(0, true);
-        armMotor.setNeutralMode(NeutralMode.Brake);
-        armMotor.setSelectedSensorPosition(degreesToTicks(Constants.GroundIntake.initialAngle));
-        clawMotor = TalonFactory.createSparkMax(7, false);
+        armMotor = TalonFactory.createSparkMax(0, true);
+        intakeMotor = TalonFactory.createTalonFX(11, false);
         logger = Logger.getInstance();
 
-     
-        armMotor.config_kP(Constants.Talon.kPIDIdx, Constants.GroundIntake.kP);
-        armMotor.config_kI(Constants.Talon.kPIDIdx, Constants.GroundIntake.kI);
-        armMotor.config_kD(Constants.Talon.kPIDIdx, Constants.GroundIntake.kD);
+        armPIDController = armMotor.getPIDController();
+
+        armPIDController.setP(Constants.GroundIntake.kP);
+        armPIDController.setI(Constants.GroundIntake.kI);
+        armPIDController.setD(Constants.GroundIntake.kD);
+
+        armMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+        armMotor.setIdleMode(IdleMode.kBrake);
+        armMotor.getEncoder().setPosition(degreesToTicks(Constants.GroundIntake.initialAngle));
+        
+        
         
         /* pidController = clawMotor.getPIDController();
         pidController.setP(Constants.Intake.kP);
@@ -54,12 +63,12 @@ public class GroundIntake extends SubsystemBase{
     public void log(){
         logger.recordOutput("GroundIntake/armMotor/position_ticks", getArmCurrentPositionTicks());
         logger.recordOutput("GroundIntake/armMotor/position_degrees", getArmCurrentPositionDegrees());
-        logger.recordOutput("GroundIntake/armMotor/percent_output", armMotor.getMotorOutputPercent());
-        logger.recordOutput("GroundIntake/clawMotor/velocity", clawMotor.get());
+        logger.recordOutput("GroundIntake/armMotor/percent_output", armMotor.getAppliedOutput());
+        logger.recordOutput("GroundIntake/clawMotor/velocity", intakeMotor.getSelectedSensorVelocity());
     }
 
     public double getArmCurrentPositionTicks(){
-        return armMotor.getSelectedSensorPosition();
+        return armMotor.getEncoder().getPosition();
     }
     
     public double getArmCurrentPositionDegrees(){
@@ -67,23 +76,22 @@ public class GroundIntake extends SubsystemBase{
     }
 
     public double ticksToDegrees(double ticks){
-        return ticks * (360.0/2048.0)/20.0;
+        return ticks * 360.0/30.0;
     }
 
     public double degreesToTicks(double degrees){
-        return degrees / ((360.0/2048.0)/20);
+        return degrees / ((360.0)/30.00);
     }
     
     public void setPosition(double goalPositionDegrees){
-        armMotor.set(
-            ControlMode.Position, 
+        armPIDController.setFF(-Constants.GroundIntake.kG * Math.cos(Math.toRadians(getArmCurrentPositionDegrees()))/10.0);
+        armPIDController.setReference(
             degreesToTicks(goalPositionDegrees), 
-            DemandType.ArbitraryFeedForward, 
-            -Constants.GroundIntake.kG * Math.cos(Math.toRadians(getArmCurrentPositionDegrees()))/10
+            ControlType.kPosition
         );       
     }
 
     public void setClawSpeed(double speed){
-        clawMotor.set(speed);
+        intakeMotor.set(ControlMode.PercentOutput, speed);
     }
 }
