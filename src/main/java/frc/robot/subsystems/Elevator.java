@@ -72,7 +72,7 @@ public class Elevator extends SubsystemBase {
     elev_motor.setInverted(false);
     elev_motor2.setInverted(false);
     elev_motor2.follow(elev_motor);
-    int forwardLimit = 17000;//23000;
+    int forwardLimit = 23000;//23000;
     int reverseLimit = -50;
     elev_motor.configVoltageCompSaturation(9.5);
     elev_motor2.configVoltageCompSaturation(9.5);
@@ -128,7 +128,7 @@ public class Elevator extends SubsystemBase {
     // SmartDashboard.putNumber("Elevator Level", getLevel());
     // SmartDashboard.putNumber("Elevator Target Heighr", targetHeight);
    // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
-    // SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
+   SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
     // SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
     // SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
     logger.recordOutput("Elevator/motor1/position_ticks", elev_motor.getSelectedSensorPosition());

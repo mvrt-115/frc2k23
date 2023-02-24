@@ -78,16 +78,16 @@
     },
     {
       "anchorPoint": {
-        "x": 1.7977873330924976,
-        "y": 3.865184791710525
+        "x": 1.832093706983419,
+        "y": 4.368344942110712
       },
       "prevControl": {
-        "x": 2.255205651638122,
-        "y": 5.191697915492835
+        "x": 1.8740052407280166,
+        "y": 5.008992672206706
       },
       "nextControl": {
-        "x": 1.5219262291753197,
-        "y": 3.0651875903507086
+        "x": 1.7520455012379348,
+        "y": 3.144750940001166
       },
       "holonomicAngle": -180.0,
       "isReversal": false,
@@ -105,23 +105,50 @@
     },
     {
       "anchorPoint": {
-        "x": 2.5,
-        "y": 3.2506024905572435
+        "x": 2.6325757644382612,
+        "y": 3.1104445661102447
       },
       "prevControl": {
-        "x": 2.580860898720639,
-        "y": 3.2506024905572435
+        "x": 2.358124773310887,
+        "y": 3.1104445661102447
       },
-      "nextControl": null,
-      "holonomicAngle": -180.0,
+      "nextControl": {
+        "x": 2.7134366631588995,
+        "y": 3.1104445661102447
+      },
+      "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": null,
+      "velOverride": 4.0,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
           "DriveBackwards",
           "Level"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.924782514329651,
+        "y": 3.064702734255682
+      },
+      "prevControl": {
+        "x": 4.547608626860487,
+        "y": 3.058985005273861
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "Leveling"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",

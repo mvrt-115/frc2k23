@@ -181,11 +181,11 @@ public final class Constants {
                 public static final double m_r_control_D = 0;
 
                 // Auton Constants
-                public static final double kMaxAutonDriveSpeed = 3; // mps
-                public static final double kMaxAutonDriveAcceleration = 2; // mps2
+                public static final double kMaxAutonDriveSpeed = 4; // mps
+                public static final double kMaxAutonDriveAcceleration = 3; // mps2
                 public static final double kMaxAutonThetaVelocity = kMaxAutonDriveSpeed
                                 / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps
-                public static final double kMaxAutonThetaAcceleration = 0.5 * kMaxAutonDriveAcceleration
+                public static final double kMaxAutonThetaAcceleration = kMaxAutonDriveAcceleration
                                 / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps^2
 
                 public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
@@ -237,7 +237,7 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.05;// .1;//.01;
+                public static final double P = 0.025;// .1;//.01;
                 public static final double I = 0;// .000006;
                 public static final double D = 0.007;
                 public static final double F = 0;
@@ -277,8 +277,8 @@ public final class Constants {
                 public static final double KDt = 0.01;
 
                 // constraints
-                public static final double MAX_VELOCITY = 50;
-                public static final double MAX_ACCELERATION = 4;
+                public static final double MAX_VELOCITY = 14; //50;
+                public static final double MAX_ACCELERATION = 4; //25;
 
                 // initial elevator stages
                 public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
