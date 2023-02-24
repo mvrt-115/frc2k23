@@ -102,7 +102,10 @@ public class RobotContainer {
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
-    autonSelector.setDefaultOption("Example", new AutonRunner(swerveDrivetrain, "ScoreTwiceLevel"));
+    autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, "ExitLevel"));
+    autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, "ScoreExitLevel"));
+    autonSelector.addOption("ScoreLevel", new AutonRunner(swerveDrivetrain, "ScoreLevel"));
+    autonSelector.setDefaultOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, "ScoreTwiceLevel"));
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
