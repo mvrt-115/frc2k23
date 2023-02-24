@@ -109,7 +109,7 @@ public class Localization extends SubsystemBase {
           if(poseEstimator == null){
             resetPoseEstimator(visionFieldRelative);
           }
-          // field.getObject("VisionRobot" + fiducialId).setPose(visionFieldRelative);
+          field.getObject("VisionRobot" + fiducialId).setPose(visionFieldRelative);
 
           //Add vision estimator to pose estimator
           poseEstimator.addVisionMeasurement(visionFieldRelative, imageCaptureTime);

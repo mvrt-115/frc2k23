@@ -55,7 +55,7 @@ public class DriveSimulationData {
         m_field2d.setRobotPose(
             m_odometry.getPoseMeters().getX(), 
             m_odometry.getPoseMeters().getY(),
-            m_odometry.getPoseMeters().getRotation());
+            new Rotation2d(headingAngle));
     }
 
     /**
@@ -70,11 +70,8 @@ public class DriveSimulationData {
         currentTime = Timer.getFPGATimestamp();
         SmartDashboard.putNumber("dt", dt);
         double pw = 0;
-        if (Math.abs(angularVelocity) > 0.0005) {
+        if (Math.abs(angularVelocity) > 0.3) {
             pw = angularVelocity * dt + headingAngle;
-        }
-        else {
-            pw = headingAngle;
         }
         update(modulePositions, pw);
     }
@@ -94,16 +91,5 @@ public class DriveSimulationData {
      */
     public void setHeading(double radians) {
         headingAngle = radians;
-    }
-
-    /**
-     * reset odometry
-     * @param rotation2d
-     * @param modulePositions
-     * @param pose
-     */
-    public void resetOdometry(Rotation2d rotation2d, SwerveModulePosition[] modulePositions, Pose2d pose) {
-        m_odometry.resetPosition(rotation2d, modulePositions, pose);
-        // headingAngle = pose.getRotation().getRadians();
     }
 }

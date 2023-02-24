@@ -5,16 +5,11 @@
 package frc.robot.subsystems;
 
 import java.sql.Time;
-import java.util.HashMap;
 
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -27,12 +22,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.networktables.NetworkTableInstance.NetworkMode;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -61,12 +54,11 @@ public class SwerveDrivetrain extends SubsystemBase {
   public PIDController xController;
   public PIDController yController;
   public ProfiledPIDController thetaController;
-  public PIDController rotationControllerFeedBack;
   private TrajectoryConfig trajectoryConfig;
   // sensors
   private AHRS gyro;
   // private PigeonIMU gyro;
-  private double gyroOffset_deg = 0; // degrees
+  private double gyroOffset = 0; // degrees
 
   private Logger logger;
   
@@ -148,6 +140,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_backRightEncoderOffset,
       modulePositions[3]);
 
+    odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
     field = new Field2d();
 
     xController = new PIDController(Constants.SwerveDrivetrain.m_x_control_P, Constants.SwerveDrivetrain.m_x_control_I, Constants.SwerveDrivetrain.m_x_control_D);
@@ -158,20 +151,13 @@ public class SwerveDrivetrain extends SubsystemBase {
       Constants.SwerveDrivetrain.m_r_control_D,
       Constants.SwerveDrivetrain.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    rotationControllerFeedBack = new PIDController(
-      Constants.SwerveDrivetrain.m_r_control_P,
-      Constants.SwerveDrivetrain.m_r_control_I,
-      Constants.SwerveDrivetrain.m_r_control_D);
 
     trajectoryConfig = new TrajectoryConfig(
-      Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
-      Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration);
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS, 
+      Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     trajectoryConfig.setKinematics(swerveKinematics);
-    
     state = DrivetrainState.JOYSTICK_DRIVE; 
-
     driveSimData = new DriveSimulationData(new SwerveDriveOdometry(swerveKinematics, new Rotation2d(), modulePositions), field);
-    odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
   }
 
   public SwerveModulePosition[] getModulePositions(){
@@ -179,22 +165,10 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
   
   /**
-   * drive robo forward
-   * @param mps velocity
-   */
-  public void driveForward(double mps){
-    setSpeeds(mps, 0, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
-  }
-
-  /**
    * Zero the physical gyro
    */
   public void zeroHeading() {
     gyro.reset();
-  }
-
-  public void setGyroOffset_deg(double offset_deg){
-    this.gyroOffset_deg = offset_deg;
   }
 
   /**
@@ -207,10 +181,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @return heading angle in degrees
    */
   public double getHeading() {
-    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
-      return Math.IEEEremainder(Math.toDegrees(driveSimData.getHeading()), 360.0);
-    }
-    return -Math.IEEEremainder(gyro.getYaw() - gyroOffset_deg, 360.0);
+    return Math.IEEEremainder(gyro.getYaw() - gyroOffset, 360.0);
   }
 
   /**
@@ -225,31 +196,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     ChassisSpeeds speeds = swerveKinematics.toChassisSpeeds(states);
     double angle = Math.atan(speeds.vyMetersPerSecond/speeds.vxMetersPerSecond);
     return Math.toDegrees(angle);
-  }
-
-  /**
-   * Gets the angle the robot is tilted
-   *
-   * @return the pitch degree
-   */
-  public double getPitchAngle(){
-    return gyro.getPitch();
-  }
-
-  /**
-   * gets the current gyro yaw value
-   * @return yaw in degrees
-   */
-  public double getYaw(){
-    return gyro.getYaw();
-  }
-
-  /**
-   * gets the current gyro roll value
-   * @return roll in degrees
-   */
-  public double getRoll(){
-    return gyro.getRoll();
   }
 
   /**
@@ -272,11 +218,6 @@ public class SwerveDrivetrain extends SubsystemBase {
        m.logMeasuredData();
     }
 
-    logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
-    logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
-    logger.recordOutput("OdometryHeadingRad", getPose().getRotation().getRadians());
-    logger.recordOutput("OdometryHeadingDeg", getPose().getRotation().getDegrees());
-
     odometry.update(getRotation2d(), modulePositions);
 
     if(Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM){
@@ -288,9 +229,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     logger.recordOutput("Robot Location", getPose());
-    logger.recordOutput("Robot Pose X", getPose().getX());
-    logger.recordOutput("Robot Pose Y", getPose().getY());
-    logger.recordOutput("Robot Location W deg", getPose().getRotation().getDegrees());
     logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
   }
 
@@ -355,10 +293,9 @@ public class SwerveDrivetrain extends SubsystemBase {
     setModuleStates(moduleStates);
   }
 
-  public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot) {
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getPose().getRotation());
-    SmartDashboard.putString("ChassisSpeedsFO", speeds.toString());
-    SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds);
+  public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot, Translation2d rotatePoint) {
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getRotation2d());
+    SwerveModuleState[] moduleStates = swerveKinematics.toSwerveModuleStates(speeds, rotatePoint);
     setModuleStates(moduleStates);
   }
 
@@ -421,11 +358,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param pose
    */
   public void resetOdometry(Pose2d pose) {
-    SmartDashboard.putBoolean("Reset Odometry", true);
     odometry.resetPosition(getRotation2d(), modulePositions, pose);
-    if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
-      driveSimData.resetOdometry(getRotation2d(), modulePositions, pose);
-    }
   }
 
   /**
@@ -498,8 +431,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     for (SwerveModule m:modules) {
       m.setMode(mode);
     }
-    SmartDashboard.putBoolean("Brake Mode", (mode == NeutralMode.Brake));
-    logger.recordOutput("Brake Mode", (mode == NeutralMode.Brake));
   }
 
   /**
@@ -507,42 +438,5 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public void toggleMode() {
     this.fieldOriented = !this.fieldOriented;
-  }
-
-  /**
-   * uses PID to try and hold the current heading of the robot
-   * @param heading
-   */
-  public double holdHeading(Rotation2d heading) {
-    double v_w = Constants.JoystickControls.kPJoystick * (getRotation2d().getRadians() - heading.getRadians()); //thetaController.calculate(getRotation2d().getRadians());
-    // this.setSpeeds(0, 0, v_w, Constants.SwerveDrivetrain.rotatePoints[this.getRotationPointIdx()]);
-    return v_w;
-  }
-
-  public PPSwerveControllerCommand getAutonPathCommand(PathPlannerTrajectory trajectory) {
-    return new PPSwerveControllerCommand(
-      trajectory, 
-      this::getPose,
-      this.swerveKinematics,
-      this.xController, 
-      this.yController,
-      this.rotationControllerFeedBack,
-      this::setModuleStates,
-      false,
-      this
-    );
-  }
-
-  public SwerveAutoBuilder getAutonBuilder(HashMap<String, Command> eventMap) {
-    return new SwerveAutoBuilder(
-      this::getPose,
-      this::resetOdometry,
-      this.swerveKinematics, 
-      new PIDConstants(Constants.SwerveDrivetrain.m_x_control_P, Constants.SwerveDrivetrain.m_x_control_I, Constants.SwerveDrivetrain.m_x_control_D),
-      new PIDConstants(Constants.SwerveDrivetrain.m_r_control_P, Constants.SwerveDrivetrain.m_r_control_I, Constants.SwerveDrivetrain.m_r_control_D), 
-      this::setModuleStates,
-      eventMap, 
-      false,
-      this);
   }
 }

@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
 
 import frc.robot.Constants;
 
@@ -47,15 +46,5 @@ public class TalonFactory {
         talon.enableVoltageCompensation(true);       
         
         return talon;
-    }
-
-    public static CANSparkMax createSparkMax(int id, boolean inversion) {
-        CANSparkMax neo = new CANSparkMax(id, CANSparkMax.MotorType.kBrushless);
-
-        // neo.setOpenLoopRampRate(0.4);
-        neo.restoreFactoryDefaults();
-        neo.setInverted(inversion);       
-        
-        return neo;
     }
 }
