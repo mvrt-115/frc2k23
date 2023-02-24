@@ -47,6 +47,7 @@ public class GroundIntake extends SubsystemBase{
 
     public void periodic(){
         //This method will be called once per scheduler run
+        //setPosition(30);
         log();
     }
 

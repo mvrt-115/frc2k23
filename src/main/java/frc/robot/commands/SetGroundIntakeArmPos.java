@@ -6,17 +6,22 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.GroundIntake;
+import org.littletonrobotics.junction.Logger;
+
 
 public class SetGroundIntakeArmPos extends CommandBase {
   /** Creates a new SetIntakeArmPosition. */
   private GroundIntake groundIntake;
+  private Logger logger;
   private double goalPosition;
-  private boolean remainAtOrigPos;
-  public SetGroundIntakeArmPos(GroundIntake gi, double goalPosition, boolean remainAtPosition) {
+  //private boolean remainAtOrigPos;
+  public SetGroundIntakeArmPos(GroundIntake gi, double goalPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     groundIntake = gi;
     this.goalPosition = goalPosition;
-    remainAtOrigPos = remainAtPosition;
+    logger.recordOutput("GroundIntake/armMotor/commandCalled", 1);
+    addRequirements(null);
+    //remainAtOrigPos = remainAtPosition;
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +33,8 @@ public class SetGroundIntakeArmPos extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!remainAtOrigPos)groundIntake.setPosition(goalPosition);
+    //if(!remainAtOrigPos)
+    groundIntake.setPosition(goalPosition);
   }
 
   // Called once the command ends or is interrupted.
