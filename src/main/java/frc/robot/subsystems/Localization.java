@@ -64,7 +64,10 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Pose2d result = combinePoses();
+
+    Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
+    Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
+    Pose2d result = combinePoses(result1, result2);
 
     SmartDashboard.putBoolean("robot present", result != null);
     if(result != null) {
@@ -78,31 +81,26 @@ public class Localization extends SubsystemBase {
       }
       else{
         double latency = 0;
-        PhotonPipelineResult cam1Result = camera1.getLatestResult();
-        PhotonPipelineResult cam2Result = camera2.getLatestResult();
+        if(result1.isPresent()){
+          latency = result1.get().timestampSeconds;
 
-        if(cam1Result.hasTargets()){
-          latency = cam1Result.getLatencyMillis();
-
-        } if(cam2Result.hasTargets()){
+        } if(result2.isPresent()){
             if(latency==0){
-              latency = cam2Result.getLatencyMillis();
+              latency = result2.get().timestampSeconds;
             }
             else{
-              latency+=cam2Result.getLatencyMillis();
+              latency+=result2.get().timestampSeconds;
               latency/=2;
             }
         }
         poseEstimator.addVisionMeasurement(result, latency);
       }
     }
+    //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     Pose2d currPose = getCurrentPose();
     if(currPose != null){
       field.setRobotPose(currPose); 
     }
-
-    //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
-    field.setRobotPose(getCurrentPose());
     log();
 
     Pose2d robotPose = getCurrentPose();
@@ -134,11 +132,7 @@ public class Localization extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-  public Pose2d combinePoses() {
-    Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
-    Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
-
-    
+  public Pose2d combinePoses(Optional<EstimatedRobotPose> result1, Optional<EstimatedRobotPose> result2) {
     Pose3d first;
     Pose3d second;
     if(result1.isPresent() && result2.isPresent()){
