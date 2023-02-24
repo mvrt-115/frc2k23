@@ -48,7 +48,7 @@ public final class Constants {
 
   public static class JoystickControls {
     public static final boolean xBoxControl = false;
-    public static final boolean invertJoystickX = false;
+    public static final boolean invertJoystickX = true;
     public static final boolean invertJoystickY = true;
     public static final boolean invertJoystickW = true;
 
@@ -66,20 +66,24 @@ public final class Constants {
     // Important locations for swerve
     // consider swapping corners
     public static final Translation2d m_standardCenterLocation = new Translation2d(0, 0);
-    public static final Translation2d m_frontLeftLocation = new Translation2d(chassisLength / 2.0, chassisWidth / 2.0);
-    public static final Translation2d m_frontRightLocation = new Translation2d(chassisLength / 2.0, -chassisWidth / 2.0);
-    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisLength / 2.0, chassisWidth / 2.0);
-    public static final Translation2d m_backRightLocation = new Translation2d(-chassisLength / 2.0, -chassisWidth / 2.0);
+    public static final Translation2d m_frontLeftLocation = new Translation2d(chassisLength / 2.0,
+                    chassisWidth / 2.0);
+    public static final Translation2d m_frontRightLocation = new Translation2d(chassisLength / 2.0,
+                    -chassisWidth / 2.0);
+    public static final Translation2d m_backLeftLocation = new Translation2d(-chassisLength / 2.0,
+                    chassisWidth / 2.0);
+    public static final Translation2d m_backRightLocation = new Translation2d(-chassisLength / 2.0,
+                    -chassisWidth / 2.0);
     public static final Translation2d[] rotatePoints = {
-      m_standardCenterLocation,
-      m_frontLeftLocation,
-      m_frontRightLocation,
-      m_backLeftLocation,
-      m_backRightLocation
+                    m_standardCenterLocation,
+                    m_frontLeftLocation,
+                    m_frontRightLocation,
+                    m_backLeftLocation,
+                    m_backRightLocation
     };
 
     // Leveling PID
-    public static final double levelkP = 0.05;
+    public static final double levelkP = 0.025;
     public static final double levelkI = 0;
     public static final double levelkD = 0;
     public static final double rotatekP = 0;
@@ -87,7 +91,7 @@ public final class Constants {
     public static final double rotatekD = 0;
     public static final double angleTolerance = 1.5;
     public static final double speedTolerance = 0.5;
-    public static final double levelVelocityMPS = 1;
+    public static final double levelVelocityMPS = 0.75;
     public static final double yawAlligned = 0; // TBD
     public static final double pitchAlligned = 0; // TBD
     public static final double rollAlligned = 0; // TBD
@@ -112,35 +116,33 @@ public final class Constants {
     public static final int m_backRightEncoderID = 12;
 
     // Comp Bot Encoder Offsets
-    public static final boolean isCompBot = true;
+    public static final boolean isCompBot = false;
 
-    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.31);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(317.02);// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(37.00);// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(126.38);// + Math.PI/2.0;
+    public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.31);// +
+                                                                                             // Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(317.02);// +
+                                                                                               // Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(37.00);// +
+                                                                                            // Math.PI/2.0;
+    public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(126.38);// +
+                                                                                              // Math.PI/2.0;
 
     // Practice Bot Encoder Offsets
     public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(33.62);// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(182.180);// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(182.180);// +
+                                                                                             // Math.PI/2.0;
     public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(341.54);// + Math.PI/2.0;
     public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(146.86);// + Math.PI/2.0;
 
     // Abs Encoder Offsets
-    public static final double m_frontLeftEncoderOffset = isCompBot? m_frontLeftEncoderOffset_Comp:m_frontLeftEncoderOffset_P;// + Math.PI/2.0;
-    public static final double m_frontRightEncoderOffset = isCompBot? m_frontRightEncoderOffset_Comp:m_frontRightEncoderOffset_P;// + Math.PI/2.0;
-    public static final double m_backLeftEncoderOffset = isCompBot? m_backLeftEncoderOffset_Comp:m_backLeftEncoderOffset_P;// + Math.PI/2.0;
-    public static final double m_backRightEncoderOffset = isCompBot? m_backRightEncoderOffset_Comp:m_backRightEncoderOffset_P;// + Math.PI/2.0;
-
-    // Position PID
-    public static final double m_x_control_P = 1.0;
-    public static final double m_x_control_I = 0.0;
-    public static final double m_x_control_D = 0.0;
-    public static final double m_y_control_P = 1.0;
-    public static final double m_y_control_I = 0.0;
-    public static final double m_y_control_D = 0.0;
-    public static final double m_r_control_P = 1.0;
-    public static final double m_r_control_I = 0;
-    public static final double m_r_control_D = 0;
+    public static final double m_frontLeftEncoderOffset = isCompBot ? m_frontLeftEncoderOffset_Comp
+                    : m_frontLeftEncoderOffset_P;// + Math.PI/2.0;
+    public static final double m_frontRightEncoderOffset = isCompBot ? m_frontRightEncoderOffset_Comp
+                    : m_frontRightEncoderOffset_P;// + Math.PI/2.0;
+    public static final double m_backLeftEncoderOffset = isCompBot ? m_backLeftEncoderOffset_Comp
+                    : m_backLeftEncoderOffset_P;// + Math.PI/2.0;
+    public static final double m_backRightEncoderOffset = isCompBot ? m_backRightEncoderOffset_Comp
+                    : m_backRightEncoderOffset_P;// + Math.PI/2.0;
 
     // constants for joystick drive
     public static final double kSensitivity = 0.90;
@@ -148,11 +150,11 @@ public final class Constants {
     public static final double kThrottleDeadband = 0.2;
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
-    public static final double kMaxSpeedMPS = 8; // optimize max speed to prioritize translation
+    public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
     public static final double kDriveMaxAcceleration = 3;
     public static final double kTurnMaxAcceleration = 1 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 4;
-    public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
+    public static final double kDriveMaxSpeedMPS = 7;
+    public static final double kTurnMaxSpeedRPS = 4 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
     public static final int kDriveYAxis = 1;
@@ -164,17 +166,31 @@ public final class Constants {
     public static final double kV = 0; // 1.30485 //2.6097 //units: Volts * Seconds / Meters
     public static final double kA = 0; // 0.35228 //units: Volts * Seconds^2 / Meters
 
+    // Position PID
+    public static final double m_x_control_P = 2.0;
+    public static final double m_x_control_I = 0.5;
+    public static final double m_x_control_D = 0.0;
+    public static final double m_y_control_P = 2.0;
+    public static final double m_y_control_I = 0.5;
+    public static final double m_y_control_D = 0.0;
+    public static final double m_r_control_P = 2.0;
+    public static final double m_r_control_I = 0.0;
+    public static final double m_r_control_D = 0;
+
     // Auton Constants
     public static final double kMaxAutonDriveSpeed = 4; // mps
-    public static final double kMaxAutonDriveAcceleration = 3; //mps2
-    public static final double kMaxAutonThetaVelocity = kMaxAutonDriveSpeed / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps
-    public static final double kMaxAutonThetaAcceleration = kMaxAutonDriveAcceleration / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps^2
+    public static final double kMaxAutonDriveAcceleration = 3; // mps2
+    public static final double kMaxAutonThetaVelocity = kMaxAutonDriveSpeed
+                    / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps
+    public static final double kMaxAutonThetaAcceleration = kMaxAutonDriveAcceleration
+                    / Math.hypot(chassisWidth / 2.0, chassisLength / 2.0); // rad ps^2
 
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAutonThetaVelocity, kMaxAutonThetaAcceleration);
+                    kMaxAutonThetaVelocity, kMaxAutonThetaAcceleration);
 
     public static final double kTeleopHeadingCorrectionScale = 0;
-  }  public static class Talon {
+    }  
+    public static class Talon {
     public static final int talonFXTicks = 2048;
     public static final int talonSRXTicks = 4096;
 
@@ -190,14 +206,17 @@ public final class Constants {
   }
 
   public static class SwerveModule {
-    public static final double gear_ratio_turn = 150.0 / 7.0; // number of rotations of talon for one turn of wheel
-    public static final double gear_ratio_drive = 6.75 / 1.0; // number of rotations of talon for one rotation of wheel
+    public static final double gear_ratio_turn = 150.0 / 7.0; // number of rotations of talon for one turn
+                                                              // of wheel
+    public static final double gear_ratio_drive = 6.75 / 1.0; // number of rotations of talon for one
+                                                              // rotation of
+                                                              // wheel
     public static final double radius = 0.05; // meters
     public static final double kwheelCircumference = 2 * Math.PI * radius; // meters
 
     // PID Constants
-    public static final double kP = 0.3; // 3.2364;
-    public static final double kI = 0.001;
+    public static final double kP = 0.1;// 0.3; // 3.2364;
+    public static final double kI = 0;// 0.001;
     public static final double kD = 0;
     public static final double kFF = 0;
 
@@ -205,7 +224,7 @@ public final class Constants {
     public static final double kITurn = 0.0;
     public static final double kDTurn = 0.0;
     public static final double kFTurn = 0.0;
-  }
+}
 
   public static class VisionConstants{
     public static final String kCamera1Name = "monocle"; //neg offset
@@ -216,8 +235,8 @@ public final class Constants {
     public static final double thetaTolerance = 0.05;
 
     //Camera position on robot
-    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(12*.0254, Units.inchesToMeters(5 + 3/4), 0), new Rotation3d());
-    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(12*.0254, -Units.inchesToMeters(4 + 3/8), 0), new Rotation3d());
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, 0.26, 0), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, Units.inchesToMeters(5 + 3/4), 0), new Rotation3d());
+    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(-.02, -0.26, 0), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, -Units.inchesToMeters(4 + 3/8), 0), new Rotation3d());
     /**
      * Key:
      * Orientation: facing red community from blue community 
@@ -238,12 +257,12 @@ public final class Constants {
             new Rotation2d()),
         3,
         new Pose2d(
-            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(590),//597.1
             Units.inchesToMeters(64.6),
             new Rotation2d()),
         4,
         new Pose2d(
-            Units.inchesToMeters(597.1),
+            Units.inchesToMeters(590),
             Units.inchesToMeters(86.5),
             new Rotation2d()),
         5,
@@ -402,7 +421,7 @@ public final class Constants {
     public static final double ZERO_HEIGHT = 0;
     public static final double SHELF_HEIGHT = 0;
 
-    // MID, HIGH heights parwa cone
+    // MID, HIGH heights parwa coneca
     public static final double MID_HEIGHT = 0;
     public static final double HIGH_HEIGHT = 0;
 

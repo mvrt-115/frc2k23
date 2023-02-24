@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -96,7 +97,7 @@ public class Localization extends SubsystemBase {
         poseEstimator.addVisionMeasurement(result, latency);
       }
     }
-    //poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
+    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
     Pose2d currPose = getCurrentPose();
     if(currPose != null){
       field.setRobotPose(currPose); 
@@ -106,7 +107,7 @@ public class Localization extends SubsystemBase {
     Pose2d robotPose = getCurrentPose();
     if(robotPose==null) return;
 
-    Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
+    Pose2d poseToGoTo = getClosestScoringLoc();
     SmartDashboard.putString("chicken - robot pose", getCurrentPose().toString());
     SmartDashboard.putNumber("chicken - robot gyro rot", swerveDrivetrain.getRotation2d().getDegrees());
     SmartDashboard.putNumber("chicken - robot score theta",  (poseToGoTo.getRotation().getDegrees()));
@@ -165,7 +166,7 @@ public class Localization extends SubsystemBase {
     Map<Integer, Pose2d> scoreCols = Constants.VisionConstants.kRedScoreCols;
     Pose2d minCol = null;
     double minDist = Double.MAX_VALUE;
-
+    int num = 0;
     //Loop through cols
     for(int i : scoreCols.keySet()) {
       Pose2d pose = scoreCols.get(i);
@@ -174,10 +175,12 @@ public class Localization extends SubsystemBase {
       //Shortest dist away
       if(dy < minDist) {
         minDist = dy;
+        num = i;
         minCol = pose;
       }
     }
-    return scoreCols.get(5);
+    SmartDashboard.putNumber("scoring loc", num);
+    return minCol;
   }
 
    /**
@@ -239,7 +242,7 @@ public class Localization extends SubsystemBase {
     }
 
     // SmartDashboard
-    Pose2d poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);
+    Pose2d poseToGoTo = getClosestScoringLoc();
 
     SmartDashboard.putNumber("chicken - robo theta", (swerveDrivetrain.getRotation2d().getDegrees()));
     SmartDashboard.putNumber("chicken - score theta",  (poseToGoTo.getRotation().getDegrees()));

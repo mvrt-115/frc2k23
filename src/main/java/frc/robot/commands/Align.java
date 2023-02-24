@@ -30,8 +30,8 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseToGoTo = localization.getClosestScoringLoc();
     addRequirements(localization, swerve);
-    pidX = new PIDController(1.2, 0, 0); // pid x-coor 1.2
-    pidY = new PIDController(1, 0, 0.05); // pid y-coor 1.2
+    pidX = new PIDController(2, 0.5, 0); // pid x-coor 1.2
+    pidY = new PIDController(2, 0.5, 0.05); // pid y-coor 1.2
     pidTheta = new PIDController(4, 0, 0); // pid t-coor 4
   }
 
@@ -48,8 +48,8 @@ public class Align extends CommandBase {
     Pose2d robotPose = localization.getCurrentPose();
     // if(Localization.distFromTag(robotPose, poseToGoTo) >
     // Constants.VisionConstants.minDistFromTag){
-    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX())*0.7; // pos, setpoint
-    double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY())*0.7;
+    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
+    double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
     double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(),
                          poseToGoTo.getRotation().getRadians());
 

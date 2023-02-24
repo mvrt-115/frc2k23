@@ -72,14 +72,14 @@ public class RobotContainer {
     //elevator = new Elevator();
 
     localization = new Localization(swerveDrivetrain);
-    driveJoystick.button(0);
+      driveJoystick.button(0);
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
       swerveDrivetrain, 
-      () -> -driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveXAxis), 
+      () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveXAxis), 
       () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveYAxis), 
       () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveWAxis), 
       driveJoystick.button(Constants.SwerveDrivetrain.kDriveFieldOrientButtonIdx),
-      driveJoystick));
+      driveJoystick, elevator));
       
     // Configure the trigger bindings
     //intake = new Intake(Intake.INTAKE_TYPE.claw); /// SPECIFY WHETHER WHEELED OR CLAW INTAKE
