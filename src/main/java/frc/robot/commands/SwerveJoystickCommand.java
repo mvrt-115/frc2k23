@@ -25,7 +25,6 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.JoystickIO;
 import frc.robot.utils.MathUtils;
-import org.littletonrobotics.junction.Logger; 
 
 public class SwerveJoystickCommand extends CommandBase {
   private final SwerveDrivetrain drivetrain;
@@ -76,11 +75,11 @@ public class SwerveJoystickCommand extends CommandBase {
     double vX = xSpeedFunc.get(); // as of here, negative X is backwards, positive X is forward
     double vY = ySpeedFunc.get(); // as of here, positive Y is left, negative Y is right
     double vW = turnSpeedFunc.get(); // as of here, negative W is down (CW) positive W is up (CCW)
-    //if(elevator.getHeight() > 10000) {
-    //  vX *= 0.6;
-    //  vY *= 0.6;
-    //  vW *= 0.6;
-    //}
+    if(elevator.getHeight() > 10000) {
+      vX *= 0.6;
+      vY *= 0.6;
+      vW *= 0.6;
+    }
     Logger.getInstance().recordOutput("Controller/vX raw", vX);
     Logger.getInstance().recordOutput("Controller/vY raw", vY);
     Logger.getInstance().recordOutput("Controller/vW raw", vW);

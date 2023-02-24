@@ -52,12 +52,13 @@ public final class Constants {
     public static final boolean invertJoystickY = true;
     public static final boolean invertJoystickW = true;
 
-    public static final double kPJoystick = 0.01;
+    public static final double kPJoystick = 0.2;
     public static final double kIJoystick = 0.0;
     public static final double kDJoystick = 0.0;
     public static final double kFJoystick = 0.0;
 
   }
+  
   public static class SwerveDrivetrain {
     // Physical Constants
     public static final double chassisWidth = Units.inchesToMeters(28);
@@ -189,8 +190,9 @@ public final class Constants {
                     kMaxAutonThetaVelocity, kMaxAutonThetaAcceleration);
 
     public static final double kTeleopHeadingCorrectionScale = 0;
-    }  
-    public static class Talon {
+}
+
+public static class Talon {
     public static final int talonFXTicks = 2048;
     public static final int talonSRXTicks = 4096;
 
@@ -200,12 +202,14 @@ public final class Constants {
     public static final int kTimeoutMs = 10;
     public static final boolean kIsPracticeBot = false;
     public static final double kVoltageComp = 10.0;
-    public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(true, 40,
-        50, 3.8);
+    public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(
+                    true,
+                    40,
+                    50, 3.8);
 
-  }
+}
 
-  public static class SwerveModule {
+public static class SwerveModule {
     public static final double gear_ratio_turn = 150.0 / 7.0; // number of rotations of talon for one turn
                                                               // of wheel
     public static final double gear_ratio_drive = 6.75 / 1.0; // number of rotations of talon for one
@@ -226,6 +230,70 @@ public final class Constants {
     public static final double kFTurn = 0.0;
 }
 
+public static class Elevator {
+    public static final int MOTOR_ID = 13;
+    public static final int MOTOR_ID2 = 14;
+
+    public static final int kPIDIdx = 0;
+    public static final double P = 0.025;// .1;//.01;
+    public static final double I = 0;// .000006;
+    public static final double D = 0.007;
+    public static final double F = 0;
+
+    // Wtvr it is
+    public static final double METERS_PER_TICK = .500;
+    public static final double INCHES_PER_TICK = 10.6224;
+
+    // Min/Max heights for the elevator (in inches)
+    public static final double MAX_HEIGHT = 55;
+    public static final double MIN_HEIGHT = 0;
+
+    public static final double ZERO_HEIGHT = 0;
+    public static final double SHELF_HEIGHT = 0;
+
+    // MID, HIGH heights parwa cone (in ticks)
+    public static final double CONE_MID_HEIGHT = 17000;
+    public static final double CONE_HIGH_HEIGHT = 22600;
+    public static final double INTAKE_HEIGHT = 15700;
+
+    // MID, HIGH heights para cube (in inches)
+    public static final double CUBE_MID_HEIGHT = 15000;
+    public static final double CUBE_HIGH_HEIGHT = 21000;
+
+    // feed forward constants
+    public static final double kS = -0.086653;// -0.55996;//-0.086653;//-0.55996;
+    // public static final double kG = 1;
+    public static final double kG = 0.67635; // 0.79635: claw intake; //1.2265;
+    public static final double kV = 0.016763; // 0.035258;
+    public static final double kA = 0.0031226; // 0.0053228;
+    // public static final double kA = 0;
+    // Game Object Heights
+    public static final double CONE_HEIGHT = 6;
+    public static final double CUBE_HIEGHT = 8;
+
+    public static final int SENSOR_PORT = 0;
+    public static final double KDt = 0.01;
+
+    // constraints
+    public static final double MAX_VELOCITY = 14; //50;
+    public static final double MAX_ACCELERATION = 4; //25;
+
+    // initial elevator stages
+    public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
+
+    public static final double ERROR = 50;
+
+    public static final double GEAR_RATIO = 3;
+
+    public static final double MASS = 8;
+    public static final double BOTTOM = 0;
+    public static final double MIDDLE = 10;
+    public static final double TOP = 15;
+
+    public static final double PULLEY_RADIUS = 2;
+
+  }
+
   public static class VisionConstants{
     public static final String kCamera1Name = "monocle"; //neg offset
     public static final String kCamera2Name = "beholder"; //pos offset
@@ -237,6 +305,7 @@ public final class Constants {
     //Camera position on robot
     public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, 0.26, 0), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, Units.inchesToMeters(5 + 3/4), 0), new Rotation3d());
     public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(-.02, -0.26, 0), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, -Units.inchesToMeters(4 + 3/8), 0), new Rotation3d());
+    
     /**
      * Key:
      * Orientation: facing red community from blue community 
@@ -400,75 +469,4 @@ public final class Constants {
             Units.inchesToMeters(18.22),
             new Rotation3d()));
   }
-
-  public static class Elevator {
-    public static final int MOTOR_ID = 0;
-    
-    public static final int kPIDIdx = 0;
-    public static final int P = 0;
-    public static final int I = 0;
-    public static final int D = 0;
-    public static final int F = 0;
-
-    // Wtvr it is
-    public static final int METERS_PER_TICK = 0;
-    public static final int INCHES_PER_TICK = 0;
-
-    // Min/Max heights for the elevator (in inches)
-    public static final double MAX_HEIGHT = 20;
-    public static final double MIN_HEIGHT = 0;
-
-    public static final double ZERO_HEIGHT = 0;
-    public static final double SHELF_HEIGHT = 0;
-
-    // MID, HIGH heights parwa coneca
-    public static final double MID_HEIGHT = 0;
-    public static final double HIGH_HEIGHT = 0;
-
-    // TrapezoidProfile State constants
-    public static final TrapezoidProfile.State ZERO_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State MID_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State HIGH_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-    public static final TrapezoidProfile.State SHEL_STATE = new TrapezoidProfile.State(Constants.Elevator.MID_HEIGHT, 0);
-
-    // Game Object Heights
-    public static final double CONE_HEIGHT = 6;
-    public static final double CUBE_HIEGHT = 8;
-
-    public static final int SENSOR_PORT = 0;
-    public static final double KDt = 0.01;
-
-    // constraints
-    public static final double MAX_VELOCITY = 0;
-    public static final double MAX_ACCELERATION = 0;
-
-    // initial elevator stages
-    public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
-
-	public static final double ERROR = 0; 
-  }
-
-    //robot as a whole constants
-    public static final boolean debugMode = true;
-
-    public static final double MAX_VOLTAGE = 10.0;
-    
-    public static final int kPIDIdx = 0;
-    public static final int kTimeoutMs = 35;
-    public static final boolean kIsPracticeBot = true;
-    public static final double kVoltageComp = 10.0;
-    public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(true, 40, 50, 3.8); //numbers copied off of 2022 code; change to match this yr's bot
-
-    public static class Intake {
-        public static final double kMarginOfError = 0.03;
-
-        public static final int kProximityPort = 6; //port number for element proximity sensor
-        public static final int kMotorPort = 4; 
-    
-        public static final double kP = 0, kI = 0, kD = 0;
-
-        public static final double kCompressedSpeed = 0.03;
-
-        public static final double kGoalRPM = 0.3; 
-    }
 }
