@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.Align;
 import frc.robot.commands.AutonPathExample;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
@@ -12,6 +13,7 @@ import frc.robot.utils.JoystickIO;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Elevator;
@@ -76,14 +78,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    // Pose2d nearestCol = localization.getClosestScoringLoc();
-    // driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
-    
-    //Brake baby brake
-    driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
-
-    //No braking
-    driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
+    Pose2d nearestCol = localization.getClosestScoringLoc();
+    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
   }
 
   /**
