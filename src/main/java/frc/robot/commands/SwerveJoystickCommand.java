@@ -8,27 +8,40 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.utils.JoystickIO;
 import frc.robot.utils.MathUtils;
+import org.littletonrobotics.junction.Logger; 
 
 public class SwerveJoystickCommand extends CommandBase {
   private final SwerveDrivetrain drivetrain;
   private final Supplier<Double> xSpeedFunc, ySpeedFunc, turnSpeedFunc;
   private final Trigger fieldOrientedFunc;
   private final SlewRateLimiter xLimiter, yLimiter, wLimiter;
-  private final CommandJoystick joystick;
+  private final JoystickIO joystick;
+  private Timer timer;
+  private Rotation2d heading;
+  private Logger logger;
+  private Elevator elevator;
+
+  public PIDController thetaController;
 
   /** Creates a new SwerveJoystickCommand. */
-  public SwerveJoystickCommand(SwerveDrivetrain drivetrain, Supplier<Double> xSpeedFunc, Supplier<Double> ySpeedFunc, Supplier<Double> angularSpeedFunc, Trigger fieldOrientedFunc, CommandJoystick joystick) {
+  public SwerveJoystickCommand(SwerveDrivetrain drivetrain, Supplier<Double> xSpeedFunc, Supplier<Double> ySpeedFunc, Supplier<Double> angularSpeedFunc, Trigger fieldOrientedFunc, JoystickIO joystick, Elevator elev) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.xSpeedFunc = xSpeedFunc;
@@ -39,26 +52,35 @@ public class SwerveJoystickCommand extends CommandBase {
     this.yLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
     this.wLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kTurnMaxAcceleration);
     this.joystick = joystick;
+    thetaController = new PIDController(Constants.JoystickControls.kPJoystick, Constants.JoystickControls.kIJoystick, Constants.JoystickControls.kDJoystick);
     addRequirements(drivetrain);
+    logger = Logger.getInstance();
+    elevator = elev;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     drivetrain.setJoystick();
-    fieldOrientedFunc.onTrue(new InstantCommand(() -> drivetrain.toggleMode()));
+    fieldOrientedFunc.onTrue(new InstantCommand(() -> drivetrain.toggleMode())); //.debounce(0.1);
+    timer = new Timer();
+    timer.reset();
+    timer.start();
+    heading = drivetrain.getRotation2d();
+    drivetrain.resetModules();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double vX = Constants.JoystickControls.xBoxControl ? ySpeedFunc.get(): xSpeedFunc.get();
-    double vY = Constants.JoystickControls.xBoxControl ? xSpeedFunc.get(): ySpeedFunc.get();
-    double vW = turnSpeedFunc.get();
-    SmartDashboard.putNumber(
-      "vX raw", vX);
-    SmartDashboard.putNumber("vY raw", vY);
-    SmartDashboard.putNumber("vW raw", vW);
+    double vX = xSpeedFunc.get(); // as of here, negative X is backwards, positive X is forward
+    double vY = ySpeedFunc.get(); // as of here, positive Y is left, negative Y is right
+    double vW = turnSpeedFunc.get(); // as of here, negative W is down (CW) positive W is up (CCW)
+    if(elevator.getHeight() > 10000) {
+      vX *= 0.6;
+      vY *= 0.6;
+      vW *= 0.6;
+    }
     Logger.getInstance().recordOutput("Controller/vX raw", vX);
     Logger.getInstance().recordOutput("Controller/vY raw", vY);
     Logger.getInstance().recordOutput("Controller/vW raw", vW);
@@ -73,6 +95,16 @@ public class SwerveJoystickCommand extends CommandBase {
     vY = yLimiter.calculate(vY) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
     vW = wLimiter.calculate(vW) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPS;
 
+    if (MathUtils.withinEpsilon(vW, 0, 0.01)) {
+      double v_w_compensate = drivetrain.holdHeading(heading);
+      vW += v_w_compensate;
+      SmartDashboard.putBoolean("Holding Heading", true);
+    }
+    else {
+      heading = drivetrain.getRotation2d();
+      SmartDashboard.putBoolean("Holding Heading", false);
+    }
+
     // configure rotate point
     drivetrain.setRotationPointIdx(0);
     // int POV = joystick.getPOV();
@@ -84,47 +116,27 @@ public class SwerveJoystickCommand extends CommandBase {
     //   default: drivetrain.setRotationPointIdx(0);
     // }
 
-    // get chassis speed
-    ChassisSpeeds chassisSpeeds;
-    // chassisSpeeds = new ChassisSpeeds(-vX, vY, vW);
-
     SmartDashboard.putBoolean("Field Oriented", drivetrain.fieldOriented);
-    
+    logger.recordOutput("SwerveModule/Field_Oriented", drivetrain.fieldOriented);
+    boolean isTurnBroken = true;
+    // apply heading correction to the robot
+    double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
+    double desired_heading = MathUtils.betterATanDeg(vX, vY); // deg
+    double omega_offset = desired_heading - thetaController.calculate(true_heading, desired_heading);
+    SmartDashboard.putNumber("Omega Offset", omega_offset);
+
+    double v_omega = vW;
+    if(!isTurnBroken){
+      v_omega = vW + omega_offset;
+    }
+
     if (drivetrain.fieldOriented) {
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-       vY, vX, vW, drivetrain.getRotation2d());
+      drivetrain.setSpeedsFieldOriented(vX, vY, v_omega);
     }
     else {
-      chassisSpeeds = new ChassisSpeeds(vY, vX, vW);
+      drivetrain.setSpeeds(vX, vY, v_omega, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
-
-    SmartDashboard.putString("Chassis Speed", chassisSpeeds.toString() 
-    );
-
-    // apply heading correction to the robot
-    // double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
-    // double vx = chassisSpeeds.vxMetersPerSecond;
-    // if(vx < 0.1 && vx > -0.1){vx = Math.signum(vx)*0.1;}
-    // double desired_heading = Math.atan(chassisSpeeds.vyMetersPerSecond / (vx));
-    // double omega_offset = desired_heading - drivetrain.thetaController.calculate(true_heading, desired_heading);
-    // omega_offset *= Constants.SwerveDrivetrain.kTeleopHeadingCorrectionScale;
-    // SmartDashboard.putNumber("Omega Offset", omega_offset);
-
-    // if(Double.isNaN(omega_offset))
-    //   omega_offset = 0;
-    // double v_omega = chassisSpeeds.omegaRadiansPerSecond;// + omega_offset;
     
-
-    // chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, v_omega);
-    
-    // convert to module states and apply to each wheel
-    SwerveModuleState[] moduleStates = drivetrain.getKinematics().toSwerveModuleStates(
-      chassisSpeeds,
-      Constants.SwerveDrivetrain.rotatePoints[0]); //drivetrain.getRotationPointIdx()
-    for (int i = 0; i < 4; i++) {
-      SmartDashboard.putString("kinematics desired state " + i, moduleStates[i].toString());
-    }
-    drivetrain.setModuleStates(moduleStates);
     SmartDashboard.putNumber("vX", vX);
     SmartDashboard.putNumber("vY", vY);
     SmartDashboard.putNumber("vW", vW);
@@ -132,7 +144,14 @@ public class SwerveJoystickCommand extends CommandBase {
     if (MathUtils.withinEpsilon(vX, 0, 0.01) && MathUtils.withinEpsilon(vY, 0, 0.01) && MathUtils.withinEpsilon(vW, 0, 0.01)) {
       drivetrain.stopModules();
       drivetrain.setRotationPointIdx(0);
-      drivetrain.resetModules();
+      if (timer.advanceIfElapsed(1))
+      {
+        drivetrain.resetModules();
+      }
+    }
+    else {
+      timer.reset();
+      timer.start();
     }
   }
 
