@@ -183,6 +183,12 @@ public class SwerveModule {
     }
   }
 
+  public void resetDriveEncoders() {
+    if (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM) {
+      driveMotor.setSelectedSensorPosition(0);
+    }
+  }
+
   /**
    * set the angle of the turn motor
    * 
