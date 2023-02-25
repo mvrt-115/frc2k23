@@ -11,8 +11,6 @@ import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.JoystickIO;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,7 +34,6 @@ public class RobotContainer {
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   //private final Trigger levelTrigger;
-
   private Elevator elevator;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -67,10 +64,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
-    
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
     driveJoystick.button(2).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
 

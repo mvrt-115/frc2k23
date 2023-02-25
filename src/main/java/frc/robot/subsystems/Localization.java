@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -65,7 +66,6 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
     Pose2d result = combinePoses(result1, result2);
@@ -162,11 +162,16 @@ public class Localization extends SubsystemBase {
    * @return Returns the Pose2d of the scoring col
    */
   public Pose2d getClosestScoringLoc() {
-    //Set the score cols depending on if blue/red
-    Map<Integer, Pose2d> scoreCols = Constants.VisionConstants.kRedScoreCols;
+    Map<Integer, Pose2d> scoreCols = Constants.VisionConstants.kBlueScoreCols;
+    
+    if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)){
+      scoreCols = Constants.VisionConstants.kRedScoreCols;
+    } 
+
     Pose2d minCol = null;
     double minDist = Double.MAX_VALUE;
     int num = 0;
+
     //Loop through cols
     for(int i : scoreCols.keySet()) {
       Pose2d pose = scoreCols.get(i);
@@ -181,6 +186,19 @@ public class Localization extends SubsystemBase {
     }
     SmartDashboard.putNumber("scoring loc", num);
     return minCol;
+  }
+
+  /**
+   * Teels whether or not certain score loc is for cone
+   * @param scorecol the column
+   * @return true if for cones false if for cubes
+   */
+  public boolean isConeScoreLoc(int scoreCol){
+    if (scoreCol == 1 || scoreCol == 3 || scoreCol == 4 || 
+        scoreCol == 6 || scoreCol == 7 || scoreCol == 9){
+        return true;  
+    }
+    return false;
   }
 
    /**
