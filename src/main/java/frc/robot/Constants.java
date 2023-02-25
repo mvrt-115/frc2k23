@@ -162,8 +162,8 @@ public final class Constants {
                 public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
                 public static final double kDriveMaxAcceleration = 3;
                 public static final double kTurnMaxAcceleration = 1 * Math.PI;
-                public static final double kDriveMaxSpeedMPS = 7;
-                public static final double kTurnMaxSpeedRPS = 4 * Math.PI;
+                public static final double kDriveMaxSpeedMPS = 3.5;
+                public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
                 public static final int kDriveJoystickPort = 0;
                 public static final int kDriveXAxis = 0;
                 public static final int kDriveYAxis = 1;
@@ -243,7 +243,7 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.045;// .1;//.01;
+                public static final double P = 0.055;// .1;//.01;
                 public static final double I = 0;// .000006;
                 public static final double D = 0.009;
                 public static final double F = 0;
@@ -271,7 +271,7 @@ public final class Constants {
                 // feed forward constants
                 public static final double kS = -0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = 0.67635; // 0.79635: claw intake; //1.2265;
+                public static final double kG = 0.77635; // 0.79635: claw intake; //1.2265;
                 public static final double kV = 0.016763; // 0.035258;
                 public static final double kA = 0.0031226; // 0.0053228;
                 // public static final double kA = 0;
@@ -491,6 +491,6 @@ public final class Constants {
                 public static final double kCompressedSpeed = 0.15;
 
                 public static final double kGoalRPM = -0.4;
-                public static final double kOuttakeRPM = 0.05;// 0.08;
+                public static final double kOuttakeRPM = 0.07;// 0.08;
         }
 }

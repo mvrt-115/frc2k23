@@ -86,7 +86,7 @@ public class RobotContainer {
       () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveWAxis), 
       driveJoystick.button(Constants.SwerveDrivetrain.kDriveFieldOrientButtonIdx),
       driveJoystick, elevator));
-      elevator.setDefaultCommand(new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.6));
+      elevator.setDefaultCommand(new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.2)); // used to 0.4, makes slower speed
       
     // Configure the trigger bindings
     configureBindings();
@@ -138,7 +138,7 @@ public class RobotContainer {
  //   operatorJoystick.b().onTrue(intake.runOut().andThen(new WaitCommand(1).andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()))));
     operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, 1000).alongWith(intake.stop()));
     operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550)).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3700).alongWith(intake.runOut()));//.alongWith(intake.runOut()).andThen(new SetElevatorHeight(elevator, 100)));//.andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop())));
-    operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(intake.runOut());//.onFalse(intake.runOut().andThen(new WaitCommand(1).andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()))));
+    operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(intake.runOut());//(intake.runOut().andThen(new WaitCommand(1).andThen(intake.stop())));
     operatorJoystick.button(6).onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT+550)).onFalse(intake.runOut());
     operatorJoystick.button(5).onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT+550)).onFalse(intake.runOut());
     // operatorJoystick.b().onTrue(new ManualElevator(elevator, 0.2).alongWith(intake.runIn())).onFalse(new ManualElevator(elevator, -0.2).alongWith(intake.runOut()).andThen(new ManualElevator(elevator, 0)));
