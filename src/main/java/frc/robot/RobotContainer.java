@@ -72,7 +72,7 @@ public class RobotContainer {
     
     // ELEVATOR MANUAL
     elevator.setDefaultCommand(
-      new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.2)
+      new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
     ); // used to 0.4, makes slower speed
       
     // Configure the trigger bindings

@@ -138,6 +138,8 @@ public class Elevator extends SubsystemBase {
    logger.recordOutput("Elevator/motor1/output_current", elev_motor.getStatorCurrent());
    logger.recordOutput("Elevator/motor2/output_current", elev_motor.getStatorCurrent());
    logger.recordOutput("Elevator/motor2/percent_output", elev_motor2.getMotorOutputPercent());
+   logger.recordOutput("Elevator/motor1/temp", elev_motor.getTemperature());
+   logger.recordOutput("Elevator/motor2/temp", elev_motor2.getTemperature());
   }
 
  

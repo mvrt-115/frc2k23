@@ -243,9 +243,9 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.055;// .1;//.01;
+                public static final double P = 0.065;// .1;//.01;
                 public static final double I = 0;// .000006;
-                public static final double D = 0.009;
+                public static final double D = 0.01;
                 public static final double F = 0;
 
                 // Wtvr it is
