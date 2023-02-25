@@ -42,6 +42,7 @@ public class RobotContainer {
 
   private Elevator elevator;
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
+  private CANdleLEDSystem leds = new CANdleLEDSystem();
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
@@ -164,6 +165,9 @@ public class RobotContainer {
     // INTAKE
     operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop()); // manual intaking
     // operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
+
+    //LEDS TOGGLE
+    operatorJoystick.button(10).onTrue(leds.toggleLEDs());
   }
 
   /**
