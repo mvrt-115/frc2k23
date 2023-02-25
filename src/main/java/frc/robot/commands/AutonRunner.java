@@ -57,6 +57,7 @@ public class AutonRunner extends SequentialCommandGroup {
     
     swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
 
+    // i
     // swerveControllerCommand = new BetterSwerveControllerCommand(
     //   trajectory, 
     //   swerveDrivetrain::getPose, 
@@ -103,9 +104,14 @@ public class AutonRunner extends SequentialCommandGroup {
 
     Command autoEventsCommand = swerveDrivetrain.getAutonBuilder(eventMap).fullAuto(fullTrajectoriesWithStopEvents);
 
+    SmartDashboard.putNumber("Trajectory X init", trajectory.getInitialHolonomicPose().getX());
+    SmartDashboard.putNumber("Trajectory Y init", trajectory.getInitialHolonomicPose().getY());
+
     addCommands(
+      new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
       new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
       new InstantCommand(() -> swerveDrivetrain.resetModules()),
+      new InstantCommand(() -> swerveDrivetrain.resetModuleDrive()),
       new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
       new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
