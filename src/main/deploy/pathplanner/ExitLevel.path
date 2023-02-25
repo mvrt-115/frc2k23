@@ -34,14 +34,14 @@
         "y": 4.116764866910618
       },
       "nextControl": null,
-      "holonomicAngle": -180.0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Level"
+          "LevelForwards"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
