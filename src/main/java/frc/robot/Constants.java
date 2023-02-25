@@ -162,7 +162,7 @@ public final class Constants {
                 public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
                 public static final double kDriveMaxAcceleration = 3;
                 public static final double kTurnMaxAcceleration = 1 * Math.PI;
-                public static final double kDriveMaxSpeedMPS = 3.5;
+                public static final double kDriveMaxSpeedMPS = 4;
                 public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
                 public static final int kDriveJoystickPort = 0;
                 public static final int kDriveXAxis = 0;
@@ -212,8 +212,8 @@ public final class Constants {
                 public static final double kVoltageComp = 10.0;
                 public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(
                                 true,
-                                40,
-                                50, 3.8);
+                                35,
+                                50, 0.75);
 
         }
 
@@ -243,9 +243,9 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.065;// .1;//.01;
+                public static final double P = 0.045;// .1;//.01;
                 public static final double I = 0;// .000006;
-                public static final double D = 0.01;
+                public static final double D = 0.1;
                 public static final double F = 0;
 
                 // Wtvr it is
@@ -260,9 +260,9 @@ public final class Constants {
                 public static final double SHELF_HEIGHT = 0;
 
                 // MID, HIGH heights parwa cone (in ticks)
-                public static final double CONE_MID_HEIGHT = 17000;
+                public static final double CONE_MID_HEIGHT = 16000;
                 public static final double CONE_HIGH_HEIGHT = 22600;
-                public static final double INTAKE_HEIGHT = 15700;
+                public static final double INTAKE_HEIGHT = 15200;
 
                 // MID, HIGH heights para cube (in inches)
                 public static final double CUBE_MID_HEIGHT = 15000;
@@ -271,7 +271,7 @@ public final class Constants {
                 // feed forward constants
                 public static final double kS = -0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = 0.77635; // 0.79635: claw intake; //1.2265;
+                public static final double kG = 0.87635; // 0.79635: claw intake; //1.2265;
                 public static final double kV = 0.016763; // 0.035258;
                 public static final double kA = 0.0031226; // 0.0053228;
                 // public static final double kA = 0;
@@ -284,7 +284,7 @@ public final class Constants {
 
                 // constraints
                 public static final double MAX_VELOCITY = 14; //50;
-                public static final double MAX_ACCELERATION = 4; //25;
+                public static final double MAX_ACCELERATION = 2; //25;
 
                 // initial elevator stages
                 public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
@@ -488,7 +488,7 @@ public final class Constants {
 
                 public static final double kP = 0, kI = 0, kD = 0;
 
-                public static final double kCompressedSpeed = 0.15;
+                public static final double kCompressedSpeed = 0.2;
 
                 public static final double kGoalRPM = -0.4;
                 public static final double kOuttakeRPM = 0.07;// 0.08;

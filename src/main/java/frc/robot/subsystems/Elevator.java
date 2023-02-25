@@ -125,7 +125,6 @@ public class Elevator extends SubsystemBase {
     // SmartDashboard.putNumber("Elevator Level", getLevel());
     // SmartDashboard.putNumber("Elevator Target Heighr", targetHeight);
    // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
-   SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
    // SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
    // SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
    logger.recordOutput("Elevator/motor1/position_ticks", elev_motor.getSelectedSensorPosition());
@@ -234,12 +233,14 @@ public class Elevator extends SubsystemBase {
 
   /* resets the encoder */
   public void resetEncoder() {
-    if(isZeroed())
-      elev_motor.setSelectedSensorPosition(0);
-    else {
-      setTargetHeight(Constants.Elevator.MIN_HEIGHT, Timer.getFPGATimestamp());
-      elev_motor.setSelectedSensorPosition(0);
-    }
+    // if(isZeroed())
+    //   elev_motor.setSelectedSensorPosition(0);
+    // else {
+    //   setTargetHeight(Constants.Elevator.MIN_HEIGHT, Timer.getFPGATimestamp());
+    //   elev_motor.setSelectedSensorPosition(0);
+    // }
+    elev_motor.setSelectedSensorPosition(0);
+    elev_motor2.setSelectedSensorPosition(0);
   }
   
   // sets the elevator state

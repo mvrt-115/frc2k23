@@ -25,6 +25,7 @@ import frc.robot.subsystems.Intake2.INTAKE_TYPE;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -94,11 +95,12 @@ public class RobotContainer {
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel"));
-    autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel"));
+    autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel2"));
     // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreExitLevel"));
+    autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
     autonSelector.addOption("OnlyLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreLevel"));
     // autonSelector.setDefaultOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreTwiceLevel"));
-    // SmartDashboard.putData("Auton Selector", autonSelector);
+    SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
     // Pose2d nearestCol = localization.getClosestScoringLoc();
@@ -124,27 +126,30 @@ public class RobotContainer {
     operatorJoystick.x().onTrue(
       new IntakeHPStation(elevator, intake)
     ).onFalse(
-      new SetElevatorHeight(elevator, 400).alongWith(intake.stop())
+      new SetElevatorHeight(elevator, 1500).alongWith(intake.stop())
     );
 
     // RETURN TO NEUTRAL
     operatorJoystick.b().onTrue(
       new ParallelCommandGroup(
-        new SetElevatorHeight(elevator, 1000),
+        new SetElevatorHeight(elevator, 1500),
         intake.stop()
       )
     ).onFalse(
       new InstantCommand(() -> elevator.runMotor(0))
     );
 
-    // SCORE CONE MID
+    // SCORE CONE MID 
     operatorJoystick.y().onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550)).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3700).alongWith(intake.runOut()));//.alongWith(intake.runOut()).andThen(new SetElevatorHeight(elevator, 100)));//.andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop())));
+      new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)
+    ).onFalse(intake.runOut());
     
     // SCORE CONE HIGH
     operatorJoystick.a().onTrue(
       new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)
     ).onFalse(intake.runOut());
+
+    operatorJoystick.button(8).onTrue(new InstantCommand(() -> elevator.resetEncoder()));
     
     // SCORE CUBE MID
     operatorJoystick.button(6).onTrue(
@@ -158,7 +163,7 @@ public class RobotContainer {
 
     // INTAKE
     operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop()); // manual intaking
-    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
+    // operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
   }
 
   /**
