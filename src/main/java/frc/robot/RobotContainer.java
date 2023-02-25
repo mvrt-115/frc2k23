@@ -141,6 +141,8 @@ public class RobotContainer {
     operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(intake.runOut());//(intake.runOut().andThen(new WaitCommand(1).andThen(intake.stop())));
     operatorJoystick.button(6).onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT+550)).onFalse(intake.runOut());
     operatorJoystick.button(5).onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT+550)).onFalse(intake.runOut());
+    operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop()); // manual intaking
+    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
     // operatorJoystick.b().onTrue(new ManualElevator(elevator, 0.2).alongWith(intake.runIn())).onFalse(new ManualElevator(elevator, -0.2).alongWith(intake.runOut()).andThen(new ManualElevator(elevator, 0)));
  //   operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT));
  //   operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, 0));
