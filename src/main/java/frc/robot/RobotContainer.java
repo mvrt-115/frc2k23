@@ -86,7 +86,7 @@ public class RobotContainer {
       () -> driveJoystick.getRawAxis(Constants.SwerveDrivetrain.kDriveWAxis), 
       driveJoystick.button(Constants.SwerveDrivetrain.kDriveFieldOrientButtonIdx),
       driveJoystick, elevator));
-      elevator.setDefaultCommand(new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.6));
+      elevator.setDefaultCommand(new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.2)); // used to 0.4, makes slower speed
       
     // Configure the trigger bindings
     configureBindings();
@@ -94,7 +94,8 @@ public class RobotContainer {
     //elevator.setDefaultCommand(new SetElevatorHeight(elevator));
 
     levelTrigger = driveJoystick.button(2);
-    levelTrigger.onTrue( new DriveForward(swerveDrivetrain, 1, 0.5).andThen(new Leveling(swerveDrivetrain)) ).onFalse( new DriveForward(swerveDrivetrain, 0, 0));
+    levelTrigger.onTrue( new DriveForward(swerveDrivetrain, Constants.Leveling.driveForwardMPS, Constants.Leveling.driveForwardTime)
+      .andThen(new Leveling(swerveDrivetrain)) ).onFalse( new DriveForward(swerveDrivetrain, 0, 0));
   }
 
   /**
@@ -135,11 +136,13 @@ public class RobotContainer {
   //  driverController.y().whileTrue(intake.runOut()).onFalse(intake.stop());
     operatorJoystick.x().onTrue(new IntakeHPStation(elevator, intake)).onFalse(new SetElevatorHeight(elevator, 400).alongWith(intake.stop()));
  //   operatorJoystick.b().onTrue(intake.runOut().andThen(new WaitCommand(1).andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()))));
-    operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, 400).alongWith(intake.stop()));
+    operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, 1000).alongWith(intake.stop()));
     operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550)).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3700).alongWith(intake.runOut()));//.alongWith(intake.runOut()).andThen(new SetElevatorHeight(elevator, 100)));//.andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop())));
-    operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(intake.runOut());//.onFalse(intake.runOut().andThen(new WaitCommand(1).andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()))));
+    operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(intake.runOut());//(intake.runOut().andThen(new WaitCommand(1).andThen(intake.stop())));
     operatorJoystick.button(6).onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT+550)).onFalse(intake.runOut());
     operatorJoystick.button(5).onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT+550)).onFalse(intake.runOut());
+    operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop()); // manual intaking
+    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
     // operatorJoystick.b().onTrue(new ManualElevator(elevator, 0.2).alongWith(intake.runIn())).onFalse(new ManualElevator(elevator, -0.2).alongWith(intake.runOut()).andThen(new ManualElevator(elevator, 0)));
  //   operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT));
  //   operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, 0));
