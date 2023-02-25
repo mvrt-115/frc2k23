@@ -135,7 +135,7 @@ public class RobotContainer {
   //  driverController.y().whileTrue(intake.runOut()).onFalse(intake.stop());
     operatorJoystick.x().onTrue(new IntakeHPStation(elevator, intake)).onFalse(new SetElevatorHeight(elevator, 400).alongWith(intake.stop()));
  //   operatorJoystick.b().onTrue(intake.runOut().andThen(new WaitCommand(1).andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()))));
-    operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, 400).alongWith(intake.stop()));
+    operatorJoystick.b().onTrue(new SetElevatorHeight(elevator, 1000).alongWith(intake.stop()));
     operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550)).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3700).alongWith(intake.runOut()));//.alongWith(intake.runOut()).andThen(new SetElevatorHeight(elevator, 100)));//.andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop())));
     operatorJoystick.a().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)).onFalse(intake.runOut());//.onFalse(intake.runOut().andThen(new WaitCommand(1).andThen(new SetElevatorHeight(elevator, 100).alongWith(intake.stop()))));
     operatorJoystick.button(6).onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT+550)).onFalse(intake.runOut());
