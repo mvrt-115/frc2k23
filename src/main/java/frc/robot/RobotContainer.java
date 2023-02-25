@@ -94,7 +94,8 @@ public class RobotContainer {
     //elevator.setDefaultCommand(new SetElevatorHeight(elevator));
 
     levelTrigger = driveJoystick.button(2);
-    levelTrigger.onTrue( new DriveForward(swerveDrivetrain, 1, 0.5).andThen(new Leveling(swerveDrivetrain)) ).onFalse( new DriveForward(swerveDrivetrain, 0, 0));
+    levelTrigger.onTrue( new DriveForward(swerveDrivetrain, Constants.Leveling.driveForwardMPS, Constants.Leveling.driveForwardTime)
+      .andThen(new Leveling(swerveDrivetrain)) ).onFalse( new DriveForward(swerveDrivetrain, 0, 0));
   }
 
   /**

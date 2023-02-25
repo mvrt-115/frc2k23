@@ -19,8 +19,8 @@ public class Leveling extends CommandBase {
   /** Creates a new Leveling. */
   public Leveling(SwerveDrivetrain _swerveDt) {
     this.swerveDt = _swerveDt;
-    this.pidLevel = new PIDController(Constants.SwerveDrivetrain.levelkP, Constants.SwerveDrivetrain.levelkI, Constants.SwerveDrivetrain.levelkD);
-    this.pidRotate = new PIDController(Constants.SwerveDrivetrain.rotatekP, Constants.SwerveDrivetrain.rotatekI, Constants.SwerveDrivetrain.rotatekD);
+    this.pidLevel = new PIDController(Constants.Leveling.levelkP, Constants.Leveling.levelkI, Constants.Leveling.levelkD);
+    this.pidRotate = new PIDController(Constants.Leveling.rotatekP, Constants.Leveling.rotatekI, Constants.Leveling.rotatekD);
     this.level = false;
 
     addRequirements(swerveDt);
@@ -46,9 +46,9 @@ public class Leveling extends CommandBase {
 
     SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
 
-    double vX = -Math.min(-currentPitch*Constants.SwerveDrivetrain.levelkP, 1) * Constants.SwerveDrivetrain.levelVelocityMPS;
-    double vXpid = pidLevel.calculate(currentPitch, 0) * Constants.SwerveDrivetrain.levelVelocityMPS;
-    double angularSpeed = pidRotate.calculate(currentYaw, 0) * Constants.SwerveDrivetrain.maxAngularSpeed;
+    double vX = -Math.min(-currentPitch*Constants.Leveling.levelkP, 1) * Constants.Leveling.levelVelocityMPS;
+    double vXpid = pidLevel.calculate(currentPitch, 0) * Constants.Leveling.levelVelocityMPS;
+    double angularSpeed = pidRotate.calculate(currentYaw, 0) * Constants.Leveling.maxAngularSpeed;
     double vY = 0;
 
     swerveDt.setSpeeds(vXpid, vY, angularSpeed, Constants.SwerveDrivetrain.rotatePoints[0]);
@@ -64,7 +64,7 @@ public class Leveling extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(swerveDt.getPitchAngle()) < Constants.SwerveDrivetrain.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.SwerveDrivetrain.speedTolerance){
+    if (Math.abs(swerveDt.getPitchAngle()) < Constants.Leveling.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.Leveling.speedTolerance){
       level = false; //true;
     }
     return level; // once the speed of the robot is low enough and the angle is small enough, the command will end 

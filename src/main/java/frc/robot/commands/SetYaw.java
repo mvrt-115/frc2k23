@@ -13,7 +13,7 @@ public class SetYaw extends CommandBase {
 
   SwerveDrivetrain swerveDt;
   double yawTarget;
-  PIDController pid = new PIDController(Constants.SwerveDrivetrain.rotatekP, Constants.SwerveDrivetrain.rotatekI, Constants.SwerveDrivetrain.rotatekD);
+  PIDController pid = new PIDController(Constants.Leveling.rotatekP, Constants.Leveling.rotatekI, Constants.Leveling.rotatekD);
 
   /** Creates a new SetYaw. */
   public SetYaw(SwerveDrivetrain swerveDt, double targetAngle) {
@@ -32,7 +32,7 @@ public class SetYaw extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double angularSpeed = pid.calculate(swerveDt.getYaw(), yawTarget) * Constants.SwerveDrivetrain.maxAngularSpeed;
+    double angularSpeed = pid.calculate(swerveDt.getYaw(), yawTarget) * Constants.Leveling.maxAngularSpeed;
     swerveDt.setSpeeds(0, 0, angularSpeed, Constants.SwerveDrivetrain.rotatePoints[0]);
   }
 
@@ -45,6 +45,6 @@ public class SetYaw extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(swerveDt.getYaw() - yawTarget) <= Constants.SwerveDrivetrain.angleTolerance);
+    return (Math.abs(swerveDt.getYaw() - yawTarget) <= Constants.Leveling.angleTolerance);
   }
 }

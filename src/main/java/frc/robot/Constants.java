@@ -61,6 +61,28 @@ public final class Constants {
 
         }
 
+        public static class Leveling{
+                // Leveling PID
+                public static final double levelkP = 0.025;
+                public static final double levelkI = 0;
+                public static final double levelkD = 0;
+                public static final double rotatekP = 0;
+                public static final double rotatekI = 0;
+                public static final double rotatekD = 0;
+                public static final double angleTolerance = 1.5;
+                public static final double speedTolerance = 0.5;
+                public static final double levelVelocityMPS = 0.75;
+                public static final double yawAlligned = 0; // TBD
+                public static final double pitchAlligned = 0; // TBD
+                public static final double rollAlligned = 0; // TBD
+
+                public static final double maxAngularSpeed = 0;
+
+                //DriveForward
+                public static final double driveForwardMPS = 4;
+                public static final double driveForwardTime = 1.25;
+        }
+
         public static class SwerveDrivetrain {
                 // Physical Constants
                 public static final double chassisWidth = Units.inchesToMeters(28);
@@ -84,22 +106,6 @@ public final class Constants {
                                 m_backLeftLocation,
                                 m_backRightLocation
                 };
-
-                // Leveling PID
-                public static final double levelkP = 0.025;
-                public static final double levelkI = 0;
-                public static final double levelkD = 0;
-                public static final double rotatekP = 0;
-                public static final double rotatekI = 0;
-                public static final double rotatekD = 0;
-                public static final double angleTolerance = 1.5;
-                public static final double speedTolerance = 0.5;
-                public static final double levelVelocityMPS = 0.75;
-                public static final double yawAlligned = 0; // TBD
-                public static final double pitchAlligned = 0; // TBD
-                public static final double rollAlligned = 0; // TBD
-
-                public static final double maxAngularSpeed = 0;
 
                 // Motor ID
                 public static final int m_frontRightDriveID = 1;
