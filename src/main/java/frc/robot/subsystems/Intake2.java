@@ -29,6 +29,9 @@ import frc.robot.utils.TalonFactory;;
  */
 public class Intake2 extends SubsystemBase {
   /** Creates a new Intake. */
+
+  private boolean isIntakingOrScoring;
+
   private CANSparkMax motor;
   private RelativeEncoder encoder;
   private DigitalInput prox;
@@ -45,6 +48,8 @@ public class Intake2 extends SubsystemBase {
    */
   public Intake2(INTAKE_TYPE type) {
     this.type = type;
+
+    isIntakingOrScoring = false;
 
     motor = TalonFactory.createSparkMax(Constants.Intake.kMotorPort, false);
     encoder = motor.getEncoder(); 
@@ -86,17 +91,20 @@ public class Intake2 extends SubsystemBase {
 
   public void stopIntaking()
   {
+    isIntakingOrScoring = false;
    /* if(prox.get())*/ motor.set(-Constants.Intake.kCompressedSpeed);
   }
 
   public void runMotor(boolean isIntaking)
   {
+    isIntakingOrScoring = true;
     double speed = isIntaking ? Constants.Intake.kGoalRPM : Constants.Intake.kOuttakeRPM;
    /* if(!isIntaking || isIntaking && !prox.get())*/ motor.set(speed);
   }
 
   public void smoothRun(boolean isIntaking)
   {
+    isIntakingOrScoring = true;
     double goalSpeed = isIntaking ? Constants.Intake.kGoalRPM : -Constants.Intake.kGoalRPM;
     /*if(!isIntaking || isIntaking && !prox.get())*/ pidController.setReference(goalSpeed, CANSparkMax.ControlType.kVelocity);
   }
@@ -106,7 +114,7 @@ public class Intake2 extends SubsystemBase {
    @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // stopIntaking();
+    if(!isIntakingOrScoring) stopIntaking();
     SmartDashboard.putBoolean("item in intake", !prox.get());
     logger.recordOutput("intake/current", motor.getOutputCurrent());
     logger.recordOutput("intake/element", !prox.get());
