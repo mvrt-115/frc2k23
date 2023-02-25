@@ -135,6 +135,8 @@ public class Elevator extends SubsystemBase {
    logger.recordOutput("Elevator/motor1/velocity", elev_motor.getSelectedSensorVelocity());
 //    logger.recordOutput("Elevator/motor1/closed_loop_error", elev_motor.getClosedLoopError());
    logger.recordOutput("Elevator/motor1/percent_output", elev_motor.getMotorOutputPercent());
+   logger.recordOutput("Elevator/motor1/output_current", elev_motor.getStatorCurrent());
+   logger.recordOutput("Elevator/motor2/output_current", elev_motor.getStatorCurrent());
    logger.recordOutput("Elevator/motor2/percent_output", elev_motor2.getMotorOutputPercent());
   }
 
