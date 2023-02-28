@@ -71,8 +71,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    Pose2d nearestCol = localization.getClosestScoringLoc();
-    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    //Pose2d scoringLoc = Constants.VisionConstants.kRedScoreCols.get(5);
+    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, null)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
   }
 
   /**

@@ -123,8 +123,9 @@ public class Localization extends SubsystemBase {
     poseEstimator.resetPosition(swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions(), pose);
   }
 
-  public void resetTemp(){
+  public void resetCameraEstimators(){
     camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
+    camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
   }
   /**
    * @return current pose according to pose estimator

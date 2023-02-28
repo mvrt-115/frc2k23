@@ -38,8 +38,9 @@ public class Align extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
-    localization.resetTemp();
+    if(poseToGoTo==null) poseToGoTo = localization.getClosestScoringLoc();
   }
 
   // Called every time the scheduler runs while the command is scheduled. 
