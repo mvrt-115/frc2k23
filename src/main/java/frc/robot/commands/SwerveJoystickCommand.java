@@ -94,7 +94,8 @@ public class SwerveJoystickCommand extends CommandBase {
     double left_trigger = joystick.getRawAxis(Constants.SwerveDrivetrain.kDriveLeftTrigger);
     double right_trigger = joystick.getRawAxis(Constants.SwerveDrivetrain.kDriveRightTrigger);
     if (left_trigger > 0.05) {
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 - left_trigger) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 - left_trigger + 0.05) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+      Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = (1 - left_trigger + 0.05) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
     }
     else if (right_trigger > 0.05) {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + right_trigger) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
