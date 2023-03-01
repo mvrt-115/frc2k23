@@ -141,9 +141,8 @@ public class RobotContainer {
     );
 
     // SCORE CONE MID 
-    operatorJoystick.y().onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)
-    ).onFalse(intake.runOut());
+    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550)
+    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3100).alongWith(new WaitCommand(1.1).andThen(intake.runOut())));
     
     // SCORE CONE HIGH
     operatorJoystick.a().onTrue(
