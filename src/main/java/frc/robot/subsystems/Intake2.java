@@ -85,7 +85,7 @@ public class Intake2 extends SubsystemBase {
   public void stopIntaking()
   {
     isIntakingOrScoring = false;
-   /* if(prox.get())*/ motor.set(-Constants.Intake.kCompressedSpeed);
+   /* if(prox.get())*/ motor.set(Constants.Intake.kCompressedSpeed);
   }
 
   public void runMotor(boolean isIntaking)
@@ -98,7 +98,7 @@ public class Intake2 extends SubsystemBase {
   public void smoothRun(boolean isIntaking)
   {
     isIntakingOrScoring = true;
-    double goalSpeed = isIntaking ? Constants.Intake.kGoalRPM : -Constants.Intake.kGoalRPM;
+    double goalSpeed = isIntaking ? Constants.Intake.kGoalRPM : Constants.Intake.kOuttakeRPM;
     /*if(!isIntaking || isIntaking && !prox.get())*/ pidController.setReference(goalSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
