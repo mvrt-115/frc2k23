@@ -61,7 +61,7 @@ public final class Constants {
 
         }
 
-        public static class Leveling{
+        public static class Leveling {
                 // Leveling PID
                 public static final double levelkP = 0.025;
                 public static final double levelkI = 0;
@@ -78,7 +78,7 @@ public final class Constants {
 
                 public static final double maxAngularSpeed = 0;
 
-                //DriveForward
+                // DriveForward
                 public static final double driveForwardMPS = 4;
                 public static final double driveForwardTime = 1.25;
         }
@@ -159,16 +159,22 @@ public final class Constants {
                 public static final double kThrottleDeadband = 0.2;
                 public static final double kWheelGain = 0.05;
                 public static final double kWheelNonlinearity = 0.05;
+
                 public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
                 public static final double kDriveMaxAcceleration = 3;
                 public static final double kTurnMaxAcceleration = 1 * Math.PI;
-                public static final double kDriveMaxSpeedMPS = 3.5;
-                public static final double kTurnMaxSpeedRPS = 2 * Math.PI;
+                public static final double kDriveMaxSpeedMPSNormal = 3.5;
+                public static final double kTurnMaxSpeedRPSNormal = 2 * Math.PI;
+                public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
+                public static double kTurnMaxSpeedRPS = kTurnMaxSpeedRPSNormal;
+                
                 public static final int kDriveJoystickPort = 0;
                 public static final int kDriveXAxis = 0;
                 public static final int kDriveYAxis = 1;
                 public static final int kDriveWAxis = 4;
                 public static final int kDriveFieldOrientButtonIdx = 1;
+                public static final int kDriveLeftTrigger = 2;
+                public static final int kDriveRightTrigger = 3;
 
                 // values to be determined after the robot is characterized
                 public static final double kS = 0; // 0.69382 //units: Volts
@@ -283,8 +289,8 @@ public final class Constants {
                 public static final double KDt = 0.01;
 
                 // constraints
-                public static final double MAX_VELOCITY = 14; //50;
-                public static final double MAX_ACCELERATION = 4; //25;
+                public static final double MAX_VELOCITY = 14; // 50;
+                public static final double MAX_ACCELERATION = 4; // 25;
 
                 // initial elevator stages
                 public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
