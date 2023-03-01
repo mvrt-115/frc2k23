@@ -96,6 +96,8 @@ public class SwerveJoystickCommand extends CommandBase {
     if (left_trigger > 0.05) {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 - left_trigger + 0.05) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
       Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = (1 - left_trigger + 0.05) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kDriveMaxAccelerationNormal;
+      Constants.SwerveDrivetrain.kTurnMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
     else if (right_trigger > 0.05) {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + right_trigger) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
@@ -103,6 +105,8 @@ public class SwerveJoystickCommand extends CommandBase {
     else {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
       Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxAcceleration = Constants.SwerveDrivetrain.kDriveMaxAccelerationNormal;
+      Constants.SwerveDrivetrain.kTurnMaxAcceleration = Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
 
     // limit acceleration
