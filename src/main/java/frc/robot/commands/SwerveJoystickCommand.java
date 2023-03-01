@@ -102,6 +102,7 @@ public class SwerveJoystickCommand extends CommandBase {
     }
     else {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+      Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
     }
 
     // limit acceleration
