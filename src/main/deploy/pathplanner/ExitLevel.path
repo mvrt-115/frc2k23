@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.646421509676115,
-        "y": 5.020166046038226
+        "x": 6.367447796623988,
+        "y": 4.47222770988752
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -34,14 +34,14 @@
         "y": 4.116764866910618
       },
       "nextControl": null,
-      "holonomicAngle": -180.0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Level"
+          "LevelForwards"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",

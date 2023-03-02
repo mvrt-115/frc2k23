@@ -53,7 +53,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   private SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
   private SwerveModule[] modules;
   private int rotationPoint = 0;
-  public boolean fieldOriented = false;
+  public boolean fieldOriented = true;
 
   // Auton Stuff
   private SwerveDriveOdometry odometry;
