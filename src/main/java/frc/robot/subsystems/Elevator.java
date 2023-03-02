@@ -176,7 +176,7 @@ public class Elevator extends SubsystemBase {
   public void setTargetHeight(double goalHeight, double startTime)
   {
     this.startTime = startTime;
-    targetHeight = goalHeight;
+    targetHeight = inchesToTicks(goalHeight);
     // Checks bounds
    // targetHeight = targetHeight > Constants.Elevator.MAX_HEIGHT ? Constants.Elevator.MAX_HEIGHT:targetHeight;
    // targetHeight = targetHeight < Constants.Elevator.MIN_HEIGHT ? Constants.Elevator.MIN_HEIGHT:targetHeight;
@@ -189,9 +189,9 @@ public class Elevator extends SubsystemBase {
   /** uses motion magic to move the robot to the desired height
    * @param the goal height in ticks
    */ 
-  public void setHeightRaw(double targetHeightRaw)
+  public void goToSetpoint()
   {
-    logger.recordOutput("Elevator/motor1/targetHeight", (targetHeightRaw));
+    logger.recordOutput("Elevator/motor1/targetHeight", (targetHeight));
     double t = Timer.getFPGATimestamp() - startTime; 
     TrapezoidProfile.State setpoint = profile.calculate(t);
 
@@ -205,8 +205,8 @@ public class Elevator extends SubsystemBase {
     
      double feedforward = eFeedforward.calculate(setpoint.velocity);
     
-     logger.recordOutput("Elevator/targetheight_in", ticksToInches(targetHeightRaw));
-     logger.recordOutput("Elevator/targetheight_ticks", (targetHeightRaw));
+     logger.recordOutput("Elevator/targetheight_in", ticksToInches(targetHeight));
+     logger.recordOutput("Elevator/targetheight_ticks", (targetHeight));
      logger.recordOutput("Elevator/feedforward", feedforward);
      logger.recordOutput("Elevator/setvelocity", ((feedforward+pid.calculate(setpoint.velocity))/10));
      logger.recordOutput("Elevator/pidvalue", pid.calculate(setpoint.velocity));
@@ -215,7 +215,7 @@ public class Elevator extends SubsystemBase {
     //  elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));
     currentHeight = getHeight();
 
-    elev_motor.set(ControlMode.Position, targetHeightRaw, DemandType.ArbitraryFeedForward, feedforward/10.0);
+    elev_motor.set(ControlMode.Position, targetHeight, DemandType.ArbitraryFeedForward, feedforward/10.0);
 
   }
 
@@ -225,6 +225,11 @@ public class Elevator extends SubsystemBase {
   public double getHeight()
   {
     return elev_motor.getSelectedSensorPosition();
+  }
+
+  public double getHeightInches() 
+  {
+    return ticksToInches(getHeight());
   }
 
   public double getVelocity() {
@@ -322,7 +327,11 @@ public class Elevator extends SubsystemBase {
   }
 
   public double ticksToInches(double ticks) {
-    return ticks/341.3;
+    return Constants.Elevator.INCHES_PER_SPROCKET_ROTATION * ticks/(Constants.Talon.talonFXTicks * Constants.Elevator.GEAR_RATIO);
+  }
+
+  public double inchesToTicks(double inches) {
+    return inches * Constants.Talon.talonFXTicks * Constants.Elevator.GEAR_RATIO / Constants.Elevator.INCHES_PER_SPROCKET_ROTATION;
   }
 
   public void stopMotors() {

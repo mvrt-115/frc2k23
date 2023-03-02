@@ -127,13 +127,13 @@ public class RobotContainer {
     operatorJoystick.x().onTrue(
       new IntakeHPStation(elevator, intake)
     ).onFalse(
-      new SetElevatorHeight(elevator, 1500).alongWith(intake.stop())
+      new SetElevatorHeight(elevator, 5).alongWith(intake.stop())
     );
 
     // RETURN TO NEUTRAL
     operatorJoystick.b().onTrue(
       new ParallelCommandGroup(
-        new SetElevatorHeight(elevator, 1500),
+        new SetElevatorHeight(elevator, 5),
         intake.stop()
       )
     ).onFalse(
@@ -141,8 +141,8 @@ public class RobotContainer {
     );
 
     // SCORE CONE MID 
-    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550)
-    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3100).alongWith(new WaitCommand(1.1).andThen(intake.runOut())));
+    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)
+    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-8.4).alongWith(new WaitCommand(1.1).andThen(intake.runOut())));
     
     // SCORE CONE HIGH
     operatorJoystick.a().onTrue(
@@ -154,12 +154,12 @@ public class RobotContainer {
     
     // SCORE CUBE MID
     operatorJoystick.button(6).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT+550)
+      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT)
     ).onFalse(intake.runOut());
     
     // SCORE CUBE HIGH
     operatorJoystick.button(5).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT+550)
+      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT)
     ).onFalse(intake.runOut());
 
     // MANUAL INTAKE

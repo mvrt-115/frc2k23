@@ -35,6 +35,8 @@ import frc.robot.subsystems.Elevator.ElevatorState;
  */
 public final class Constants {
 
+        public static final boolean isCompBot = false;
+
         public static class DataLogging {
                 public static final Mode currMode = RobotBase.isSimulation() ? Mode.SIM : Mode.REAL;
 
@@ -125,8 +127,6 @@ public final class Constants {
                 public static final int m_backRightEncoderID = 12;
 
                 // Comp Bot Encoder Offsets
-                public static final boolean isCompBot = false;
-
                 public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.31);// +
                                                                                                          // Math.PI/2.0;
                 public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(317.02);// +
@@ -257,8 +257,8 @@ public final class Constants {
                 public static final double F = 0;
 
                 // Wtvr it is
-                public static final double METERS_PER_TICK = .500;
-                public static final double INCHES_PER_TICK = 10.6224;
+                // public static final double METERS_PER_TICK = .500;
+                // public static final double INCHES_PER_TICK = 10.6224;
 
                 // Min/Max heights for the elevator (in inches)
                 public static final double MAX_HEIGHT = 55;
@@ -268,13 +268,13 @@ public final class Constants {
                 public static final double SHELF_HEIGHT = 0;
 
                 // MID, HIGH heights parwa cone (in ticks)
-                public static final double CONE_MID_HEIGHT = 16000;
-                public static final double CONE_HIGH_HEIGHT = 21000;//22600;
-                public static final double INTAKE_HEIGHT = 15200;
+                public static final double CONE_MID_HEIGHT = 43;
+                public static final double CONE_HIGH_HEIGHT = 56.4;
+                public static final double INTAKE_HEIGHT = 40.8;
 
                 // MID, HIGH heights para cube (in inches)
-                public static final double CUBE_MID_HEIGHT = 15000;
-                public static final double CUBE_HIGH_HEIGHT = 21000;
+                public static final double CUBE_MID_HEIGHT = 40.28;
+                public static final double CUBE_HIGH_HEIGHT = 57;
 
                 // feed forward constants
                 public static final double kS = -0.086653;// -0.55996;//-0.086653;//-0.55996;
@@ -299,7 +299,8 @@ public final class Constants {
 
                 public static final double ERROR = 50;
 
-                public static final double GEAR_RATIO = 3;
+                public static final double GEAR_RATIO = isCompBot ? 5: 3;
+                public static final double INCHES_PER_SPROCKET_ROTATION = 16.5;
 
                 public static final double MASS = 8;
                 public static final double BOTTOM = 0;
