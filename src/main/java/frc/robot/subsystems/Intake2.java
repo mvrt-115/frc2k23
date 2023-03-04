@@ -4,22 +4,15 @@
 
 package frc.robot.subsystems;
 
-import javax.lang.model.util.ElementScanner14;
-
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.TalonFactory;;
@@ -92,7 +85,7 @@ public class Intake2 extends SubsystemBase {
   public void stopIntaking()
   {
     isIntakingOrScoring = false;
-   /* if(prox.get())*/ motor.set(-Constants.Intake.kCompressedSpeed);
+   /* if(prox.get())*/ motor.set(Constants.Intake.kCompressedSpeed);
   }
 
   public void runMotor(boolean isIntaking)
@@ -105,7 +98,7 @@ public class Intake2 extends SubsystemBase {
   public void smoothRun(boolean isIntaking)
   {
     isIntakingOrScoring = true;
-    double goalSpeed = isIntaking ? Constants.Intake.kGoalRPM : -Constants.Intake.kGoalRPM;
+    double goalSpeed = isIntaking ? Constants.Intake.kGoalRPM : Constants.Intake.kOuttakeRPM;
     /*if(!isIntaking || isIntaking && !prox.get())*/ pidController.setReference(goalSpeed, CANSparkMax.ControlType.kVelocity);
   }
 

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.TalonFactory;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -61,23 +62,15 @@ public class Elevator extends SubsystemBase {
 
 
   /** Creates a new Elevator. */
-  public Elevator(TalonFX elevatorMotor, TalonFX elevatorMotor2) {
+  public Elevator() {
     eFeedforward = new ElevatorFeedforward(Constants.Elevator.kS, Constants.Elevator.kG, Constants.Elevator.kV, Constants.Elevator.kA);
     
-    elev_motor = elevatorMotor;
-    elev_motor2 = elevatorMotor2;
-    elev_motor.configFactoryDefault();
-    elev_motor2.configFactoryDefault();
+    elev_motor = TalonFactory.createTalonFX(Constants.Elevator.MOTOR_ID, false);
+    elev_motor2 = TalonFactory.createTalonFX(Constants.Elevator.MOTOR_ID2, false);
 
-    elev_motor.setInverted(false);
-    elev_motor2.setInverted(false);
     elev_motor2.follow(elev_motor);
-    int forwardLimit = 23000;//23000;
+    int forwardLimit = 21700;
     int reverseLimit = -50;
-    elev_motor.configVoltageCompSaturation(9.5);
-    elev_motor2.configVoltageCompSaturation(9.5);
-    elev_motor.enableVoltageCompensation(true);
-    elev_motor2.enableVoltageCompensation(true);
     elev_motor.configForwardSoftLimitThreshold(forwardLimit);
     elev_motor.configReverseSoftLimitThreshold(reverseLimit);
     elev_motor.configForwardSoftLimitEnable(true, 0);
@@ -86,7 +79,6 @@ public class Elevator extends SubsystemBase {
     elev_motor2.configReverseSoftLimitThreshold(reverseLimit);
     elev_motor2.configForwardSoftLimitEnable(true, 0);
     elev_motor2.configReverseSoftLimitEnable(true, 0);
-    elev_motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 50, 3.8));
 
     elev_motor.setNeutralMode(NeutralMode.Brake);
     elev_motor2.setNeutralMode(NeutralMode.Brake);
@@ -125,31 +117,31 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
     updateState();
     updateHeight();
-    // SmartDashboard.putNumber("Elevator Level", getLevel());
-    // SmartDashboard.putNumber("Elevator Target Heighr", targetHeight);
-   // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
-   SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
-    // SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
-    // SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
-    logger.recordOutput("Elevator/motor1/position_ticks", elev_motor.getSelectedSensorPosition());
-//    logger.recordOutput("Elevator/motor2/position_ticks", elev_motor2.getSelectedSensorPosition());
-    logger.recordOutput("Elevator/motor1/position_inches", ticksToInches(elev_motor.getSelectedSensorPosition()));
-//   logger.recordOutput("Elevator/motor2/position_inches", ticksToInches(elev_motor2.getSelectedSensorPosition()));
-    logger.recordOutput("Elevator/motor1/velocity", elev_motor.getSelectedSensorVelocity());
-//    logger.recordOutput("Elevator/motor1/closed_loop_error", elev_motor.getClosedLoopError());
-    logger.recordOutput("Elevator/motor1/percent_output", elev_motor.getMotorOutputPercent());
-    logger.recordOutput("Elevator/motor2/percent_output", elev_motor2.getMotorOutputPercent());
+    log();
    // elev_motor.set
   }
 
-  public double convertMetersToTicks(double meters) {
-    return ((meters / 0.0254) * (1 / (2*0.75636 * Math.PI)) * 4096);
+  public void log() {
+    // SmartDashboard.putNumber("Elevator Level", getLevel());
+    // SmartDashboard.putNumber("Elevator Target Heighr", targetHeight);
+   // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
+   // SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
+   // SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
+   logger.recordOutput("Elevator/motor1/position_ticks", elev_motor.getSelectedSensorPosition());
+//    logger.recordOutput("Elevator/motor2/position_ticks", elev_motor2.getSelectedSensorPosition());
+   logger.recordOutput("Elevator/motor1/position_inches", ticksToInches(elev_motor.getSelectedSensorPosition()));
+//   logger.recordOutput("Elevator/motor2/position_inches", ticksToInches(elev_motor2.getSelectedSensorPosition()));
+   logger.recordOutput("Elevator/motor1/velocity", elev_motor.getSelectedSensorVelocity());
+//    logger.recordOutput("Elevator/motor1/closed_loop_error", elev_motor.getClosedLoopError());
+   logger.recordOutput("Elevator/motor1/percent_output", elev_motor.getMotorOutputPercent());
+   logger.recordOutput("Elevator/motor1/output_current", elev_motor.getStatorCurrent());
+   logger.recordOutput("Elevator/motor2/output_current", elev_motor.getStatorCurrent());
+   logger.recordOutput("Elevator/motor2/percent_output", elev_motor2.getMotorOutputPercent());
+   logger.recordOutput("Elevator/motor1/temp", elev_motor.getTemperature());
+   logger.recordOutput("Elevator/motor2/temp", elev_motor2.getTemperature());
   }
 
-  public double convertTicksToMeters(double ticks) {
-    return (ticks / 2048) / Constants.Elevator.GEAR_RATIO;
-  }
-  
+ 
   public void keepAtHeight() {
     elev_motor.set(ControlMode.PercentOutput, (Constants.Elevator.kG)/10);
   }
@@ -184,16 +176,11 @@ public class Elevator extends SubsystemBase {
   public void setTargetHeight(double goalHeight, double startTime)
   {
     this.startTime = startTime;
-   // System.out.println("hi");
-    targetHeight = goalHeight;
+    targetHeight = inchesToTicks(goalHeight);
     // Checks bounds
    // targetHeight = targetHeight > Constants.Elevator.MAX_HEIGHT ? Constants.Elevator.MAX_HEIGHT:targetHeight;
    // targetHeight = targetHeight < Constants.Elevator.MIN_HEIGHT ? Constants.Elevator.MIN_HEIGHT:targetHeight;
 
-   // SmartDashboard.putNumber("Elevator target height", targetHeight);
- //  goal = new TrapezoidProfile.State(targetHeight, 0);
-  // setpoint = new TrapezoidProfile.State();
-   //profile = new TrapezoidProfile(constraints, goal, setpoint);
     goal = new TrapezoidProfile.State(ticksToInches(goalHeight), 0);
     initial = new TrapezoidProfile.State(ticksToInches(elev_motor.getSelectedSensorPosition()), ticksToInches(elev_motor.getSelectedSensorVelocity())*10);
     profile = new TrapezoidProfile(constraints, goal, initial);
@@ -202,18 +189,11 @@ public class Elevator extends SubsystemBase {
   /** uses motion magic to move the robot to the desired height
    * @param the goal height in ticks
    */ 
-  public void setHeightRaw(double targetHeightRaw)
+  public void goToSetpoint()
   {
-    // System.out.println("hi");
-     
-    // SmartDashboard.putNumber("target height", targetHeightRaw);
-    // SmartDashboard.putNumber("goal position", goal.position);
-    // //SmartDashboard.putNumber("profile info", profile);
-    // // SmartDashboard.putString("setpoint", setpoint.to)
-    logger.recordOutput("Elevator/motor1/targetHeight", (targetHeightRaw));
+    logger.recordOutput("Elevator/motor1/targetHeight", (targetHeight));
     double t = Timer.getFPGATimestamp() - startTime; 
     TrapezoidProfile.State setpoint = profile.calculate(t);
-    // SmartDashboard.putNumber("setpoint position", setpoint.position);
 
     logger.recordOutput("Elevator/profile/setpointposition", setpoint.position);
     logger.recordOutput("Elevator/profile/setpointvelocity", setpoint.velocity);
@@ -224,26 +204,19 @@ public class Elevator extends SubsystemBase {
     logger.recordOutput("Elevator/profile/t_relative", t);
     
      double feedforward = eFeedforward.calculate(setpoint.velocity);
-    // SmartDashboard.putNumber("feedforward", feedforward);
-    // pid.setSetpoint(setpoint.position);
-    // SmartDashboard.putNumber("pid", pid.calculate(setpoint.velocity));
-    // SmartDashboard.putNumber("setpoint velocity", setpoint.velocity);
-    // SmartDashboard.putNumber("velocity", (feedforward+pid.calculate(setpoint.velocity))/12);
-     logger.recordOutput("Elevator/targetheight_in", ticksToInches(targetHeightRaw));
-     logger.recordOutput("Elevator/targetheight_ticks", (targetHeightRaw));
+    
+     logger.recordOutput("Elevator/targetheight_in", ticksToInches(targetHeight));
+     logger.recordOutput("Elevator/targetheight_ticks", (targetHeight));
      logger.recordOutput("Elevator/feedforward", feedforward);
      logger.recordOutput("Elevator/setvelocity", ((feedforward+pid.calculate(setpoint.velocity))/10));
      logger.recordOutput("Elevator/pidvalue", pid.calculate(setpoint.velocity));
-    // elev_motor.set(ControlMode.MotionMagic, setpoint.position, DemandType.ArbitraryFeedForward, (feedforward)/12);
-    // //SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
+     
     // sim
     //  elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));
     currentHeight = getHeight();
-    elev_motor.set(ControlMode.Position, targetHeightRaw, DemandType.ArbitraryFeedForward, feedforward/10); //DemandType.ArbitraryFeedForward, feedforward/10);
-//    elev_motor2.set(ControlMode.Position, targetHeightRaw, DemandType.ArbitraryFeedForward, (Constants.Elevator.kG/10));//, DemandType.ArbitraryFeedForward, feedforward);
 
-    // double velocity = elev_motor.getSelectedSensorVelocity(); 
-    //elev_motor.set(ControlMode.PercentOutput, ((pid.calculate(getHeight(), targetHeightRaw)) + feedforward) / 10);
+    elev_motor.set(ControlMode.Position, targetHeight, DemandType.ArbitraryFeedForward, feedforward/10.0);
+
   }
 
   /** returns the height of the elevator
@@ -254,18 +227,25 @@ public class Elevator extends SubsystemBase {
     return elev_motor.getSelectedSensorPosition();
   }
 
+  public double getHeightInches() 
+  {
+    return ticksToInches(getHeight());
+  }
+
   public double getVelocity() {
     return elev_motor.getSelectedSensorVelocity();
   }
 
   /* resets the encoder */
   public void resetEncoder() {
-    if(isZeroed())
-      elev_motor.setSelectedSensorPosition(0);
-    else {
-      setTargetHeight(Constants.Elevator.MIN_HEIGHT, Timer.getFPGATimestamp());
-      elev_motor.setSelectedSensorPosition(0);
-    }
+    // if(isZeroed())
+    //   elev_motor.setSelectedSensorPosition(0);
+    // else {
+    //   setTargetHeight(Constants.Elevator.MIN_HEIGHT, Timer.getFPGATimestamp());
+    //   elev_motor.setSelectedSensorPosition(0);
+    // }
+    elev_motor.setSelectedSensorPosition(0);
+    elev_motor2.setSelectedSensorPosition(0);
   }
   
   // sets the elevator state
@@ -344,11 +324,14 @@ public class Elevator extends SubsystemBase {
 
   public void runMotor(double speed) {
     elev_motor.set(ControlMode.PercentOutput, speed);
-    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition());
   }
 
   public double ticksToInches(double ticks) {
-    return ticks/341.3;
+    return Constants.Elevator.INCHES_PER_SPROCKET_ROTATION * ticks/(Constants.Talon.talonFXTicks * Constants.Elevator.GEAR_RATIO);
+  }
+
+  public double inchesToTicks(double inches) {
+    return inches * Constants.Talon.talonFXTicks * Constants.Elevator.GEAR_RATIO / Constants.Elevator.INCHES_PER_SPROCKET_ROTATION;
   }
 
   public void stopMotors() {

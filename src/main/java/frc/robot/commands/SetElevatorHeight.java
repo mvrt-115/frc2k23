@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
@@ -44,7 +43,7 @@ public class SetElevatorHeight extends CommandBase
     // }
     // else {
       logger.recordOutput("Elevator/elev/target_height", height);
-      elevator.setHeightRaw(height);
+      elevator.goToSetpoint();
 //      System.out.println("executeeeee");
     //  System.out.println("target height: " + height);
     // }
@@ -61,6 +60,6 @@ public class SetElevatorHeight extends CommandBase
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(elevator.getHeight() -  height) <= 500 && Math.abs(elevator.getVelocity()) <= 100);
+    return (Math.abs(elevator.getHeightInches() -  height) <= 1);// && Math.abs(elevator.getVelocity()) <= 100);
   }
 }

@@ -35,6 +35,8 @@ import frc.robot.subsystems.Elevator.ElevatorState;
  */
 public final class Constants {
 
+        public static final boolean isCompBot = false;
+
         public static class DataLogging {
                 public static final Mode currMode = RobotBase.isSimulation() ? Mode.SIM : Mode.REAL;
 
@@ -220,8 +222,8 @@ public final class Constants {
                 public static final double kVoltageComp = 10.0;
                 public static final SupplyCurrentLimitConfiguration kCurrentLimit = new SupplyCurrentLimitConfiguration(
                                 true,
-                                40,
-                                50, 3.8);
+                                35,
+                                50, 0.75);
 
         }
 
@@ -251,14 +253,14 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.055;// .1;//.01;
+                public static final double P = 0.025;// .1;//.01;
                 public static final double I = 0;// .000006;
-                public static final double D = 0.009;
+                public static final double D = 0.1;
                 public static final double F = 0;
 
                 // Wtvr it is
-                public static final double METERS_PER_TICK = .500;
-                public static final double INCHES_PER_TICK = 10.6224;
+                // public static final double METERS_PER_TICK = .500;
+                // public static final double INCHES_PER_TICK = 10.6224;
 
                 // Min/Max heights for the elevator (in inches)
                 public static final double MAX_HEIGHT = 55;
@@ -268,18 +270,18 @@ public final class Constants {
                 public static final double SHELF_HEIGHT = 0;
 
                 // MID, HIGH heights parwa cone (in ticks)
-                public static final double CONE_MID_HEIGHT = 17000;
-                public static final double CONE_HIGH_HEIGHT = 22600;
-                public static final double INTAKE_HEIGHT = 15700;
+                public static final double CONE_MID_HEIGHT = 43;
+                public static final double CONE_HIGH_HEIGHT = 56.4;
+                public static final double INTAKE_HEIGHT = 40.8;
 
                 // MID, HIGH heights para cube (in inches)
-                public static final double CUBE_MID_HEIGHT = 15000;
-                public static final double CUBE_HIGH_HEIGHT = 21000;
+                public static final double CUBE_MID_HEIGHT = 40.28;
+                public static final double CUBE_HIGH_HEIGHT = 57;
 
                 // feed forward constants
                 public static final double kS = -0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = 0.77635; // 0.79635: claw intake; //1.2265;
+                public static final double kG = 0.79635;//0.87635; // 0.79635: claw intake; //1.2265;
                 public static final double kV = 0.016763; // 0.035258;
                 public static final double kA = 0.0031226; // 0.0053228;
                 // public static final double kA = 0;
@@ -291,15 +293,16 @@ public final class Constants {
                 public static final double KDt = 0.01;
 
                 // constraints
-                public static final double MAX_VELOCITY = 14; // 50;
-                public static final double MAX_ACCELERATION = 4; // 25;
+                public static final double MAX_VELOCITY = 14; //50;
+                public static final double MAX_ACCELERATION = 2; //25;
 
                 // initial elevator stages
                 public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
 
                 public static final double ERROR = 50;
 
-                public static final double GEAR_RATIO = 3;
+                public static final double GEAR_RATIO = isCompBot ? 5: 3;
+                public static final double INCHES_PER_SPROCKET_ROTATION = 16.5;
 
                 public static final double MASS = 8;
                 public static final double BOTTOM = 0;
@@ -496,9 +499,9 @@ public final class Constants {
 
                 public static final double kP = 0, kI = 0, kD = 0;
 
-                public static final double kCompressedSpeed = 0.15;
+                public static final double kCompressedSpeed = -0.07;
 
-                public static final double kGoalRPM = -0.4;
-                public static final double kOuttakeRPM = 0.07;// 0.08;
+                public static final double kGoalRPM = -0.2;
+                public static final double kOuttakeRPM = 0.3;// 0.08;
         }
 }
