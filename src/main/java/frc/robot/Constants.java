@@ -269,7 +269,7 @@ public final class Constants {
 
                 // MID, HIGH heights parwa cone (in ticks)
                 public static final double CONE_MID_HEIGHT = 43;
-                public static final double CONE_HIGH_HEIGHT = 56.4;
+                public static final double CONE_HIGH_HEIGHT = 56.9;
                 public static final double INTAKE_HEIGHT = 40.8;
 
                 // MID, HIGH heights para cube (in inches)
@@ -499,7 +499,7 @@ public final class Constants {
 
                 public static final double kCompressedSpeed = -0.07;
 
-                public static final double kGoalRPM = -0.2;
-                public static final double kOuttakeRPM = 0.3;// 0.08;
+                public static final double kGoalRPM = -0.4;
+                public static final double kOuttakeRPM = 0.08;// 0.08;
         }
 }

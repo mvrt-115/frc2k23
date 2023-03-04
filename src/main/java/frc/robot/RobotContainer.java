@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake2.INTAKE_TYPE;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -142,7 +141,7 @@ public class RobotContainer {
 
     // SCORE CONE MID 
     operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)
-    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-8.4).alongWith(new WaitCommand(1.1).andThen(intake.runOut())));
+    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-9).alongWith(new WaitCommand(2).andThen(intake.runOut())));
     
     // SCORE CONE HIGH
     operatorJoystick.a().onTrue(
@@ -167,7 +166,7 @@ public class RobotContainer {
     operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
 
     //LEDS TOGGLE
-    operatorJoystick.button(10).onTrue(leds.toggleLEDs());
+    operatorJoystick.button(10).onTrue(new SetLEDCC(leds));
   }
 
   /**
