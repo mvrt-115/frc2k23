@@ -125,7 +125,7 @@ public final class Constants {
                 public static final int m_backRightEncoderID = 12;
 
                 // Comp Bot Encoder Offsets
-                public static final boolean isCompBot = false;
+                public static final boolean isCompBot = true;
 
                 public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.31);// +
                                                                                                          // Math.PI/2.0;
