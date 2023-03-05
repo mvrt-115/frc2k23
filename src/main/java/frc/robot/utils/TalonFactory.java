@@ -25,7 +25,27 @@ public class TalonFactory {
         talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.Talon.kPIDIdx, Constants.Talon.kTimeoutMs);
         talon.configVoltageCompSaturation(Constants.Talon.kVoltageComp, Constants.Talon.kTimeoutMs);
         talon.enableVoltageCompensation(true);       
-        
+
+        return talon;
+    }
+
+        /**
+     * Creates a basic TalonFX with basic configurations
+     * 
+     * @param id        the id of the Falcon on the robot (get from PheonixTuner)
+     * @param inversion the inversion of the TalonFX (false to spin forward, true to spin backwards)
+     * @return          the generated TalonFX object
+     */
+    public static TalonFX createTalonFX(int id, boolean inversion, String bus_name) {
+        TalonFX talon = new TalonFX(id, bus_name);
+        talon.configFactoryDefault();
+        talon.configSupplyCurrentLimit(Constants.Talon.kCurrentLimit, Constants.Talon.kTimeoutMs);
+        talon.configOpenloopRamp(0.4, Constants.Talon.kTimeoutMs);
+        talon.setInverted(inversion);
+        talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.Talon.kPIDIdx, Constants.Talon.kTimeoutMs);
+        talon.configVoltageCompSaturation(Constants.Talon.kVoltageComp, Constants.Talon.kTimeoutMs);
+        talon.enableVoltageCompensation(true);       
+
         return talon;
     }
     

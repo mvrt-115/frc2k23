@@ -99,7 +99,7 @@ public class RobotContainer {
     // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreExitLevel"));
     autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
     autonSelector.addOption("OnlyLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreLevel"));
-    // autonSelector.setDefaultOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreTwiceLevel"));
+    autonSelector.setDefaultOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreTwiceLevel"));
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
