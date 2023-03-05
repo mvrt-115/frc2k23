@@ -38,6 +38,7 @@ public class Localization extends SubsystemBase {
   private SwerveDrivetrain swerveDrivetrain;
   private AprilTagFieldLayout fieldLayout;
   private final Field2d field;
+  
   private boolean aligning;
 
   public Localization(SwerveDrivetrain swerveDrivetrain) {
@@ -54,7 +55,8 @@ public class Localization extends SubsystemBase {
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
       swerveDrivetrain.getRotation2d(), 
       swerveDrivetrain.getModulePositions(), 
-      new Pose2d()); //Replace this with the starting pose in auton    
+      new Pose2d()); //Replace this with the starting pose in auton
+    //poseEstimator.setVisionMeasurementStdDevs(null);    
     camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
 
@@ -81,6 +83,7 @@ public class Localization extends SubsystemBase {
         resetPoseEstimator(result);
       }
       else{
+        /*
         double latency = 0;
         if(result1.isPresent()){
           latency = result1.get().timestampSeconds;
@@ -94,7 +97,11 @@ public class Localization extends SubsystemBase {
               latency/=2;
             }
         }
-        poseEstimator.addVisionMeasurement(result, latency);
+        */
+
+        poseEstimator.addVisionMeasurement(result, Timer.getFPGATimestamp());
+
+        SmartDashboard.putNumber("chicken Timer", Timer.getFPGATimestamp());
       }
     }
     poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
@@ -113,6 +120,7 @@ public class Localization extends SubsystemBase {
     SmartDashboard.putNumber("chicken - robot score theta",  (poseToGoTo.getRotation().getDegrees()));
     SmartDashboard.putNumber("chicken - robot error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getRotation2d().getDegrees());
     debugPID();
+    SmartDashboard.putString("chicken - closest loc", poseToGoTo.toString());
   }
 
   /**
@@ -125,7 +133,9 @@ public class Localization extends SubsystemBase {
 
   public void resetCameraEstimators(){
     camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
   }
   /**
    * @return current pose according to pose estimator

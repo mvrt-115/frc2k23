@@ -295,16 +295,16 @@ public static class Elevator {
   }
 
   public static class VisionConstants{
-    public static final String kCamera1Name = "monocle"; //neg offset
-    public static final String kCamera2Name = "beholder"; //pos offset
+    public static final String kCamera1Name = "monocle";
+    public static final String kCamera2Name = "beholder";
     
     public static final double minDistFromTag = 0.3; //Min dist necessary from tag to automate (0.3 meter aprox)
     public static final double xyTolerance = 0.1;
     public static final double thetaTolerance = 0.05;
 
     //Camera position on robot
-    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, 0.26, 0), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, Units.inchesToMeters(5 + 3/4), 0), new Rotation3d());
-    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(-.02, -0.26, 0), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, -Units.inchesToMeters(4 + 3/8), 0), new Rotation3d());
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, Units.inchesToMeters(10.75), Units.inchesToMeters(9)), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, Units.inchesToMeters(5 + 3/4), 0), new Rotation3d());
+    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(Units.inchesToMeters(-9), Units.inchesToMeters(-9.75), Units.inchesToMeters(10.5)), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, -Units.inchesToMeters(4 + 3/8), 0), new Rotation3d());
     
     /**
      * Key:
