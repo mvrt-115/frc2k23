@@ -12,6 +12,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import java.util.Optional;
 
@@ -38,6 +39,7 @@ public class Localization extends SubsystemBase {
   private SwerveDrivetrain swerveDrivetrain;
   private AprilTagFieldLayout fieldLayout;
   private final Field2d field;
+  Logger logger = Logger.getInstance();
   
   private boolean aligning;
 
@@ -66,10 +68,10 @@ public class Localization extends SubsystemBase {
       new Pose2d()); //Replace this with the starting pose in auton
     //poseEstimator.setVisionMeasurementStdDevs(null);    
 
-    // for(int i = 1;i<=8;i++){
+    for(int i = 1;i<=8;i++) {
     //   SmartDashboard.putString("WPILIB Apriltag"+i, fieldLayout.getTagPose(i).get().toString());
-    //   SmartDashboard.putString("Apriltag"+i, Constants.VisionConstants.aprilTags.get(i).toString());
-    // }  
+       logger.recordOutput("Apriltag " + i + " Location", Constants.VisionConstants.aprilTags.get(i));
+    }  
   }
 
   @Override
@@ -127,6 +129,14 @@ public class Localization extends SubsystemBase {
     SmartDashboard.putNumber("robot error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getRotation2d().getDegrees());
     debugPID();
     SmartDashboard.putString("chicken - closest loc", poseToGoTo.toString());
+
+
+    logger.recordOutput("Robot Location", getCurrentPose());
+    logger.recordOutput("Robot Pose X", getCurrentPose().getX());
+    logger.recordOutput("Robot Pose Y", getCurrentPose().getY());
+    logger.recordOutput("Robot Location W deg", getCurrentPose().getRotation().getDegrees());
+    logger.recordOutput("Robot Location W rad", getCurrentPose().getRotation().getRadians());
+
   }
 
   /**

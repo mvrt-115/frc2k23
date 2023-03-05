@@ -467,6 +467,8 @@ public static class Elevator {
             Units.inchesToMeters(40.45),
             Units.inchesToMeters(42.19),
             Units.inchesToMeters(18.22),
-            new Rotation3d()));
+            new Rotation3d()
+        )
+    );
   }
 }
