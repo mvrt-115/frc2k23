@@ -349,7 +349,7 @@ public final class Constants {
                         new Rotation2d()),
                 3, // Cone
                 new Pose2d(
-                        Units.inchesToMeters(585), // 597.1
+                        Units.inchesToMeters(575), // 597.1
                         Units.inchesToMeters(64.6),
                         new Rotation2d()),
                 4, // Cone

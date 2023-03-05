@@ -40,7 +40,7 @@ public class Align extends CommandBase {
   public void initialize() {
     localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
-    if(poseToGoTo==null) poseToGoTo = localization.getClosestScoringLoc();
+    if(poseToGoTo==null) poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(5);//localization.getClosestScoringLoc();
   }
 
   // Called every time the scheduler runs while the command is scheduled. 
