@@ -69,7 +69,7 @@ public class Elevator extends SubsystemBase {
     elev_motor2 = TalonFactory.createTalonFX(Constants.Elevator.MOTOR_ID2, false);
 
     elev_motor2.follow(elev_motor);
-    int forwardLimit = 22500;
+    double forwardLimit = inchesToTicks(58.5);
     int reverseLimit = -50;
     elev_motor.configForwardSoftLimitThreshold(forwardLimit);
     elev_motor.configReverseSoftLimitThreshold(reverseLimit);
@@ -210,6 +210,7 @@ public class Elevator extends SubsystemBase {
      logger.recordOutput("Elevator/feedforward", feedforward);
      logger.recordOutput("Elevator/setvelocity", ((feedforward+pid.calculate(setpoint.velocity))/10));
      logger.recordOutput("Elevator/pidvalue", pid.calculate(setpoint.velocity));
+     logger.recordOutput("Elevator/motor_percent_output", elev_motor.getMotorOutputPercent());
      
     // sim
     //  elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));

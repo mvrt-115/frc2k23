@@ -28,10 +28,10 @@ public class ManualElevator extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (e.getHeight() < 8000)
+    if (e.getHeight() < 1200)
       e.runMotor(speed.get());
     else
-      e.runMotor(speed.get()+Constants.Elevator.kG/10.0);
+      e.runMotor(speed.get()+Constants.Elevator.kG);///Constants.Talon.MAX_VOLTAGE);
   }
 
   // Called once the command ends or is interrupted.
