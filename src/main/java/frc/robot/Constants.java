@@ -127,19 +127,17 @@ public final class Constants {
                 public static final int m_backRightEncoderID = 12;
 
                 // Comp Bot Encoder Offsets
-                public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(25.31);// +
-                                                                                                         // Math.PI/2.0;
-                public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(317.02);// +
-                                                                                                           // Math.PI/2.0;
-                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(37.00);// +
-                                                                                                        // Math.PI/2.0;
-                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(126.38);// +
-                                                                                                          // Math.PI/2.0;
+                public static final boolean isCompBot = true;
+                public static final String canivore_name = (isCompBot)? "Drivetrain" : "rio";
+
+                public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(129.46);// + Math.PI/2.0;
+                public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(114.87);// + Math.PI/2.0;
+                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(213.57);// + Math.PI/2.0;
+                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(47.72);// + Math.PI/2.0;
 
                 // Practice Bot Encoder Offsets
                 public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(33.62);// + Math.PI/2.0;
-                public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(182.180);// +
-                                                                                                         // Math.PI/2.0;
+                public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(182.180);// + Math.PI/2.0;
                 public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(341.54);// + Math.PI/2.0;
                 public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(146.86);// + Math.PI/2.0;
 
