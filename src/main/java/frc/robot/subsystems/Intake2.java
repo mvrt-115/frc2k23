@@ -107,7 +107,6 @@ public class Intake2 extends SubsystemBase {
    @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if(!isIntakingOrScoring) stopIntaking();
     SmartDashboard.putBoolean("item in intake", !prox.get());
     logger.recordOutput("intake/current", motor.getOutputCurrent());
     logger.recordOutput("intake/element", !prox.get());

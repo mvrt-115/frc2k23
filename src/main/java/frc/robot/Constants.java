@@ -6,14 +6,13 @@ package frc.robot;
 
 import java.util.Map;
 
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -249,9 +248,9 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.036; //prac bot: 0.025;// .1;//.01;
+                public static final double P = 0.0315; //prac bot: 0.025;// .1;//.01;
                 public static final double I = 0;// .000006;
-                public static final double D = 0.06; //0.1;
+                public static final double D = 0.13; //0.1;
                 public static final double F = 0;
 
                 // Wtvr it is
@@ -267,7 +266,7 @@ public final class Constants {
 
                 // MID, HIGH heights parwa cone (in ticks)
                 public static final double CONE_MID_HEIGHT = 43;
-                public static final double CONE_HIGH_HEIGHT = 56.9;
+                public static final double CONE_HIGH_HEIGHT = 57;
                 public static final double INTAKE_HEIGHT = 40.8;
 
                 // MID, HIGH heights para cube (in inches)
@@ -491,13 +490,13 @@ public final class Constants {
                 public static final double kMarginOfError = 0.03;
 
                 public static final int kProximityPort = 6; // port number for element proximity sensor
-                public static final int kMotorPort = 5;
+                public static final int kMotorPort = isCompBot? 8 : 5;
 
                 public static final double kP = 0, kI = 0, kD = 0;
 
-                public static final double kCompressedSpeed = -0.07;
+                public static final double kCompressedSpeed = isCompBot? -0.15 : -0.07;
 
-                public static final double kGoalRPM = -0.4;
-                public static final double kOuttakeRPM = 0.08;// 0.08;
+                public static final double kGoalRPM = -0.3;
+                public static final double kOuttakeRPM = isCompBot? 0.5 : 0.08;// 0.08;
         }
 }
