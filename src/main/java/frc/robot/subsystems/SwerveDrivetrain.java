@@ -53,7 +53,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   private SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
   private SwerveModule[] modules;
   private int rotationPoint = 0;
-  public boolean fieldOriented = false;
+  public boolean fieldOriented = true;
 
   // Auton Stuff
   private SwerveDriveOdometry odometry;
@@ -426,6 +426,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
       driveSimData.resetOdometry(getRotation2d(), modulePositions, pose);
     }
+    SmartDashboard.putBoolean("Reset Odometry", false);
   }
 
   /**
@@ -490,6 +491,12 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
   }
 
+  public void resetModuleDrive() {
+    for (SwerveModule m:modules) {
+      m.resetDriveEncoders();
+    }
+  }
+
   /**
    * set the modes
    * @param mode the mode
@@ -536,7 +543,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   public SwerveAutoBuilder getAutonBuilder(HashMap<String, Command> eventMap) {
     return new SwerveAutoBuilder(
       this::getPose,
-      this::resetOdometry,
+      this::resetFakeOdometry,
       this.swerveKinematics, 
       new PIDConstants(Constants.SwerveDrivetrain.m_x_control_P, Constants.SwerveDrivetrain.m_x_control_I, Constants.SwerveDrivetrain.m_x_control_D),
       new PIDConstants(Constants.SwerveDrivetrain.m_r_control_P, Constants.SwerveDrivetrain.m_r_control_I, Constants.SwerveDrivetrain.m_r_control_D), 
@@ -544,5 +551,9 @@ public class SwerveDrivetrain extends SubsystemBase {
       eventMap, 
       false,
       this);
+  }
+
+  private void resetFakeOdometry(Pose2d pose) {
+    return;
   }
 }

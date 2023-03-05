@@ -418,7 +418,6 @@ public class PhotonPoseEstimator {
         PhotonTrackedTarget lowestAmbiguityTarget = null;
 
         double lowestAmbiguityScore = 10;
-
         for (PhotonTrackedTarget target : result.targets) {
             double targetPoseAmbiguity = target.getPoseAmbiguity();
             // Make sure the target is a Fiducial target.
@@ -430,7 +429,7 @@ public class PhotonPoseEstimator {
 
         // Although there are confirmed to be targets, none of them may be fiducial
         // targets.
-        if (lowestAmbiguityTarget == null) return Optional.empty();
+        if (lowestAmbiguityTarget == null || lowestAmbiguityTarget.getPoseAmbiguity()>0.2) return Optional.empty();
 
         int targetFiducialId = lowestAmbiguityTarget.getFiducialId();
 

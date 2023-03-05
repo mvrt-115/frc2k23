@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+//import org.photonvision.PhotonPoseEstimator;
+//import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import frc.robot.utils.PhotonPoseEstimator;
+import frc.robot.utils.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
@@ -59,9 +61,9 @@ public class Localization extends SubsystemBase {
       PoseStrategy.MULTI_TAG_PNP,
       camera1,
       Constants.VisionConstants.cam1ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
-    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
+    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
       swerveDrivetrain.getRotation2d(), 
       swerveDrivetrain.getModulePositions(), 
@@ -76,6 +78,8 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
+    camera1Estimator.setReferenceTheta(swerveDrivetrain.getRotation2d().getRadians());
+    camera2Estimator.setReferenceTheta(swerveDrivetrain.getRotation2d().getRadians());
     Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
     Pose2d result = combinePoses(result1, result2);
@@ -149,9 +153,9 @@ public class Localization extends SubsystemBase {
 
   public void resetCameraEstimators(){
     camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
-    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
+    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
   }
   /**
