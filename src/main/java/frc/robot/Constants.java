@@ -277,11 +277,11 @@ public final class Constants {
                 public static final double CUBE_HIGH_HEIGHT = 57;
 
                 // feed forward constants
-                public static final double kS = 0.69617;//0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
+                public static final double kS = isCompBot ? 0.11729 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = 0.4;//0.94832;//0.79635;//0.87635; // 0.79635: claw intake; //1.2265;
-                public static final double kV = 0.023747;//0.039238; // 0.035258;
-                public static final double kA = 0.012397;//0.012817;//0.0031226; // 0.0053228;
+                public static final double kG = isCompBot ? 0.47892 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265;
+                public static final double kV = isCompBot ? 0.029489 : 0.039238; // 0.035258;
+                public static final double kA = isCompBot ? 0.0018216 : 0.012817;//0.0031226; // 0.0053228;
                 // public static final double kA = 0;
                 // Game Object Heights
                 public static final double CONE_HEIGHT = 6;
