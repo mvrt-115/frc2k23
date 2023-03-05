@@ -251,9 +251,9 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.025;// .1;//.01;
+                public static final double P = 0.036; //prac bot: 0.025;// .1;//.01;
                 public static final double I = 0;// .000006;
-                public static final double D = 0.1;
+                public static final double D = 0.06; //0.1;
                 public static final double F = 0;
 
                 // Wtvr it is
@@ -261,7 +261,7 @@ public final class Constants {
                 // public static final double INCHES_PER_TICK = 10.6224;
 
                 // Min/Max heights for the elevator (in inches)
-                public static final double MAX_HEIGHT = 55;
+                public static final double MAX_HEIGHT = 57;
                 public static final double MIN_HEIGHT = 0;
 
                 public static final double ZERO_HEIGHT = 0;
@@ -279,7 +279,7 @@ public final class Constants {
                 // feed forward constants
                 public static final double kS = isCompBot ? 0.11729 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = isCompBot ? 0.47892 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265;
+                public static final double kG = isCompBot ? 0.5 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
                 public static final double kV = isCompBot ? 0.029489 : 0.039238; // 0.035258;
                 public static final double kA = isCompBot ? 0.0018216 : 0.012817;//0.0031226; // 0.0053228;
                 // public static final double kA = 0;

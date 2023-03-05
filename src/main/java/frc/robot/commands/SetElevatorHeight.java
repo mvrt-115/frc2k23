@@ -60,6 +60,6 @@ public class SetElevatorHeight extends CommandBase
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(elevator.getHeightInches() -  height) <= 1);// && Math.abs(elevator.getVelocity()) <= 100);
+    return (Math.abs(elevator.getHeightInches() -  height) <= 0.75) && Math.abs(elevator.getVelocity()) <= 75;
   }
 }
