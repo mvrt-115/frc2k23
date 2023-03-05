@@ -357,6 +357,7 @@ public class PhotonPoseEstimator {
         var fieldToCamsAlt = new ArrayList<Pose3d>();
 
         if (result.getTargets().size() < 2) {
+            //return Optional.empty(); //dont trust it if <2 tags present
             // Run fallback strategy instead
             return update(result, this.multiTagFallbackStrategy);
         }
