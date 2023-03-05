@@ -52,13 +52,19 @@ public class Localization extends SubsystemBase {
     } catch(IOException e) {
       System.err.println("[Localization 2 constructor] Error loading from resource");
     }
+    camera1Estimator = new PhotonPoseEstimator(
+      fieldLayout,
+      PoseStrategy.MULTI_TAG_PNP,
+      camera1,
+      Constants.VisionConstants.cam1ToRobot);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
+    camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
       swerveDrivetrain.getRotation2d(), 
       swerveDrivetrain.getModulePositions(), 
       new Pose2d()); //Replace this with the starting pose in auton
     //poseEstimator.setVisionMeasurementStdDevs(null);    
-    camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
-    camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
 
     for(int i = 1;i<=8;i++){
       SmartDashboard.putString("WPILIB Apriltag"+i, fieldLayout.getTagPose(i).get().toString());
@@ -133,9 +139,9 @@ public class Localization extends SubsystemBase {
 
   public void resetCameraEstimators(){
     camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_THETA);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
+    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_THETA);
   }
   /**
    * @return current pose according to pose estimator
