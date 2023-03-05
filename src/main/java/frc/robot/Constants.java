@@ -151,11 +151,11 @@ public final class Constants {
     public static final double kThrottleDeadband = 0.2;
     public static final double kWheelGain = 0.05;
     public static final double kWheelNonlinearity = 0.05;
-    public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
-    public static final double kDriveMaxAcceleration = 3;
+    public static final double kMaxSpeedMPS = 3; // optimize max speed to prioritize translation
+    public static final double kDriveMaxAcceleration = 1;
     public static final double kTurnMaxAcceleration = 1 * Math.PI;
-    public static final double kDriveMaxSpeedMPS = 7;
-    public static final double kTurnMaxSpeedRPS = 4 * Math.PI;
+    public static final double kDriveMaxSpeedMPS = 2;
+    public static final double kTurnMaxSpeedRPS = 1 * Math.PI;
     public static final int kDriveJoystickPort = 0;
     public static final int kDriveXAxis = 0;
     public static final int kDriveYAxis = 1;
@@ -303,8 +303,8 @@ public static class Elevator {
     public static final double thetaTolerance = 0.05;
 
     //Camera position on robot
-    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, Units.inchesToMeters(10.75), Units.inchesToMeters(9)), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, Units.inchesToMeters(5 + 3/4), 0), new Rotation3d());
-    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(Units.inchesToMeters(-9), Units.inchesToMeters(-9.75), Units.inchesToMeters(10.5)), new Rotation3d());//new Transform3d(new Translation3d(12*.0254, -Units.inchesToMeters(4 + 3/8), 0), new Rotation3d());
+    public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(0, Units.inchesToMeters(10.75), Units.inchesToMeters(9)), new Rotation3d(0, Units.degreesToRadians(15),0));//new Transform3d(new Translation3d(12*.0254, Units.inchesToMeters(5 + 3/4), 0), new Rotation3d());
+    public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(Units.inchesToMeters(-9), Units.inchesToMeters(-9.75), Units.inchesToMeters(10.5)), new Rotation3d(0, Units.degreesToRadians(10), 0));//new Transform3d(new Translation3d(12*.0254, -Units.inchesToMeters(4 + 3/8), 0), new Rotation3d());
     
     /**
      * Key:
