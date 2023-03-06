@@ -10,7 +10,6 @@ import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.JoystickIO;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -71,8 +70,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    //Pose2d scoringLoc = Constants.VisionConstants.kRedScoreCols.get(5);
-    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, null)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    Pose2d scoringLoc = localization.getClosestScoringLoc();
+    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, scoringLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
   }
 
   /**

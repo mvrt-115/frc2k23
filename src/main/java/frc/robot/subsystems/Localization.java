@@ -11,7 +11,6 @@ import java.util.Map;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.EstimatedRobotPose;
 import java.util.Optional;
 
@@ -64,7 +63,6 @@ public class Localization extends SubsystemBase {
       swerveDrivetrain.getRotation2d(), 
       swerveDrivetrain.getModulePositions(), 
       new Pose2d()); //Replace this with the starting pose in auton
-    //poseEstimator.setVisionMeasurementStdDevs(null);    
 
     for(int i = 1;i<=8;i++){
       SmartDashboard.putString("WPILIB Apriltag"+i, fieldLayout.getTagPose(i).get().toString());
@@ -78,35 +76,18 @@ public class Localization extends SubsystemBase {
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
     Pose2d result = combinePoses(result1, result2);
 
-    SmartDashboard.putBoolean("robot present", result != null);
+    SmartDashboard.putBoolean("chicken robot present", result != null);
     if(result != null) {
       //update here rotation to whatever gyro gives us
       result = new Pose2d(result.getX(), result.getY(), swerveDrivetrain.getRotation2d());
-      SmartDashboard.putString("robot pose", result.toString());
+      SmartDashboard.putString("chicken robot pose", result.toString());
 
       //If aligning, reset pose to whatever camera gives us
       if(aligning){
         resetPoseEstimator(result);
       }
       else{
-        /*
-        double latency = 0;
-        if(result1.isPresent()){
-          latency = result1.get().timestampSeconds;
-
-        } if(result2.isPresent()){
-            if(latency==0){
-              latency = result2.get().timestampSeconds;
-            }
-            else{
-              latency+=result2.get().timestampSeconds;
-              latency/=2;
-            }
-        }
-        */
-
         poseEstimator.addVisionMeasurement(result, Timer.getFPGATimestamp());
-
         SmartDashboard.putNumber("chicken Timer", Timer.getFPGATimestamp());
       }
     }
@@ -118,6 +99,7 @@ public class Localization extends SubsystemBase {
     log();
 
     Pose2d robotPose = getCurrentPose();
+    
     if(robotPose==null) return;
 
     Pose2d poseToGoTo = getClosestScoringLoc();
@@ -125,8 +107,8 @@ public class Localization extends SubsystemBase {
     SmartDashboard.putNumber("chicken - robot gyro rot", swerveDrivetrain.getRotation2d().getDegrees());
     SmartDashboard.putNumber("chicken - robot score theta",  (poseToGoTo.getRotation().getDegrees()));
     SmartDashboard.putNumber("chicken - robot error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getRotation2d().getDegrees());
-    debugPID();
     SmartDashboard.putString("chicken - closest loc", poseToGoTo.toString());
+    debugPID();
   }
 
   /**
@@ -139,10 +121,11 @@ public class Localization extends SubsystemBase {
 
   public void resetCameraEstimators(){
     camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_THETA);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
-    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_THETA);
+    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
   }
+  
   /**
    * @return current pose according to pose estimator
    */

@@ -40,15 +40,14 @@ public class Align extends CommandBase {
   public void initialize() {
     localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
-    if(poseToGoTo==null) poseToGoTo = Constants.VisionConstants.kRedScoreCols.get(2);//localization.getClosestScoringLoc();
+
+    if(poseToGoTo==null) poseToGoTo = localization.getClosestScoringLoc();
   }
 
   // Called every time the scheduler runs while the command is scheduled. 
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-    // if(Localization.distFromTag(robotPose, poseToGoTo) >
-    // Constants.VisionConstants.minDistFromTag){
     double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
     double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
     double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(),
@@ -59,7 +58,6 @@ public class Align extends CommandBase {
         new Rotation2d(-swerve.getRotation2d().getRadians()));
     SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
     swerve.setModuleStates(states);
-    // }
   }
 
   // Called once the command ends or is interrupted.

@@ -24,7 +24,6 @@
 
 package frc.robot.utils;
 
-
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Pair;
