@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
@@ -79,6 +80,7 @@ public class Elevator extends SubsystemBase {
     elev_motor2.configReverseSoftLimitThreshold(reverseLimit);
     elev_motor2.configForwardSoftLimitEnable(true, 0);
     elev_motor2.configReverseSoftLimitEnable(true, 0);
+   // elev_motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, reverseLimit, forwardLimit, reverseLimit))
 
     elev_motor.setNeutralMode(NeutralMode.Brake);
     elev_motor2.setNeutralMode(NeutralMode.Brake);

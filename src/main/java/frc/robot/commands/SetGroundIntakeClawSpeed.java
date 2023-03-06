@@ -4,21 +4,18 @@
 
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.GroundIntake;
 
-public class ManualElevator extends CommandBase {
-  /** Creates a new ManualElevator. */
-  private Elevator e;
-  private Supplier<Double> speed;
-  public ManualElevator(Elevator q, Supplier<Double> speed) {
-    e = q;
-    addRequirements(e);
-    this.speed = speed;
+public class SetGroundIntakeClawSpeed extends CommandBase {
+  /** Creates a new SetGroundIntakeClawPos. */
+  private GroundIntake groundIntake;
+  private double speed;
+  public SetGroundIntakeClawSpeed(GroundIntake gi, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
+    groundIntake = gi;
+    this.speed = speed;
   }
 
   // Called when the command is initially scheduled.
@@ -28,17 +25,12 @@ public class ManualElevator extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (e.getHeightInches() < 15)
-      e.runMotor(speed.get());
-    else
-      e.runMotor(speed.get()+Constants.Elevator.kG/10.0);///Constants.Talon.MAX_VOLTAGE);
+    groundIntake.setClawSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

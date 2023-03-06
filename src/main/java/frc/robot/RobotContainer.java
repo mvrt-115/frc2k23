@@ -43,6 +43,7 @@ public class RobotContainer {
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
   private CANdleLEDSystem leds = new CANdleLEDSystem();
 
+  // GroundIntake gi = new GroundIntake();
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
@@ -141,7 +142,7 @@ public class RobotContainer {
 
     // SCORE CONE MID 
     operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)
-    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-9).alongWith(new WaitCommand(2).andThen(intake.runOut())));
+    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-8.4).alongWith(new WaitCommand(1.1).andThen(intake.runOut())));
     
     // SCORE CONE HIGH
     operatorJoystick.a().onTrue(
@@ -162,11 +163,11 @@ public class RobotContainer {
     ).onFalse(intake.runOut());
 
     // MANUAL INTAKE
-    operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop()); // manual intaking
-    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
+   // operatorJoystick.button(7).onTrue(new SetGroundIntakeArmPos(gi, 30));//intake.runIn()).onFalse(intake.stop()); // manual intaking
+    // operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
 
     //LEDS TOGGLE
-    operatorJoystick.button(10).onTrue(new SetLEDCC(leds));
+    // operatorJoystick.button(10).onTrue(leds.toggleLEDs());
   }
 
   /**
