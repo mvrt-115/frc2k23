@@ -495,9 +495,10 @@ public final class Constants {
 
                 public static final double kP = 0, kI = 0, kD = 0;
 
-                public static final double kCompressedSpeed = -0.07;
+                public static final double kCompressedSpeed = -0.2;
 
                 public static final double kGoalRPM = -0.4;
                 public static final double kOuttakeRPM = 0.08;// 0.08;
         }
+        
 }
