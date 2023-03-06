@@ -310,8 +310,8 @@ public final class Constants {
     }
 
     public static class VisionConstants {
-        public static final String kCamera1Name = "monocle";
-        public static final String kCamera2Name = "beholder";
+        public static final String kCamera1Name = "beholder";
+        public static final String kCamera2Name = "monocle";
 
         public static final double minDistFromTag = 0.3; // Min dist necessary from tag to automate (0.3 meter aprox)
         public static final double xyTolerance = 0.1;
@@ -319,13 +319,13 @@ public final class Constants {
 
         // Camera position on robot
         public static final Transform3d cam1ToRobot = new Transform3d(
-                new Translation3d(0, Units.inchesToMeters(10.75), Units.inchesToMeters(9)),
+                new Translation3d(0, Units.inchesToMeters(11), Units.inchesToMeters(0)),
                 new Rotation3d(0, Units.degreesToRadians(15), 0));// new Transform3d(new Translation3d(12*.0254,
                                                                   // Units.inchesToMeters(5 + 3/4), 0), new
                                                                   // Rotation3d());
         public static final Transform3d cam2ToRobot = new Transform3d(
-                new Translation3d(Units.inchesToMeters(-9), Units.inchesToMeters(-9.75), Units.inchesToMeters(10.5)),
-                new Rotation3d(0, Units.degreesToRadians(10), 0));// new Transform3d(new Translation3d(12*.0254,
+                new Translation3d(Units.inchesToMeters(-9), Units.inchesToMeters(-11), Units.inchesToMeters(-8)),
+                new Rotation3d(0, Units.degreesToRadians(15), 0));// new Transform3d(new Translation3d(12*.0254,
                                                                   // -Units.inchesToMeters(4 + 3/8), 0), new
                                                                   // Rotation3d());
 
@@ -354,12 +354,12 @@ public final class Constants {
                         new Rotation2d()),
                 4, // Cone
                 new Pose2d(
-                        Units.inchesToMeters(585),
+                        Units.inchesToMeters(580),
                         Units.inchesToMeters(86.5),
                         new Rotation2d()),
                 5, // Cube - 2
                 new Pose2d(
-                        Units.inchesToMeters(585), // 597.1
+                        Units.inchesToMeters(580), // 597.1
                         Units.inchesToMeters(108.9),
                         new Rotation2d()),
                 6, // Cone
