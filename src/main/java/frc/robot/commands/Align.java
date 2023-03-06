@@ -43,7 +43,7 @@ public class Align extends CommandBase {
     localization.setAligning(true);
     if(poseToGoTo==null) poseToGoTo = localization.getClosestScoringLoc();//Constants.VisionConstants.kRedScoreCols.get(5);//localization.getClosestScoringLoc();
   
-    SmartDashboard.putString("Align initialize scoring loc (pose to go to)", poseToGoTo.toString());
+    SmartDashboard.putString("chicken align initialize scoring loc", poseToGoTo.toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled. 

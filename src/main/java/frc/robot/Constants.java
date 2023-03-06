@@ -329,6 +329,32 @@ public final class Constants {
                                                                   // -Units.inchesToMeters(4 + 3/8), 0), new
                                                                   // Rotation3d());
 
+        public static final Map<Integer, Pose2d> kRedHPLocs = Map.of(
+                1, 
+                new Pose2d(
+                        Units.inchesToMeters(602),
+                        Units.inchesToMeters( 287),
+                        new Rotation2d(Math.PI)),
+                2,
+                new Pose2d(
+                        Units.inchesToMeters(602),
+                        Units.inchesToMeters( 242),
+                        new Rotation2d(Math.PI))
+        );
+
+        public static final Map<Integer, Pose2d> kBlueHPLocs = Map.of(
+                1, 
+                new Pose2d(
+                        Units.inchesToMeters(53),
+                        Units.inchesToMeters( 287),
+                        new Rotation2d(0)),
+                2,
+                new Pose2d(
+                        Units.inchesToMeters(53),
+                        Units.inchesToMeters( 242),
+                        new Rotation2d(0))
+        );
+
         /**
          * Key:
          * Orientation: facing red community from blue community
