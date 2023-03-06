@@ -25,6 +25,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.JoystickIO;
 import frc.robot.utils.MathUtils;
+import org.littletonrobotics.junction.Logger; 
 
 public class SwerveJoystickCommand extends CommandBase {
   private final SwerveDrivetrain drivetrain;
@@ -66,6 +67,8 @@ public class SwerveJoystickCommand extends CommandBase {
     timer.reset();
     timer.start();
     heading = drivetrain.getRotation2d();
+    if(!drivetrain.fieldOriented)
+      drivetrain.toggleMode();
     drivetrain.resetModules();
   }
 
@@ -75,11 +78,12 @@ public class SwerveJoystickCommand extends CommandBase {
     double vX = xSpeedFunc.get(); // as of here, negative X is backwards, positive X is forward
     double vY = ySpeedFunc.get(); // as of here, positive Y is left, negative Y is right
     double vW = turnSpeedFunc.get(); // as of here, negative W is down (CW) positive W is up (CCW)
-    //if(elevator.getHeight() > 10000) {
-    //  vX *= 0.6;
-    //  vY *= 0.6;
-    //  vW *= 0.6;
-    //}
+    if(elevator.getHeightInches() > 25) {
+      vX *= 0.35;
+      vY *= 0.35;
+      vW *= 0.35;
+
+    }
     Logger.getInstance().recordOutput("Controller/vX raw", vX);
     Logger.getInstance().recordOutput("Controller/vY raw", vY);
     Logger.getInstance().recordOutput("Controller/vW raw", vW);
@@ -88,6 +92,25 @@ public class SwerveJoystickCommand extends CommandBase {
     vX = MathUtils.handleDeadband(vX, Constants.SwerveDrivetrain.kThrottleDeadband);
     vY = MathUtils.handleDeadband(vY, Constants.SwerveDrivetrain.kThrottleDeadband);
     vW = MathUtils.handleDeadband(vW, Constants.SwerveDrivetrain.kWheelDeadband);
+
+    // check joystick left and right triggers
+    double left_trigger = joystick.getRawAxis(Constants.SwerveDrivetrain.kDriveLeftTrigger);
+    double right_trigger = joystick.getRawAxis(Constants.SwerveDrivetrain.kDriveRightTrigger);
+    if (left_trigger > 0.05) {
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 - left_trigger + 0.05) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+      Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = (1 - left_trigger + 0.05) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kDriveMaxAccelerationNormal;
+      Constants.SwerveDrivetrain.kTurnMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
+    }
+    else if (right_trigger > 0.05) {
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + right_trigger) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+    }
+    else {
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+      Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxAcceleration = Constants.SwerveDrivetrain.kDriveMaxAccelerationNormal;
+      Constants.SwerveDrivetrain.kTurnMaxAcceleration = Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
+    }
 
     // limit acceleration
     vX = xLimiter.calculate(vX) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;

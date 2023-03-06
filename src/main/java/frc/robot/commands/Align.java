@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Localization;
@@ -40,8 +41,9 @@ public class Align extends CommandBase {
   public void initialize() {
     localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
-
-    if(poseToGoTo==null) poseToGoTo = localization.getClosestScoringLoc();
+    if(poseToGoTo==null) poseToGoTo = localization.getClosestScoringLoc();//Constants.VisionConstants.kRedScoreCols.get(5);//localization.getClosestScoringLoc();
+  
+    SmartDashboard.putString("Align initialize scoring loc (pose to go to)", poseToGoTo.toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled. 

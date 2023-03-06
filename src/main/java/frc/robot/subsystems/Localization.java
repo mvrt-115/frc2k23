@@ -9,8 +9,9 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import frc.robot.utils.PhotonPoseEstimator;
+import frc.robot.utils.PhotonPoseEstimator.PoseStrategy;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import java.util.Optional;
 
@@ -37,6 +38,7 @@ public class Localization extends SubsystemBase {
   private SwerveDrivetrain swerveDrivetrain;
   private AprilTagFieldLayout fieldLayout;
   private final Field2d field;
+  Logger logger = Logger.getInstance();
   
   private boolean aligning;
 
@@ -56,22 +58,24 @@ public class Localization extends SubsystemBase {
       PoseStrategy.MULTI_TAG_PNP,
       camera1,
       Constants.VisionConstants.cam1ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
+    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
       swerveDrivetrain.getRotation2d(), 
       swerveDrivetrain.getModulePositions(), 
       new Pose2d()); //Replace this with the starting pose in auton
 
-    for(int i = 1;i<=8;i++){
-      SmartDashboard.putString("WPILIB Apriltag"+i, fieldLayout.getTagPose(i).get().toString());
-      SmartDashboard.putString("Apriltag"+i, Constants.VisionConstants.aprilTags.get(i).toString());
+    for(int i = 1;i<=8;i++) {
+    //   SmartDashboard.putString("WPILIB Apriltag"+i, fieldLayout.getTagPose(i).get().toString());
+       logger.recordOutput("Apriltag " + i + " Location", Constants.VisionConstants.aprilTags.get(i));
     }  
   }
 
   @Override
   public void periodic() {
+    camera1Estimator.setReferenceTheta(swerveDrivetrain.getRotation2d().getRadians());
+    camera2Estimator.setReferenceTheta(swerveDrivetrain.getRotation2d().getRadians());
     Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
     Pose2d result = combinePoses(result1, result2);
@@ -103,12 +107,18 @@ public class Localization extends SubsystemBase {
     if(robotPose==null) return;
 
     Pose2d poseToGoTo = getClosestScoringLoc();
-    SmartDashboard.putString("chicken - robot pose", getCurrentPose().toString());
-    SmartDashboard.putNumber("chicken - robot gyro rot", swerveDrivetrain.getRotation2d().getDegrees());
-    SmartDashboard.putNumber("chicken - robot score theta",  (poseToGoTo.getRotation().getDegrees()));
-    SmartDashboard.putNumber("chicken - robot error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getRotation2d().getDegrees());
-    SmartDashboard.putString("chicken - closest loc", poseToGoTo.toString());
+    SmartDashboard.putString("chicken robot pose", getCurrentPose().toString());
+    SmartDashboard.putNumber("chicken robot gyro rot", swerveDrivetrain.getRotation2d().getDegrees());
+    SmartDashboard.putNumber("chicken robot score theta",  (poseToGoTo.getRotation().getDegrees()));
+    SmartDashboard.putNumber("chicken robot error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getRotation2d().getDegrees());
     debugPID();
+    SmartDashboard.putString("chicken - closest loc", poseToGoTo.toString());
+
+    logger.recordOutput("chicken Robot Location", getCurrentPose());
+    logger.recordOutput("chicken Robot Pose X", getCurrentPose().getX());
+    logger.recordOutput("chicken Robot Pose Y", getCurrentPose().getY());
+    logger.recordOutput("chicken Robot Location W deg", getCurrentPose().getRotation().getDegrees());
+    logger.recordOutput("chicken Robot Location W rad", getCurrentPose().getRotation().getRadians());
   }
 
   /**
@@ -121,9 +131,9 @@ public class Localization extends SubsystemBase {
 
   public void resetCameraEstimators(){
     camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
-    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+    camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
   
   /**
@@ -139,18 +149,18 @@ public class Localization extends SubsystemBase {
     if(result1.isPresent() && result2.isPresent()){
       first = result1.get().estimatedPose;
       second = result2.get().estimatedPose;
-      SmartDashboard.putString("chicken - cam1 pose", first.toString());
-      SmartDashboard.putString("chicken - cam2 pose", second.toString());
+      SmartDashboard.putString("chicken cam1 pose", first.toString());
+      SmartDashboard.putString("chicken cam2 pose", second.toString());
       return new Pose2d((first.getX()+second.getX())/2, (first.getY()+second.getY())/2, new Rotation2d((first.getRotation().getZ()+second.getRotation().getZ())/2));
     }
     if(result1.isPresent()){
       first = result1.get().estimatedPose;
-      SmartDashboard.putString("chicken - cam1 pose", first.toString());
+      SmartDashboard.putString("chicken cam1 pose", first.toString());
       return first.toPose2d();
     }
     if(result2.isPresent()){
       second = result2.get().estimatedPose;
-      SmartDashboard.putString("chicken - cam2 pose", second.toString());
+      SmartDashboard.putString("chicken cam2 pose", second.toString());
 
       return second.toPose2d();
     }
@@ -184,7 +194,7 @@ public class Localization extends SubsystemBase {
         minCol = pose;
       }
     }
-    SmartDashboard.putNumber("scoring loc", num);
+    SmartDashboard.putNumber("chicken scoring loc", num);
     return minCol;
   }
 
@@ -242,11 +252,11 @@ public class Localization extends SubsystemBase {
   public void log() {
     var pos = getCurrentPose();
     if(pos != null){
-      SmartDashboard.putString("chicken - logged Estimated Position", pos.toString());
+      SmartDashboard.putString("chicken logged Estimated Position", pos.toString());
     }
     
-    SmartDashboard.putBoolean("chicken - cam 1 can see", camera1.getLatestResult().hasTargets());
-    SmartDashboard.putBoolean("chicken -cam 2 can see", camera2.getLatestResult().hasTargets());
+    SmartDashboard.putBoolean("chicken cam 1 can see", camera1.getLatestResult().hasTargets());
+    SmartDashboard.putBoolean("chicken cam 2 can see", camera2.getLatestResult().hasTargets());
   }
 
   /**
@@ -255,22 +265,22 @@ public class Localization extends SubsystemBase {
   public void debugPID(){
     Pose2d robotPose = getCurrentPose();
     if(robotPose==null){
-      SmartDashboard.putBoolean("chicken - pose is null", true);
+      SmartDashboard.putBoolean("chicken pose is null", true);
       return;
     }
 
     // SmartDashboard
     Pose2d poseToGoTo = getClosestScoringLoc();
 
-    SmartDashboard.putNumber("chicken - robo theta", (swerveDrivetrain.getRotation2d().getDegrees()));
-    SmartDashboard.putNumber("chicken - score theta",  (poseToGoTo.getRotation().getDegrees()));
-    SmartDashboard.putNumber("chicken - error theta", (poseToGoTo.getRotation().getDegrees()) - (swerveDrivetrain.getRotation2d().getDegrees()));
-    SmartDashboard.putNumber("chicken - scoring x", poseToGoTo.getX());
-    SmartDashboard.putNumber("chicken - scoring y", poseToGoTo.getY());
-    SmartDashboard.putNumber("chicken - robo x", robotPose.getX());
-    SmartDashboard.putNumber("chicken - robo y", robotPose.getY());
-    SmartDashboard.putNumber("chicken - distance from final", Localization.distFromTag(robotPose, poseToGoTo));
-    SmartDashboard.putNumber("chicken - error x", poseToGoTo.getX() - robotPose.getX());
-    SmartDashboard.putNumber("chicken - error y", poseToGoTo.getY() - robotPose.getY());
+    SmartDashboard.putNumber("chicken robo theta", (swerveDrivetrain.getRotation2d().getDegrees()));
+    SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
+    SmartDashboard.putNumber("chicken error theta", (poseToGoTo.getRotation().getDegrees()) - (swerveDrivetrain.getRotation2d().getDegrees()));
+    SmartDashboard.putNumber("chicken scoring x", poseToGoTo.getX());
+    SmartDashboard.putNumber("chicken scoring y", poseToGoTo.getY());
+    SmartDashboard.putNumber("chicken robo x", robotPose.getX());
+    SmartDashboard.putNumber("chicken robo y", robotPose.getY());
+    SmartDashboard.putNumber("chicken distance from final", Localization.distFromTag(robotPose, poseToGoTo));
+    SmartDashboard.putNumber("chicken error x", poseToGoTo.getX() - robotPose.getX());
+    SmartDashboard.putNumber("chicken error y", poseToGoTo.getY() - robotPose.getY());
   }
 }
