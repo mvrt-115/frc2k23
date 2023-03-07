@@ -194,7 +194,7 @@ public class Localization extends SubsystemBase {
         minCol = pose;
       }
     }
-    SmartDashboard.putNumber("chicken scoring loc", num);
+    //SmartDashboard.putNumber("chicken scoring loc", num);
     return minCol;
   }
 

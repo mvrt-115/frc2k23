@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake2.INTAKE_TYPE;
+import frc.robot.subsystems.Intake2;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -36,7 +37,7 @@ public class RobotContainer {
 
   private Elevator elevator;
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
-  private CANdleLEDSystem leds = new CANdleLEDSystem();
+  //private CANdleLEDSystem leds = new CANdleLEDSystem();
 
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
@@ -80,9 +81,7 @@ public class RobotContainer {
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
     driveJoystick.button(2).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
 
-    Pose2d scoreLoc = localization.getClosestScoringLoc();
-
-    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, scoreLoc));
+    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, null));
     // autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel"));
     // autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel2"));
     // // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreExitLevel"));
