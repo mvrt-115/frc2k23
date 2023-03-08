@@ -109,7 +109,7 @@ public class RobotContainer {
     // AUTO LEVEL
     driveJoystick.button(2).onTrue(
       new SequentialCommandGroup(
-        new DriveForward(swerveDrivetrain, Constants.Leveling.driveForwardMPS, Constants.Leveling.driveForwardTime),
+        //new DriveForward(swerveDrivetrain, Constants.Leveling.driveForwardMPS, Constants.Leveling.driveForwardTime),
         new Leveling(swerveDrivetrain) 
       )
     ).onFalse( 

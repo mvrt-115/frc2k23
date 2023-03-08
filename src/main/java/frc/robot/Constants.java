@@ -165,6 +165,7 @@ public final class Constants {
                 public static final double kTurnMaxAccelerationNormal = 1 * Math.PI;
                 public static final double kDriveMaxSpeedMPSNormal = 3.5;
                 public static final double kTurnMaxSpeedRPSNormal = 2 * Math.PI;
+                public static final double kDriveMaxSpeedCap = 10;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
                 public static double kTurnMaxSpeedRPS = kTurnMaxSpeedRPSNormal;
                 public static double kDriveMaxAcceleration = kDriveMaxAccelerationNormal;
@@ -261,7 +262,7 @@ public final class Constants {
                 // public static final double INCHES_PER_TICK = 10.6224;
 
                 // Min/Max heights for the elevator (in inches)
-                public static final double MAX_HEIGHT = 55;
+                public static final double MAX_HEIGHT = 65;
                 public static final double MIN_HEIGHT = 0;
 
                 public static final double ZERO_HEIGHT = 0;
@@ -321,12 +322,12 @@ public final class Constants {
                 public static final double thetaTolerance = 0.05;
 
                 // Camera position on robot
-                public static final Transform3d cam1ToRobot = new Transform3d( new Translation3d(0.18, -0.245, 0), new Rotation3d());// new Transform3d(new
+                public static final Transform3d cam1ToRobot = new Transform3d( new Translation3d(0, -0.245, 0), new Rotation3d());// new Transform3d(new
                                                                                   // Translation3d(12*.0254,
                                                                                   // Units.inchesToMeters(5 + 3/4), 0),
                                                                                   // new
                                                                                   // Rotation3d());
-                public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0.18, -0.245, 0), new Rotation3d());// new Transform3d(new
+                public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0, -0.245, 0), new Rotation3d());// new Transform3d(new
 
                 public static final Map<Integer, Pose2d> kRedHPLocs = Map.of(
                                 1,
@@ -527,6 +528,6 @@ public final class Constants {
                 public static final double kCompressedSpeed = -0.07;
 
                 public static final double kGoalRPM = -0.4;
-                public static final double kOuttakeRPM = 0.08;// 0.08;
+                public static final double kOuttakeRPM = 0.1;// 0.08;
         }
 }
