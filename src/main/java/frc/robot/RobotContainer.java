@@ -8,14 +8,11 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utils.JoystickIO;
 
-import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,7 +40,7 @@ public class RobotContainer {
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
   private CANdleLEDSystem leds = new CANdleLEDSystem();
 
-  // GroundIntake gi = new GroundIntake();
+  GroundIntake gi = new GroundIntake();
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
@@ -76,6 +73,8 @@ public class RobotContainer {
     elevator.setDefaultCommand(
       new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
     ); // used to 0.4, makes slower speed
+
+    gi.setDefaultCommand(new ManualGroundIntake(gi, () -> operatorJoystick.getRightX()*0.2));
       
     // Configure the trigger bindings
     configureBindings();

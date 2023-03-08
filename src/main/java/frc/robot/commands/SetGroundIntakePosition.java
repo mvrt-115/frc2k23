@@ -5,17 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.GroundIntake;
+import frc.robot.subsystems.*;
 
-public class SetGroundIntakeClawSpeed extends CommandBase {
-  /** Creates a new SetGroundIntakeClawPos. */
-  private GroundIntake groundIntake;
-  private double speed;
-  public SetGroundIntakeClawSpeed(GroundIntake gi, double speed) {
+public class SetGroundIntakePosition extends CommandBase {
+  GroundIntake groundIntake;
+  double position;
+  /** Creates a new RunGroundIntake. */
+  public SetGroundIntakePosition(GroundIntake gi, double position) {
     // Use addRequirements() here to declare subsystem dependencies.
     groundIntake = gi;
-    this.speed = speed;
+    this.position = position;
+
+    addRequirements(gi);
   }
 
   // Called when the command is initially scheduled.
@@ -25,7 +26,7 @@ public class SetGroundIntakeClawSpeed extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    groundIntake.setClawSpeed(speed);
+    groundIntake.setPosition(position);
   }
 
   // Called once the command ends or is interrupted.

@@ -80,11 +80,17 @@ public final class Constants {
         // public static final double kMarginOfError = 0.03;
 
         // public static final int kProximityPort = 6; // port number for element proximity sensor
-        public static final int kPivotPort = 11;//isCompBot? 8 : 5;
-        public static final int kIntakePort = 15;//isCompBot? 8 : 5;
+        public static final int kPivotId = 11;//isCompBot? 8 : 5;
+        public static final int kRollerId = 15;//isCompBot? 8 : 5;
 
-        public static final double kP = 0.10897, kI = 0, kD = 0.010942, kG = 0.15808;
+        public static final double kRollerOutput = 0.5;
+
+        public static final double kP = 0.01, kI = 0, kD = 0, kG = 0.15808;
         public static final double initialAngle = 20.0;
+        public static final double kGearRatio = 30.0;
+        public static final double kIntakePositionThreshold = 120;
+
+
 
         // public static final double kCompressedSpeed = isCompBot? -0.15 : -0.07;
 

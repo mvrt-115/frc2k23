@@ -6,19 +6,22 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.GroundIntake;
+
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
 
 
-public class SetGroundIntakeArmPos extends CommandBase {
+public class ManualGroundIntake extends CommandBase {
   /** Creates a new SetIntakeArmPosition. */
   private GroundIntake groundIntake;
   private Logger logger;
-  private double goalPosition;
+  private Supplier<Double> out;
   //private boolean remainAtOrigPos;
-  public SetGroundIntakeArmPos(GroundIntake gi, double goalPosition) {
+  public ManualGroundIntake(GroundIntake gi, Supplier<Double> output) {
     // Use addRequirements() here to declare subsystem dependencies.
     groundIntake = gi;
-    this.goalPosition = goalPosition;
+    this.out = output;
     // logger.recordOutput("GroundIntake/armMotor/commandCalled", 1);
     addRequirements(gi);
     //remainAtOrigPos = remainAtPosition;
@@ -34,7 +37,7 @@ public class SetGroundIntakeArmPos extends CommandBase {
   @Override
   public void execute() {
     //if(!remainAtOrigPos)
-    groundIntake.setPosition(goalPosition);
+    groundIntake.setArmOutput(out.get() + groundIntake.getFeedForward());
   }
 
   // Called once the command ends or is interrupted.
