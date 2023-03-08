@@ -163,6 +163,7 @@ public final class Constants {
                 public static final double kTurnMaxAccelerationNormal = 1 * Math.PI;
                 public static final double kDriveMaxSpeedMPSNormal = 3.5;
                 public static final double kTurnMaxSpeedRPSNormal = 2 * Math.PI;
+                public static final double kDriveMaxSpeedCap = 10;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
                 public static double kTurnMaxSpeedRPS = kTurnMaxSpeedRPSNormal;
                 public static double kDriveMaxAcceleration = kDriveMaxAccelerationNormal;
