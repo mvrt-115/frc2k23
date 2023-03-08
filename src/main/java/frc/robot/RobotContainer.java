@@ -42,8 +42,8 @@ public class RobotContainer {
   private Elevator elevator;
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
   private CANdleLEDSystem leds = new CANdleLEDSystem();
-
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+  private Localization localization = new Localization(swerveDrivetrain);
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
@@ -93,7 +93,7 @@ public class RobotContainer {
     
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
-
+    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, null));
     autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel"));
     autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel2"));
     // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreExitLevel"));
