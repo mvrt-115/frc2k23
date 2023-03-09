@@ -312,7 +312,7 @@ public final class Constants {
         }
 
         public static class VisionConstants {
-                public static final String kCamera1Name = "beholder";
+                public static final String kCamera1Name = "monocle";
                 public static final String kCamera2Name = "beholder";
 
                 public static final double minDistFromTag = 0.3; // Min dist necessary from tag to automate (0.3 meter
@@ -321,12 +321,8 @@ public final class Constants {
                 public static final double thetaTolerance = 0.05;
 
                 // Camera position on robot
-                public static final Transform3d cam1ToRobot = new Transform3d( new Translation3d(0.18, -0.245, 0), new Rotation3d());// new Transform3d(new
-                                                                                  // Translation3d(12*.0254,
-                                                                                  // Units.inchesToMeters(5 + 3/4), 0),
-                                                                                  // new
-                                                                                  // Rotation3d());
-                public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0.18, -0.245, 0), new Rotation3d());// new Transform3d(new
+                public static final Transform3d cam1ToRobot = new Transform3d( new Translation3d(0.18, -0.245, 0), new Rotation3d());
+                public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(0.18, -0.245, 0), new Rotation3d());
 
                 public static final Map<Integer, Pose2d> kRedHPLocs = Map.of(
                                 1,
