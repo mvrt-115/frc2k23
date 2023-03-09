@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,6 +21,7 @@ public class Align extends CommandBase {
   private SwerveDrivetrain swerve;
   private Localization localization;
 
+  private Supplier<Pose2d> poseSup;
   private Pose2d poseToGoTo;
 
   private PIDController pidX;
@@ -26,10 +29,10 @@ public class Align extends CommandBase {
   private PIDController pidTheta;
 
   /** Creates a new Align. */
-  public Align(SwerveDrivetrain swerve, Localization localization, Pose2d poseToGoTo) {
+  public Align(SwerveDrivetrain swerve, Localization localization, Supplier<Pose2d> poseSup) {
     this.swerve = swerve;
     this.localization = localization;
-    this.poseToGoTo = poseToGoTo;
+    this.poseSup = poseSup;
     addRequirements(localization, swerve);
     pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
     pidY = new PIDController(2, 0.5, 0.05); // pid y-coor 1.2
@@ -39,6 +42,7 @@ public class Align extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    poseToGoTo = poseSup.get();
     localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
     if(poseToGoTo==null) poseToGoTo = localization.getClosestScoringLoc();//Constants.VisionConstants.kRedScoreCols.get(5);//localization.getClosestScoringLoc();
