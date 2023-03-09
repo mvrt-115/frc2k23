@@ -103,8 +103,16 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    // Pose2d nearestCol = localization.getClosestScoringLoc();
-    // driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    Pose2d nearestCol = localization.getClosestScoringLoc();
+    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+
+    //SHIFT LEFT
+    Pose2d nearestLeft = localization.getLeftScoreLoc();
+    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, nearestLeft)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    
+    //SHIFT RIGHT
+    Pose2d nearestRight = localization.getRightScoreLoc();
+    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, nearestRight)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     // AUTO LEVEL
     driveJoystick.button(2).onTrue(
@@ -115,13 +123,7 @@ public class RobotContainer {
     ).onFalse( 
       new InstantCommand(() -> swerveDrivetrain.stopModules())
     );
-    
-    //Brake baby brake
-    driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
-
-    //No braking
-    driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
-
+ 
     // HP INTAKE
     operatorJoystick.x().onTrue(
       new IntakeHPStation(elevator, intake)
