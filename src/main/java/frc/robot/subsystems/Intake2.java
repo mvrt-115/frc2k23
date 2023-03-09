@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -25,7 +27,7 @@ public class Intake2 extends SubsystemBase {
 
   private boolean isIntakingOrScoring;
 
-  private CANSparkMax motor;
+  private TalonFX motor;
   private RelativeEncoder encoder;
   private DigitalInput prox;
 
@@ -44,15 +46,15 @@ public class Intake2 extends SubsystemBase {
 
     isIntakingOrScoring = false;
 
-    motor = TalonFactory.createSparkMax(Constants.Intake.kMotorPort, false);
-    encoder = motor.getEncoder(); 
+    motor = TalonFactory.createTalonFX(Constants.Intake.kMotorPort, false);
+    //encoder = motor.getEncoder(); 
 
     prox = new DigitalInput(Constants.Intake.kProximityPort); 
 
-    pidController = motor.getPIDController();
+  /*  pidController = motor.getPIDController();
     pidController.setP(Constants.Intake.kP);
     pidController.setI(Constants.Intake.kI);
-    pidController.setD(Constants.Intake.kD);
+    pidController.setD(Constants.Intake.kD);*/
 
     logger = Logger.getInstance();
   }
@@ -85,21 +87,21 @@ public class Intake2 extends SubsystemBase {
   public void stopIntaking()
   {
     isIntakingOrScoring = false;
-   /* if(prox.get())*/ motor.set(Constants.Intake.kCompressedSpeed);
+   /* if(prox.get())*/ motor.set(ControlMode.PercentOutput, Constants.Intake.kCompressedSpeed);
   }
 
   public void runMotor(boolean isIntaking)
   {
     isIntakingOrScoring = true;
     double speed = isIntaking ? Constants.Intake.kGoalRPM : Constants.Intake.kOuttakeRPM;
-   /* if(!isIntaking || isIntaking && !prox.get())*/ motor.set(speed);
+   /* if(!isIntaking || isIntaking && !prox.get())*/ motor.set(ControlMode.PercentOutput, speed);
   }
 
   public void smoothRun(boolean isIntaking)
   {
-    isIntakingOrScoring = true;
+   /*  isIntakingOrScoring = true;
     double goalSpeed = isIntaking ? Constants.Intake.kGoalRPM : Constants.Intake.kOuttakeRPM;
-    /*if(!isIntaking || isIntaking && !prox.get())*/ pidController.setReference(goalSpeed, CANSparkMax.ControlType.kVelocity);
+    /*if(!isIntaking || isIntaking && !prox.get()) pidController.setReference(goalSpeed, CANSparkMax.ControlType.kVelocity);*/
   }
 
   /******************************************PERIODIC***************************************/
@@ -109,9 +111,9 @@ public class Intake2 extends SubsystemBase {
     // This method will be called once per scheduler run
     if(!isIntakingOrScoring) stopIntaking();
     SmartDashboard.putBoolean("item in intake", !prox.get());
-    logger.recordOutput("intake/current", motor.getOutputCurrent());
+    /*logger.recordOutput("intake/current", motor.getOutputCurrent());
     logger.recordOutput("intake/element", !prox.get());
-    logger.recordOutput("intake/voltage", motor.getAppliedOutput());
+    logger.recordOutput("intake/voltage", motor.getAppliedOutput());*/
   }
 
   /******************************************CALCULATIONS***************************************/
