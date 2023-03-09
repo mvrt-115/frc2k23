@@ -31,7 +31,7 @@ public class SwerveJoystickCommand extends CommandBase {
   private final SwerveDrivetrain drivetrain;
   private final Supplier<Double> xSpeedFunc, ySpeedFunc, turnSpeedFunc;
   private final Trigger fieldOrientedFunc;
-  private final SlewRateLimiter xLimiter, yLimiter, wLimiter;
+  // private final SlewRateLimiter xLimiter, yLimiter, wLimiter;
   private final JoystickIO joystick;
   private Timer timer;
   private Rotation2d heading;
@@ -48,9 +48,9 @@ public class SwerveJoystickCommand extends CommandBase {
     this.ySpeedFunc = ySpeedFunc;
     this.turnSpeedFunc = angularSpeedFunc;
     this.fieldOrientedFunc = fieldOrientedFunc;
-    this.xLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
-    this.yLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
-    this.wLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kTurnMaxAcceleration);
+    // this.xLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
+    // this.yLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
+    // this.wLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kTurnMaxAcceleration);
     this.joystick = joystick;
     thetaController = new PIDController(Constants.JoystickControls.kPJoystick, Constants.JoystickControls.kIJoystick, Constants.JoystickControls.kDJoystick);
     addRequirements(drivetrain);
@@ -113,9 +113,9 @@ public class SwerveJoystickCommand extends CommandBase {
     }
 
     // limit acceleration
-    vX = xLimiter.calculate(vX) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
-    vY = yLimiter.calculate(vY) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
-    vW = wLimiter.calculate(vW) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPS;
+    // vX = xLimiter.calculate(vX) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
+    // vY = yLimiter.calculate(vY) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
+    // vW = wLimiter.calculate(vW) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPS;
 
     if (MathUtils.withinEpsilon(vW, 0, 0.01)) {
       double v_w_compensate = drivetrain.holdHeading(heading);
