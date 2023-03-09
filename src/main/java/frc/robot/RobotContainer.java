@@ -122,13 +122,13 @@ public class RobotContainer {
     operatorJoystick.x().onTrue(
       new IntakeHPStation(elevator, intake)
     ).onFalse(
-      new SetElevatorHeight(elevator, 5).alongWith(intake.stop())
+      new ElevateDown(elevator).alongWith(intake.stop())
     );
 
     // RETURN TO NEUTRAL
     operatorJoystick.b().onTrue(
       new ParallelCommandGroup(
-        new SetElevatorHeight(elevator, 5),
+        new ElevateDown(elevator),
         intake.stop()
       )
     ).onFalse(
