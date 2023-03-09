@@ -45,7 +45,6 @@ public class Align extends CommandBase {
     poseToGoTo = poseSup.get();
     localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
-    if(poseToGoTo==null) poseToGoTo = localization.getClosestScoringLoc();//Constants.VisionConstants.kRedScoreCols.get(5);//localization.getClosestScoringLoc();
     SmartDashboard.putString("chicken align initialize scoring loc", poseToGoTo.toString());
     SmartDashboard.putString("chicken align currPose", localization.getCurrentPose().toString());
   }
