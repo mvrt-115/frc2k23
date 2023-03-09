@@ -43,7 +43,7 @@ public class Localization extends SubsystemBase {
   private boolean aligning;
 
   public Localization(SwerveDrivetrain swerveDrivetrain) {
-    this.camera1 = new PhotonCamera(Constants.VisionConstants.kCamera1Name);
+    //this.camera1 = new PhotonCamera(Constants.VisionConstants.kCamera1Name);
     this.camera2 = new PhotonCamera(Constants.VisionConstants.kCamera2Name);
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
@@ -53,12 +53,12 @@ public class Localization extends SubsystemBase {
     } catch(IOException e) {
       System.err.println("[Localization 2 constructor] Error loading from resource");
     }
-    camera1Estimator = new PhotonPoseEstimator(
+    /*camera1Estimator = new PhotonPoseEstimator(
       fieldLayout,
       PoseStrategy.MULTI_TAG_PNP,
       camera1,
-      Constants.VisionConstants.cam1ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+      Constants.VisionConstants.cam1ToRobot);*/
+    //camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
     camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
@@ -74,11 +74,11 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
-    camera1Estimator.setReferenceTheta(swerveDrivetrain.getRotation2d().getRadians());
+    //camera1Estimator.setReferenceTheta(swerveDrivetrain.getRotation2d().getRadians());
     camera2Estimator.setReferenceTheta(swerveDrivetrain.getRotation2d().getRadians());
-    Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
+    //Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
-    Pose2d result = combinePoses(result1, result2);
+    Pose2d result = combinePoses(null, result2);
 
     SmartDashboard.putBoolean("chicken robot present", result != null);
     if(result != null) {
@@ -130,8 +130,8 @@ public class Localization extends SubsystemBase {
   }
 
   public void resetCameraEstimators(){
-    camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
-    camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    //camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
+    //camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
     camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
@@ -146,6 +146,15 @@ public class Localization extends SubsystemBase {
   public Pose2d combinePoses(Optional<EstimatedRobotPose> result1, Optional<EstimatedRobotPose> result2) {
     Pose3d first;
     Pose3d second;
+    if(result1==null){
+      if(result2.isPresent()){
+        second = result2.get().estimatedPose;
+        SmartDashboard.putString("chicken cam2 pose", second.toString());
+  
+        return second.toPose2d();
+      }
+      return null;
+    }
     if(result1.isPresent() && result2.isPresent()){
       first = result1.get().estimatedPose;
       second = result2.get().estimatedPose;
@@ -255,7 +264,7 @@ public class Localization extends SubsystemBase {
       SmartDashboard.putString("chicken logged Estimated Position", pos.toString());
     }
     
-    SmartDashboard.putBoolean("chicken cam 1 can see", camera1.getLatestResult().hasTargets());
+    //SmartDashboard.putBoolean("chicken cam 1 can see", camera1.getLatestResult().hasTargets());
     SmartDashboard.putBoolean("chicken cam 2 can see", camera2.getLatestResult().hasTargets());
   }
 

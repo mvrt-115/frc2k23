@@ -21,8 +21,6 @@ import frc.robot.Constants;
 import frc.robot.utils.MathUtils;
 import frc.robot.utils.TalonFactory;
 
-import java.lang.invoke.ConstantCallSite;
-
 import org.littletonrobotics.junction.Logger;
 
 public class SwerveModule {
@@ -47,12 +45,12 @@ public class SwerveModule {
   /** Creates a new SwerveModule. */
   public SwerveModule(String _swerveID, int driveID, int turnID, int encoderID, boolean driveReversed, boolean turnReversed,
       boolean encoderReversed, double encoderOffset, SwerveModulePosition position) {
-    driveMotor = TalonFactory.createTalonFX(driveID, driveReversed, Constants.SwerveDrivetrain.canivore_name);
+    driveMotor = TalonFactory.createTalonFX(driveID, driveReversed);
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
       turnMotor = TalonFactory.createTalonFX(turnID, false);
     }
     else {
-      turnMotor = TalonFactory.createTalonFX(turnID, turnReversed, Constants.SwerveDrivetrain.canivore_name);
+      turnMotor = TalonFactory.createTalonFX(turnID, turnReversed);
     }
 
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
@@ -79,7 +77,7 @@ public class SwerveModule {
       absEncoderOffsetRad = 0;
     }
     absEncoderReversed = encoderReversed;
-    absEncoder = new CANCoder(encoderID, Constants.SwerveDrivetrain.canivore_name);
+    absEncoder = new CANCoder(encoderID);
 
     desiredState = new SwerveModuleState();
 

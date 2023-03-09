@@ -79,9 +79,9 @@ public class SwerveJoystickCommand extends CommandBase {
     double vY = ySpeedFunc.get(); // as of here, positive Y is left, negative Y is right
     double vW = turnSpeedFunc.get(); // as of here, negative W is down (CW) positive W is up (CCW)
     if(elevator.getHeightInches() > 25) {
-      vX *= 0.35;
-      vY *= 0.35;
-      vW *= 0.35;
+      vX *= 0.6;
+      vY *= 0.6;
+      vW *= 0.6;
 
     }
     Logger.getInstance().recordOutput("Controller/vX raw", vX);
@@ -103,14 +103,20 @@ public class SwerveJoystickCommand extends CommandBase {
       Constants.SwerveDrivetrain.kTurnMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
     else if (right_trigger > 0.05) {
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + right_trigger) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
-    }
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + (right_trigger < 0.75 ? right_trigger : (
+        ((Constants.SwerveDrivetrain.kDriveMaxSpeedCap - Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal * (1.75))/0.25) * (right_trigger - 1) + Constants.SwerveDrivetrain.kDriveMaxSpeedCap
+      ))) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;    }
     else {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
       Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
       Constants.SwerveDrivetrain.kDriveMaxAcceleration = Constants.SwerveDrivetrain.kDriveMaxAccelerationNormal;
       Constants.SwerveDrivetrain.kTurnMaxAcceleration = Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
+
+    if (elevator.getHeightInches() > 25){
+      Constants.SwerveDrivetrain.kDriveMaxAcceleration *= 0.5;
+      Constants.SwerveDrivetrain.kTurnMaxAcceleration *= 0.5;
+  }
 
     // limit acceleration
     vX = xLimiter.calculate(vX) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
