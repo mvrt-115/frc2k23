@@ -1,4 +1,13 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "navX-Sensor[0]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -22,7 +31,6 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "image": "C:\\Users\\amanj\\OneDrive\\MVRT 2023 Software\\frc2k23\\resizedfieldimage.png",
         "traj": {
           "arrowSize": 11,
           "arrowWeight": 10.0,
@@ -37,14 +45,14 @@
   },
   "NetworkTables": {
     "transitory": {
+      "AdvantageKit": {
+        "RealOutputs": {
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
-        "Go to high": {
-          "open": true
-        },
-        "Go to mid": {
-          "open": true
-        },
-        "go to high": {
+        "Field": {
           "open": true
         },
         "open": true

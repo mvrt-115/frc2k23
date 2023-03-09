@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -25,15 +26,16 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
+  private PowerDistribution examplePD;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+    
     Logger logger = Logger.getInstance();
-
+    //examplePD = new PowerDistribution(1, ModuleType.kRev);
     logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
@@ -73,6 +75,7 @@ public class Robot extends LoggedRobot {
 
     // preLog
     CommandScheduler.getInstance().run();
+    //SmartDashboard.putNumber("10current", examplePD.getCurrent(10));
     // postLog
   }
 

@@ -80,14 +80,14 @@ public class AutonRunner extends SequentialCommandGroup {
     //   new SetElevatorHeight(elevator, 400)) : new PrintCommand("!!!Should Score High Here!!!")
     // );
     eventMap.put("Intake", new PrintCommand("!!!Should Intake Here!!!"));
-    eventMap.put("LevelForwards", new SequentialCommandGroup(
-      new DriveForward(drivetrain, 4, 1.25),
-      new Leveling(drivetrain))  
-    );
-    eventMap.put("LevelBackwards", new SequentialCommandGroup(
-      new DriveForward(drivetrain, -4, 1.25),
-      new Leveling(drivetrain))  
-    );
+    // eventMap.put("LevelForwards", new SequentialCommandGroup(
+    //   new DriveForward(drivetrain, 4, 1.25),
+    //   new Leveling(drivetrain))  
+    // );
+    // eventMap.put("LevelBackwards", new SequentialCommandGroup(
+    //   new DriveForward(drivetrain, -4, 1.25),
+    //   new Leveling(drivetrain))  
+    // );
 
     List<PathPlannerTrajectory> fullTrajectoriesWithStopEvents = PathPlanner.loadPathGroup(
       pathName, 

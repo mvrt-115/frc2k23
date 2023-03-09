@@ -177,6 +177,58 @@ public class Localization extends SubsystemBase {
   }
   
   /**
+   * Get scoring loc to left of closest
+   * @return pose2d of left to closest score loc
+   */
+  public Pose2d getLeftScoreLoc(){
+    Pose2d orig = getClosestScoringLoc();
+
+    Map<Integer, Pose2d> scoreCols = Constants.VisionConstants.kBlueScoreCols;
+    if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)){
+      scoreCols = Constants.VisionConstants.kRedScoreCols;
+    } 
+
+    //Loop through cols
+    for(int i : scoreCols.keySet()) {
+      Pose2d pose = scoreCols.get(i);
+     
+      if (pose.equals(orig)){
+        if (i+1 < scoreCols.size()){
+          return scoreCols.get(i+1);
+        }
+      }
+    }
+      
+    return null;
+  }
+
+  /**
+   * Get scoring loc to right of closest
+   * @return pose2d of left to closest score loc
+   */
+  public Pose2d getRightScoreLoc(){
+    Pose2d orig = getClosestScoringLoc();
+
+    Map<Integer, Pose2d> scoreCols = Constants.VisionConstants.kBlueScoreCols;
+    if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)){
+      scoreCols = Constants.VisionConstants.kRedScoreCols;
+    } 
+
+    //Loop through cols
+    for(int i : scoreCols.keySet()) {
+      Pose2d pose = scoreCols.get(i);
+     
+      if (pose.equals(orig)){
+        if (i-1 >= 0){
+          return scoreCols.get(i-1);
+        }
+      }
+    }
+      
+    return null;
+  }
+
+  /**
    * Gets the closest scoring location using SwerveDrivePoseEstimator
    * @return Returns the Pose2d of the scoring col
    */
@@ -189,7 +241,6 @@ public class Localization extends SubsystemBase {
 
     Pose2d minCol = null;
     double minDist = Double.MAX_VALUE;
-    int num = 0;
 
     //Loop through cols
     for(int i : scoreCols.keySet()) {
@@ -199,7 +250,6 @@ public class Localization extends SubsystemBase {
       //Shortest dist away
       if(dy < minDist) {
         minDist = dy;
-        num = i;
         minCol = pose;
       }
     }
