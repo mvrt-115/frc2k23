@@ -65,7 +65,7 @@ public final class Constants {
                 public static final double kMarginOfError = 0.03;
 
                 public static final int kProximityPort = 6; // port number for element proximity sensor
-                public static final int kMotorPort = isCompBot? 8 : 5;
+                public static final int kMotorPort = 16;
 
                 public static final double kP = 0, kI = 0, kD = 0;
 
