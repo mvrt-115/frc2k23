@@ -69,11 +69,11 @@ public final class Constants {
 
                 public static final double kP = 0, kI = 0, kD = 0;
 
-                public static final double kCompressedSpeed = isCompBot? -0.15 : -0.07;
+                public static final double kCompressedSpeed = isCompBot? -0.125 : -0.07;
 
         public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
 
-        public static final double kOuttakeRPM = isCompBot?  0.2 :  0.08;
+        public static final double kOuttakeRPM = isCompBot?  0.125 :  0.08;
     }
 
     public static class GroundIntake {
@@ -283,7 +283,7 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.028; //prac bot: 0.025;// .1;//.01;
+                public static final double P = 0.0237; //prac bot: 0.025;// .1;//.01;
                 public static final double I = 0;// .000006;
                 public static final double D = 0.13; //0.1;
                 public static final double F = 0;
@@ -300,8 +300,8 @@ public final class Constants {
                 public static final double SHELF_HEIGHT = 0;
 
                 // MID, HIGH heights parwa cone (in ticks)
-                public static final double CONE_MID_HEIGHT = 43;
-                public static final double CONE_HIGH_HEIGHT = 59.5;
+                public static final double CONE_MID_HEIGHT = 38.7;
+                public static final double CONE_HIGH_HEIGHT = 57;
                 public static final double INTAKE_HEIGHT = 40.8;
 
                 // MID, HIGH heights para cube (in inches)
@@ -323,8 +323,8 @@ public final class Constants {
                 public static final double KDt = 0.01;
 
                 // constraints
-                public static final double MAX_VELOCITY = 10; //50;
-                public static final double MAX_ACCELERATION = 2; //25;
+                public static final double MAX_VELOCITY = 6; // 10//50;
+                public static final double MAX_ACCELERATION = 2; //2 //25;
 
                 // initial elevator stages
                 public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
