@@ -97,17 +97,14 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    Pose2d nearestCol = localization.getClosestScoringLoc();
-    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     //SHIFT LEFT
-    Pose2d nearestLeft = localization.getLeftScoreLoc();
-    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, nearestLeft)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
     
     //SHIFT RIGHT
-    Pose2d nearestRight = localization.getRightScoreLoc();
-    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, nearestRight)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
-
+    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+  
     // AUTO LEVEL
     driveJoystick.button(2).onTrue(
       new SequentialCommandGroup(
@@ -122,13 +119,13 @@ public class RobotContainer {
     operatorJoystick.x().onTrue(
       new IntakeHPStation(elevator, intake)
     ).onFalse(
-      new SetElevatorHeight(elevator, 5).alongWith(intake.stop())
+      new ElevateDown(elevator).alongWith(intake.stop())
     );
 
     // RETURN TO NEUTRAL
     operatorJoystick.b().onTrue(
       new ParallelCommandGroup(
-        new SetElevatorHeight(elevator, 5),
+        new ElevateDown(elevator),
         intake.stop()
       )
     ).onFalse(
