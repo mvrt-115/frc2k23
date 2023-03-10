@@ -66,9 +66,9 @@ public class RobotContainer {
     );
     
     // ELEVATOR MANUAL
-    elevator.setDefaultCommand(
-      new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
-    ); // used to 0.4, makes slower speed
+    //elevator.setDefaultCommand(
+      //new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
+    //); // used to 0.4, makes slower speed
       
     // Configure the trigger bindings
     configureBindings();
@@ -85,9 +85,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
     
-    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
-    driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
-    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, null));
+    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
+    //driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
+    //driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, null));
     autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel"));
     autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel2"));
     // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreExitLevel"));
@@ -100,20 +100,20 @@ public class RobotContainer {
     driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     //SHIFT LEFT
-    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(5).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
     
     //SHIFT RIGHT
-    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
   
     // AUTO LEVEL
-    driveJoystick.button(2).onTrue(
+    /*driveJoystick.button(2).onTrue(
       new SequentialCommandGroup(
         //new DriveForward(swerveDrivetrain, Constants.Leveling.driveForwardMPS, Constants.Leveling.driveForwardTime),
         new Leveling(swerveDrivetrain) 
       )
     ).onFalse( 
       new InstantCommand(() -> swerveDrivetrain.stopModules())
-    );
+    );*/
  
     // HP INTAKE
     operatorJoystick.x().onTrue(
@@ -144,15 +144,15 @@ public class RobotContainer {
     // RESET ELEVATOR ENCODER VALUE
     operatorJoystick.button(9).onTrue(new InstantCommand(() -> elevator.resetEncoder()));
     
-    // SCORE CUBE MID
-    operatorJoystick.button(6).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT)
-    ).onFalse(intake.runOut());
+    // // SCORE CUBE MID
+    // operatorJoystick.button(6).onTrue(
+    //   new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT)
+    // ).onFalse(intake.runOut());
     
-    // SCORE CUBE HIGH
-    operatorJoystick.button(5).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT)
-    ).onFalse(intake.runOut());
+    // // SCORE CUBE HIGH
+    // operatorJoystick.button(5).onTrue(
+    //   new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT)
+    // ).onFalse(intake.runOut());
 
     // MANUAL INTAKE
     operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop()); // manual intaking

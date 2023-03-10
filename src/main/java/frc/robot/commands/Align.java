@@ -34,17 +34,17 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseSup = poseSup;
     addRequirements(localization, swerve);
-    pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
-    pidY = new PIDController(2, 0.5, 0.05); // pid y-coor 1.2
+    pidX = new PIDController(2.5, 0, 0.5); // pid x-coor 1.2
+    pidY = new PIDController(2.5, 0, 0.5); // pid y-coor 1.2
     pidTheta = new PIDController(4, 0, 0); // pid t-coor 4
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    poseToGoTo = poseSup.get();
     localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
+    poseToGoTo = poseSup.get();
     SmartDashboard.putString("chicken align initialize scoring loc", poseToGoTo.toString());
     SmartDashboard.putString("chicken align currPose", localization.getCurrentPose().toString());
   }
@@ -76,8 +76,8 @@ public class Align extends CommandBase {
   public boolean isFinished() {
     Pose2d robotPose = localization.getCurrentPose();
 
-      return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance &&
-        Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance &&
+      return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
+        Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
         Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
         Constants.VisionConstants.thetaTolerance;
   }
