@@ -73,7 +73,7 @@ public final class Constants {
                 public static final double rotatekD = 0;
                 public static final double angleTolerance = 1.5;
                 public static final double speedTolerance = 0.5;
-                public static final double levelVelocityMPS = 0.75;
+                public static final double levelVelocityMPS = 3;
                 public static final double yawAlligned = 0; // TBD
                 public static final double pitchAlligned = 0; // TBD
                 public static final double rollAlligned = 0; // TBD
@@ -165,7 +165,7 @@ public final class Constants {
                 public static final double kTurnMaxAccelerationNormal = 1 * Math.PI;
                 public static final double kDriveMaxSpeedMPSNormal = 3.5;
                 public static final double kTurnMaxSpeedRPSNormal = 2 * Math.PI;
-                public static final double kDriveMaxSpeedCap = 10;
+                public static final double kDriveMaxSpeedCap = 13;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
                 public static double kTurnMaxSpeedRPS = kTurnMaxSpeedRPSNormal;
                 public static double kDriveMaxAcceleration = kDriveMaxAccelerationNormal;
@@ -516,7 +516,7 @@ public final class Constants {
                 public static final double kMarginOfError = 0.03;
 
                 public static final int kProximityPort = 6; // port number for element proximity sensor
-                public static final int kMotorPort = 5;
+                public static final int kMotorPort = 16;
 
                 public static final double kP = 0, kI = 0, kD = 0;
 

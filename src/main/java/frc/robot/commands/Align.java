@@ -29,7 +29,7 @@ public class Align extends CommandBase {
   public Align(SwerveDrivetrain swerve, Localization localization, Pose2d poseToGoTo) {
     this.swerve = swerve;
     this.localization = localization;
-    this.poseToGoTo = poseToGoTo;
+    this.poseToGoTo = localization.getClosestScoringLoc();
     addRequirements(localization, swerve);
     pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
     pidY = new PIDController(2, 0.5, 0.05); // pid y-coor 1.2

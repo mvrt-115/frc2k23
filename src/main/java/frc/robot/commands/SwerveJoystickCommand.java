@@ -103,9 +103,13 @@ public class SwerveJoystickCommand extends CommandBase {
       Constants.SwerveDrivetrain.kTurnMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
     else if (right_trigger > 0.05) {
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + (right_trigger < 0.75 ? right_trigger : (
-        ((Constants.SwerveDrivetrain.kDriveMaxSpeedCap - Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal * (1.75))/0.25) * (right_trigger - 1) + Constants.SwerveDrivetrain.kDriveMaxSpeedCap
-      ))) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;    }
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + right_trigger * 1.5) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+      // (right_trigger < 0.75 ? right_trigger : (
+      //   ((Constants.SwerveDrivetrain.kDriveMaxSpeedCap - Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal * (1.75))/0.25) * (right_trigger - 1) + Constants.SwerveDrivetrain.kDriveMaxSpeedCap
+      // ))) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+      // Constants.SwerveDrivetrain.kTurnMaxAcceleration = (right_trigger > 0.75 ? 2 : 1) * Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
+      // Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = (right_trigger > 0.75 ? 2 : 1) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+    }
     else {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
       Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
