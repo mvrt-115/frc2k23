@@ -195,7 +195,7 @@ public final class Constants {
                 public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
                 public static final double kDriveMaxAccelerationNormal = 3;
                 public static final double kTurnMaxAccelerationNormal = 1 * Math.PI;
-                public static final double kDriveMaxSpeedMPSNormal = 3.5;
+                public static final double kDriveMaxSpeedMPSNormal = 6;
                 public static final double kTurnMaxSpeedRPSNormal = 2 * Math.PI;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
                 public static double kTurnMaxSpeedRPS = kTurnMaxSpeedRPSNormal;
@@ -300,9 +300,9 @@ public final class Constants {
                 public static final double SHELF_HEIGHT = 0;
 
                 // MID, HIGH heights parwa cone (in ticks)
-                public static final double CONE_MID_HEIGHT = 38.7;
-                public static final double CONE_HIGH_HEIGHT = 57;
-                public static final double INTAKE_HEIGHT = 40.8;
+                public static final double CONE_MID_HEIGHT = 39.5;
+                public static final double CONE_HIGH_HEIGHT = 59.1;
+                public static final double INTAKE_HEIGHT = 40;
 
                 // MID, HIGH heights para cube (in inches)
                 public static final double CUBE_MID_HEIGHT = 40.28;
@@ -311,7 +311,7 @@ public final class Constants {
                 // feed forward constants
                 public static final double kS = isCompBot ? 0.11729 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = isCompBot ? 0.49892 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
+                public static final double kG = isCompBot ? 0.47892 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
                 public static final double kV = isCompBot ? 0.029489 : 0.039238; // 0.035258;
                 public static final double kA = isCompBot ? 0.0018216 : 0.012817;//0.0031226; // 0.0053228;
                 // public static final double kA = 0;
@@ -344,19 +344,45 @@ public final class Constants {
         }
 
         public static class VisionConstants {
-                public static final String kCamera1Name = "bettygotmoney" + "cam"; // neg offset
-                public static final String kCamera2Name = "bohm" + "cam"; // pos offset
+                public static final String kCamera1Name = "monocle";
+                public static final String kCamera2Name = "beholder";
 
                 public static final double minDistFromTag = 0.3; // Min dist necessary from tag to automate (0.3 meter
                                                                  // aprox)
-                public static final double xyTolerance = 0.05;
+                public static final double xTolerance = 0.05;
+                public static final double yTolerance = 0.03;
                 public static final double thetaTolerance = 0.05;
 
                 // Camera position on robot
-                public static final Transform3d cam1ToRobot = new Transform3d(
-                                new Translation3d(0, -(4.5 * 2.54) / 100.0 - 0.05, 0), new Rotation3d());
-                public static final Transform3d cam2ToRobot = new Transform3d(
-                                new Translation3d(0, (4.5 * 2.54) / 100.0 + 0.05, 0), new Rotation3d());
+                public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(Units.inchesToMeters(5), -Units.inchesToMeters(9), 0), new Rotation3d(0, Units.degreesToRadians(15), 0));// new Transform3d(new
+                public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(Units.inchesToMeters(5), Units.inchesToMeters(9), 0), new Rotation3d(0, Units.degreesToRadians(15), 0));// new Transform3d(new                
+
+                public static final Map<Integer, Pose2d> kRedHPLocs = Map.of(
+                        1,
+                        new Pose2d(
+                                        Units.inchesToMeters(602),
+                                        Units.inchesToMeters(287),
+                                        new Rotation2d(Math.PI)),
+                        2,
+                        new Pose2d(
+                                        Units.inchesToMeters(602),
+                                        Units.inchesToMeters(242),
+                                        new Rotation2d(Math.PI)));
+
+                public static final Map<Integer, Pose2d> kBlueHPLocs = Map.of(
+                        1,
+                        new Pose2d(
+                                        Units.inchesToMeters(53),
+                                        Units.inchesToMeters(287),
+                                        new Rotation2d(0)),
+                        2,
+                        new Pose2d(
+                                        Units.inchesToMeters(53),
+                                        Units.inchesToMeters(242),
+                                        new Rotation2d(0)));
+
+
+                private static double scoringOffset = 32;
                 /**
                  * Key:
                  * Orientation: facing red community from blue community
@@ -365,98 +391,98 @@ public final class Constants {
                  * Blue Alliance Scoring Locations (left to right) – IDs 10, 11, ...18
                  */
                 public static final Map<Integer, Pose2d> kRedScoreCols = Map.of(
-                                1,
-                                new Pose2d(
-                                                Units.inchesToMeters(597.1),
-                                                Units.inchesToMeters(20.6),
-                                                new Rotation2d(Math.PI)),
-                                2,
-                                new Pose2d(
-                                                Units.inchesToMeters(597.1),
-                                                Units.inchesToMeters(41.9),
-                                                new Rotation2d(Math.PI)),
-                                3,
-                                new Pose2d(
-                                                Units.inchesToMeters(597.1),
-                                                Units.inchesToMeters(64.6),
-                                                new Rotation2d(Math.PI)),
-                                4,
-                                new Pose2d(
-                                                Units.inchesToMeters(597.1),
-                                                Units.inchesToMeters(86.5),
-                                                new Rotation2d(Math.PI)),
-                                5,
-                                new Pose2d(
-                                                Units.inchesToMeters(597.1),
-                                                Units.inchesToMeters(108.9),
-                                                new Rotation2d(Math.PI)),
-                                6,
-                                new Pose2d(
-                                                Units.inchesToMeters(597.1),
-                                                Units.inchesToMeters(130.6),
-                                                new Rotation2d(Math.PI)),
-                                7,
-                                new Pose2d(
-                                                Units.inchesToMeters(597.1),
-                                                Units.inchesToMeters(157.6),
-                                                new Rotation2d(Math.PI)),
-                                8,
-                                new Pose2d(
-                                                Units.inchesToMeters(597.1),
-                                                Units.inchesToMeters(174.9),
-                                                new Rotation2d(Math.PI)),
-                                9,
-                                new Pose2d(
-                                                Units.inchesToMeters(597.1),
-                                                Units.inchesToMeters(196.6),
-                                                new Rotation2d(Math.PI)));
+                        1, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(610.77 - scoringOffset),
+                                        Units.inchesToMeters(20.6),
+                                        new Rotation2d()),
+                        2, // Cube - 1
+                        new Pose2d(
+                                        Units.inchesToMeters(610.77 - scoringOffset),
+                                        Units.inchesToMeters(41.9),
+                                        new Rotation2d()),
+                        3, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(610.77 - scoringOffset), // 597.1
+                                        Units.inchesToMeters(64.6),
+                                        new Rotation2d()),
+                        4, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(610.77 - scoringOffset),
+                                        Units.inchesToMeters(86.5),
+                                        new Rotation2d()),
+                        5, // Cube - 2
+                        new Pose2d(
+                                        Units.inchesToMeters(610.77 - scoringOffset), // 597.1
+                                        Units.inchesToMeters(108.9),
+                                        new Rotation2d()),
+                        6, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(610.77 - scoringOffset),
+                                        Units.inchesToMeters(130.6),
+                                        new Rotation2d()),
+                        7, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(610.77 - scoringOffset),
+                                        Units.inchesToMeters(157.6),
+                                        new Rotation2d()),
+                        8, // Cube - 3
+                        new Pose2d(
+                                        Units.inchesToMeters(610.77 - scoringOffset),
+                                        Units.inchesToMeters(174.9),
+                                        new Rotation2d()),
+                        9, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(610.77 - scoringOffset),
+                                        Units.inchesToMeters(196.6),
+                                        new Rotation2d()));
 
                 public static final Map<Integer, Pose2d> kBlueScoreCols = Map.of(
-                                9,
-                                new Pose2d(
-                                                Units.inchesToMeters(56.4),
-                                                Units.inchesToMeters(196.6),
-                                                new Rotation2d(0)),
-                                8,
-                                new Pose2d(
-                                                Units.inchesToMeters(56.4),
-                                                Units.inchesToMeters(174.9),
-                                                new Rotation2d(0)),
-                                7,
-                                new Pose2d(
-                                                Units.inchesToMeters(56.4),
-                                                Units.inchesToMeters(157.6),
-                                                new Rotation2d(0)),
-                                6,
-                                new Pose2d(
-                                                Units.inchesToMeters(56.4),
-                                                Units.inchesToMeters(130.6),
-                                                new Rotation2d(0)),
-                                5,
-                                new Pose2d(
-                                                Units.inchesToMeters(56.4),
-                                                Units.inchesToMeters(108.9),
-                                                new Rotation2d(0)),
-                                4,
-                                new Pose2d(
-                                                Units.inchesToMeters(56.4),
-                                                Units.inchesToMeters(86.5),
-                                                new Rotation2d(0)),
-                                3,
-                                new Pose2d(
-                                                Units.inchesToMeters(56.4),
-                                                Units.inchesToMeters(64.6),
-                                                new Rotation2d(0)),
-                                2,
-                                new Pose2d(
-                                                Units.inchesToMeters(56.4),
-                                                Units.inchesToMeters(41.9),
-                                                new Rotation2d(0)),
-                                1,
-                                new Pose2d(
-                                                Units.inchesToMeters(56.4),
-                                                Units.inchesToMeters(20.6),
-                                                new Rotation2d(0)));
+                        9, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(65 + scoringOffset),
+                                        Units.inchesToMeters(196.6),
+                                        new Rotation2d(Math.PI)),
+                        8, // Cube - 6
+                        new Pose2d(
+                                        Units.inchesToMeters(65 + scoringOffset),
+                                        Units.inchesToMeters(174.9),
+                                        new Rotation2d(Math.PI)),
+                        7, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(65 + scoringOffset),
+                                        Units.inchesToMeters(157.6),
+                                        new Rotation2d(Math.PI)),
+                        6, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(65 + scoringOffset),
+                                        Units.inchesToMeters(130.6),
+                                        new Rotation2d(Math.PI)),
+                        5, // Cube - 7
+                        new Pose2d(
+                                        Units.inchesToMeters(65 + scoringOffset),
+                                        Units.inchesToMeters(108.9),
+                                        new Rotation2d(Math.PI)),
+                        4, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(65 + scoringOffset),
+                                        Units.inchesToMeters(86.5),
+                                        new Rotation2d(Math.PI)),
+                        3, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(65 + scoringOffset),
+                                        Units.inchesToMeters(64.6),
+                                        new Rotation2d(Math.PI)),
+                        2, // Cube - 8
+                        new Pose2d(
+                                        Units.inchesToMeters(65 + scoringOffset),
+                                        Units.inchesToMeters(41.9),
+                                        new Rotation2d(Math.PI)),
+                        1, // Cone
+                        new Pose2d(
+                                        Units.inchesToMeters(65 + scoringOffset),
+                                        Units.inchesToMeters(20.6),
+                                        new Rotation2d(Math.PI)));
 
                 /**
                  * Key:
@@ -467,57 +493,56 @@ public final class Constants {
                  * Red Alliance Double Substation – ID 5
                  * Blue Alliance Community (left to right) – IDs 6, 7, 8
                  */
-                public static final Map<Integer, Pose3d> aprilTags = // relative to corner closest to tag 8
-                                Map.of(
-                                                1,
-                                                new Pose3d(
-                                                                Units.inchesToMeters(610.77),
-                                                                Units.inchesToMeters(42.19),
-                                                                Units.inchesToMeters(18.22),
-                                                                new Rotation3d(0.0, 0.0, Math.PI)),
-                                                2,
-                                                new Pose3d(
-                                                                Units.inchesToMeters(610.77),
-                                                                Units.inchesToMeters(108.19),
-                                                                Units.inchesToMeters(18.22),
-                                                                new Rotation3d(0.0, 0.0, Math.PI)),
-                                                3,
-                                                new Pose3d(
-                                                                Units.inchesToMeters(610.77),
-                                                                Units.inchesToMeters(174.19), // FIRST's diagram has a
-                                                                                              // typo (it says 147.19)
-                                                                Units.inchesToMeters(18.22),
-                                                                new Rotation3d(0.0, 0.0, Math.PI)),
-                                                4,
-                                                new Pose3d(
-                                                                Units.inchesToMeters(636.96),
-                                                                Units.inchesToMeters(265.74),
-                                                                Units.inchesToMeters(27.38),
-                                                                new Rotation3d(0.0, 0.0, Math.PI)),
-                                                5,
-                                                new Pose3d(
-                                                                Units.inchesToMeters(14.25),
-                                                                Units.inchesToMeters(265.74),
-                                                                Units.inchesToMeters(27.38),
-                                                                new Rotation3d()),
-                                                6,
-                                                new Pose3d(
-                                                                Units.inchesToMeters(40.45),
-                                                                Units.inchesToMeters(174.19), // FIRST's diagram has a
-                                                                                              // typo (it says 147.19)
-                                                                Units.inchesToMeters(18.22),
-                                                                new Rotation3d()),
-                                                7,
-                                                new Pose3d(
-                                                                Units.inchesToMeters(40.45),
-                                                                Units.inchesToMeters(108.19),
-                                                                Units.inchesToMeters(18.22),
-                                                                new Rotation3d()),
-                                                8,
-                                                new Pose3d(
-                                                                Units.inchesToMeters(40.45),
-                                                                Units.inchesToMeters(42.19),
-                                                                Units.inchesToMeters(18.22),
-                                                                new Rotation3d()));
+                public static final Map<Integer, Pose3d> aprilTags = Map.of(
+                        1,
+                        new Pose3d(
+                                        Units.inchesToMeters(610.77),
+                                        Units.inchesToMeters(42.19),
+                                        Units.inchesToMeters(18.22),
+                                        new Rotation3d(0.0, 0.0, Math.PI)),
+                        2,
+                        new Pose3d(
+                                        Units.inchesToMeters(610.77),
+                                        Units.inchesToMeters(108.19),
+                                        Units.inchesToMeters(18.22),
+                                        new Rotation3d(0.0, 0.0, Math.PI)),
+                        3,
+                        new Pose3d(
+                                        Units.inchesToMeters(610.77),
+                                        Units.inchesToMeters(174.19), // FIRST's diagram has a
+                                                                        // typo (it says 147.19)
+                                        Units.inchesToMeters(18.22),
+                                        new Rotation3d(0.0, 0.0, Math.PI)),
+                        4,
+                        new Pose3d(
+                                        Units.inchesToMeters(636.96),
+                                        Units.inchesToMeters(265.74),
+                                        Units.inchesToMeters(27.38),
+                                        new Rotation3d(0.0, 0.0, Math.PI)),
+                        5,
+                        new Pose3d(
+                                        Units.inchesToMeters(14.25),
+                                        Units.inchesToMeters(265.74),
+                                        Units.inchesToMeters(27.38),
+                                        new Rotation3d()),
+                        6,
+                        new Pose3d(
+                                        Units.inchesToMeters(40.45),
+                                        Units.inchesToMeters(174.19), // FIRST's diagram has a
+                                                                        // typo (it says 147.19)
+                                        Units.inchesToMeters(18.22),
+                                        new Rotation3d()),
+                        7,
+                        new Pose3d(
+                                        Units.inchesToMeters(40.45),
+                                        Units.inchesToMeters(108.19),
+                                        Units.inchesToMeters(18.22),
+                                        new Rotation3d()),
+                        8,
+                        new Pose3d(
+                                        Units.inchesToMeters(40.45),
+                                        Units.inchesToMeters(42.19),
+                                        Units.inchesToMeters(18.22),
+                                        new Rotation3d()));
         }
 }

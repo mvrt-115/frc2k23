@@ -4,8 +4,11 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +21,7 @@ public class Align extends CommandBase {
   private SwerveDrivetrain swerve;
   private Localization localization;
 
+  private Supplier<Pose2d> poseSup;
   private Pose2d poseToGoTo;
 
   private PIDController pidX;
@@ -25,45 +29,46 @@ public class Align extends CommandBase {
   private PIDController pidTheta;
 
   /** Creates a new Align. */
-  public Align(SwerveDrivetrain swerve, Localization localization, Pose2d poseToGoTo) {
+  public Align(SwerveDrivetrain swerve, Localization localization, Supplier<Pose2d> poseSup) {
     this.swerve = swerve;
     this.localization = localization;
-    this.poseToGoTo = poseToGoTo;
-
-    pidX = new PIDController(0, 0, 0); // pid x-coor 1.2
-    pidY = new PIDController(0, 0, 0); // pid y-coor 1.2
-    pidTheta = new PIDController(0.2, 0, 0); // pid t-coor
+    this.poseSup = poseSup;
+    addRequirements(localization, swerve);
+    pidX = new PIDController(2.5, 0, 0.2); // pid x-coor 1.2
+    pidY = new PIDController(2.5, 0, 0.2); // pid y-coor 1.2
+    pidTheta = new PIDController(4, 0, 0); // pid t-coor 4
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
+    poseToGoTo = poseSup.get();
+    SmartDashboard.putString("chicken align initialize scoring loc", poseToGoTo.toString());
+    SmartDashboard.putString("chicken align currPose", localization.getCurrentPose().toString());
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  // Called every time the scheduler runs while the command is scheduled. 
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-    //SmartDashboard.putString("Target", localization.getClosestScoringLoc().toString());
-    //SmartDashboard.putString("currP")
-    //if(Localization.distFromTag(robotPose, poseToGoTo) > Constants.VisionConstants.minDistFromTag){
-      double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
-      double outY = -pidY.calculate(robotPose.getY(), poseToGoTo.getY());
-      // pos, setpoint
-      double outTheta = -pidTheta.calculate(robotPose.getRotation().getRadians(), poseToGoTo.getRotation().getRadians());
-      ChassisSpeeds speeds = new ChassisSpeeds(outX, outY, outTheta);
-      SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
-      swerve.setModuleStates(states);
-   // }
+    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
+    double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
+    double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(),
+                         poseToGoTo.getRotation().getRadians());
 
-    log();
+    // swerve screwed up field oriented switched y axis; shoud be -outX
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta,
+        new Rotation2d(-swerve.getRotation2d().getRadians()));
+    SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
+    swerve.setModuleStates(states);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    localization.setAligning(true);
+    localization.setAligning(false);
   }
 
   // Returns true when the command should end.
@@ -71,24 +76,9 @@ public class Align extends CommandBase {
   public boolean isFinished() {
     Pose2d robotPose = localization.getCurrentPose();
 
-    //If close enough to target
-    return Math.abs(robotPose.getY()-poseToGoTo.getY())<0.1;
-    /* 
-    return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xyTolerance && 
-      Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.xyTolerance && 
-      Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) < Constants.VisionConstants.thetaTolerance;*/
-  }
-
-  public void log(){
-    Pose2d robotPose = localization.getCurrentPose();
-
-    // SmartDashboard
-    SmartDashboard.putNumber("scoring x", poseToGoTo.getX());
-    SmartDashboard.putNumber("scoring y", poseToGoTo.getY());
-    SmartDashboard.putNumber("robo x", robotPose.getX());
-    SmartDashboard.putNumber("robo y", robotPose.getY());
-    SmartDashboard.putNumber("distance from final", Localization.distFromTag(robotPose, poseToGoTo));
-    SmartDashboard.putNumber("error x", robotPose.getX() - poseToGoTo.getX());
-    SmartDashboard.putNumber("error y", robotPose.getY() - poseToGoTo.getY());
+      return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
+        Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
+        Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
+        Constants.VisionConstants.thetaTolerance;
   }
 }

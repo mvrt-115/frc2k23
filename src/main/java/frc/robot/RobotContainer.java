@@ -38,10 +38,11 @@ public class RobotContainer {
 
   private Elevator elevator;
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
+  private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+  private Localization localization = new Localization(swerveDrivetrain);
   private CANdleLEDSystem leds = new CANdleLEDSystem();
 
   GroundIntake gi = new GroundIntake();
-  private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
@@ -103,8 +104,13 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    // Pose2d nearestCol = localization.getClosestScoringLoc();
-    // driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+
+    //SHIFT LEFT
+    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    
+    //SHIFT RIGHT
+    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     // AUTO LEVEL
     driveJoystick.button(2).onTrue(
@@ -140,8 +146,8 @@ public class RobotContainer {
     );
 
     // SCORE CONE MID 
-    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT, 0.25)
-    ).onFalse(intake.runOut());//(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-8.4, 0.25).alongWith(new WaitCommand(1.1).andThen(intake.runOut())));
+    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+8.4, 0.25)
+    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3, 0.25).alongWith((intake.runOut())));
     
     // SCORE CONE HIGH
     operatorJoystick.a().onTrue(
