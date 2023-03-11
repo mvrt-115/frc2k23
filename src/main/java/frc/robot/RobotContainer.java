@@ -85,7 +85,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     
-    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.zeroHeading()));
+    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d())));
     //driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
     //driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, null));
     autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel"));
@@ -97,10 +97,10 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    //driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     //SHIFT LEFT
-    driveJoystick.button(5).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    //driveJoystick.button(5).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
     
     //SHIFT RIGHT
     driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));

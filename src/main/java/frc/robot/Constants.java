@@ -56,7 +56,7 @@ public final class Constants {
                 public static final boolean invertJoystickY = true;
                 public static final boolean invertJoystickW = true;
 
-                public static final double kPJoystick = 0.001;
+                public static final double kPJoystick = 0.005;
                 public static final double kIJoystick = 0.0;
                 public static final double kDJoystick = 0.0;
                 public static final double kFJoystick = 0.0;
@@ -87,8 +87,8 @@ public final class Constants {
 
         public static class SwerveDrivetrain {
                 // Physical Constants
-                public static final double chassisWidth = Units.inchesToMeters(28);
-                public static final double chassisLength = Units.inchesToMeters(26);// swap for comp
+                public static final double chassisWidth = Units.inchesToMeters(26);
+                public static final double chassisLength = Units.inchesToMeters(28);// swap for comp
 
                 // Important locations for swerve
                 // consider swapping corners
@@ -137,11 +137,11 @@ public final class Constants {
                                                                                                           // Math.PI/2.0;
 
                 // Practice Bot Encoder Offsets
-                public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(33.62);// + Math.PI/2.0;
-                public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(182.180);// +
+                public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(30.15);// + Math.PI/2.0;
+                public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(180.35);// +
                                                                                                          // Math.PI/2.0;
-                public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(341.54);// + Math.PI/2.0;
-                public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(146.86);// + Math.PI/2.0;
+                public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(342.25);// + Math.PI/2.0;
+                public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(149.58);// + Math.PI/2.0;
 
                 // Abs Encoder Offsets
                 public static final double m_frontLeftEncoderOffset = isCompBot ? m_frontLeftEncoderOffset_Comp
@@ -319,7 +319,7 @@ public final class Constants {
                 public static final double minDistFromTag = 0.3; // Min dist necessary from tag to automate (0.3 meter
                                                                  // aprox)
                 public static final double xTolerance = 0.05;
-                public static final double yTolerance = 0.05;
+                public static final double yTolerance = 0.03;
                 public static final double thetaTolerance = 0.05;
 
                 // Camera position on robot

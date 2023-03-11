@@ -34,8 +34,8 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseSup = poseSup;
     addRequirements(localization, swerve);
-    pidX = new PIDController(2.5, 0, 0.5); // pid x-coor 1.2
-    pidY = new PIDController(2.5, 0, 0.5); // pid y-coor 1.2
+    pidX = new PIDController(2.5, 0, 0.2); // pid x-coor 1.2
+    pidY = new PIDController(2.5, 0, 0.2); // pid y-coor 1.2
     pidTheta = new PIDController(4, 0, 0); // pid t-coor 4
   }
 
@@ -55,12 +55,12 @@ public class Align extends CommandBase {
     Pose2d robotPose = localization.getCurrentPose();
     double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
     double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
-    double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(),
+    double outTheta = pidTheta.calculate(robotPose.getRotation().getRadians(),
                          poseToGoTo.getRotation().getRadians());
 
     // swerve screwed up field oriented switched y axis; shoud be -outX
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta,
-        new Rotation2d(-swerve.getRotation2d().getRadians()));
+        new Rotation2d(-robotPose.getRotation().getRadians()));
     SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
     swerve.setModuleStates(states);
   }
@@ -78,7 +78,7 @@ public class Align extends CommandBase {
 
       return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
         Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
-        Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
+        Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
         Constants.VisionConstants.thetaTolerance;
   }
 }
