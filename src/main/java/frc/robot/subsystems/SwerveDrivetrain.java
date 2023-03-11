@@ -385,6 +385,15 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   /**
+   * get the linear speed of the robot in mps
+   * @return linear speed
+   */
+  public double getTranslationSpeedMPS() {
+    Translation2d linearVel = getLinearVelocity();
+    return Math.hypot(linearVel.getX(), linearVel.getY());
+  }
+
+  /**
    * get the rotational velocity of the robot in rad/sec
    * @return rotational velocity
    */

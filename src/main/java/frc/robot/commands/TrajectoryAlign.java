@@ -4,16 +4,21 @@
 
 package frc.robot.commands;
 
-import java.util.List;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.utils.BetterSwerveControllerCommand;
 
 public class TrajectoryAlign extends SequentialCommandGroup {
   public TrajectoryAlign(SwerveDrivetrain swerveDrivetrain, Localization localization, Pose2d finalLocation) {
@@ -22,28 +27,20 @@ public class TrajectoryAlign extends SequentialCommandGroup {
     localization.resetCameraEstimators();
     localization.setAligning(true);
 
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-      localization.getCurrentPose(), 
-      List.of(), 
-      finalLocation, 
-      swerveDrivetrain.getTrajectoryConfig()
-    );
+    Pose2d currLoc = localization.getCurrentPose();
+    PathPoint start = new PathPoint(currLoc.getTranslation(), currLoc.getRotation(), Rotation2d.fromDegrees(0), swerveDrivetrain.getTranslationSpeedMPS());
+    PathPoint end = new PathPoint(finalLocation.getTranslation(), finalLocation.getRotation(), Rotation2d.fromDegrees(0));
 
-    BetterSwerveControllerCommand swerveControllerCommand = new BetterSwerveControllerCommand(
-      trajectory, 
-      localization::getCurrentPose, 
-      swerveDrivetrain.getKinematics(), 
-      swerveDrivetrain.xController, 
-      swerveDrivetrain.yController, 
-      swerveDrivetrain.thetaController, 
-      swerveDrivetrain::setModuleStates,
-      swerveDrivetrain
-    );
+    PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+      new PathConstraints(Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, Constants.SwerveDrivetrain.kDriveMaxAcceleration), 
+      start,
+      end);
+
+    PPSwerveControllerCommand autoEventsCommand = swerveDrivetrain.getAutonPathCommand(trajectory);
 
     addCommands(
-      swerveControllerCommand,
-      new InstantCommand(() -> swerveDrivetrain.stopModules()),
-      new InstantCommand(() -> swerveDrivetrain.setDisabled())
+      autoEventsCommand,
+      new InstantCommand(() -> swerveDrivetrain.stopModules())
     );
   }
 }
