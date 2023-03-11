@@ -56,7 +56,7 @@ public final class Constants {
                 public static final boolean invertJoystickY = true;
                 public static final boolean invertJoystickW = true;
 
-                public static final double kPJoystick = 0.005;
+                public static final double kPJoystick = 0.01;
                 public static final double kIJoystick = 0.0;
                 public static final double kDJoystick = 0.0;
                 public static final double kFJoystick = 0.0;

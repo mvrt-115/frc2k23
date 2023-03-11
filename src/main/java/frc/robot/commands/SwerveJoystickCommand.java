@@ -150,23 +150,12 @@ public class SwerveJoystickCommand extends CommandBase {
 
     SmartDashboard.putBoolean("Field Oriented", drivetrain.fieldOriented);
     logger.recordOutput("SwerveModule/Field_Oriented", drivetrain.fieldOriented);
-    boolean isTurnBroken = true;
-    // apply heading correction to the robot
-    double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
-    double desired_heading = MathUtils.betterATanDeg(vX, vY); // deg
-    double omega_offset = desired_heading - thetaController.calculate(true_heading, desired_heading);
-    SmartDashboard.putNumber("Omega Offset", omega_offset);
-
-    double v_omega = vW;
-    if(!isTurnBroken){
-      v_omega = vW + omega_offset;
-    }
 
     if (drivetrain.fieldOriented) {
-      drivetrain.setSpeedsFieldOriented(vX, vY, v_omega);
+      drivetrain.setSpeedsFieldOriented(vX, vY, vW);
     }
     else {
-      drivetrain.setSpeeds(vX, vY, v_omega, Constants.SwerveDrivetrain.rotatePoints[0]);
+      drivetrain.setSpeeds(vX, vY, vW, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
     
     SmartDashboard.putNumber("vX", vX);
