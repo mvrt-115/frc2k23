@@ -121,8 +121,8 @@ public final class Constants {
 
         public static class SwerveDrivetrain {
                 // Physical Constants
-                public static final double chassisWidth = Units.inchesToMeters(28);
-                public static final double chassisLength = Units.inchesToMeters(26);// swap for comp
+                public static final double chassisWidth = Units.inchesToMeters(26);
+                public static final double chassisLength = Units.inchesToMeters(28);// swap for comp
 
                 // Important locations for swerve
                 // consider swapping corners
