@@ -8,14 +8,11 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utils.JoystickIO;
 
-import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,6 +39,8 @@ public class RobotContainer {
   private Elevator elevator;
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
   private CANdleLEDSystem leds = new CANdleLEDSystem();
+
+  GroundIntake gi = new GroundIntake();
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private Localization localization = new Localization(swerveDrivetrain);
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
@@ -75,6 +74,8 @@ public class RobotContainer {
     elevator.setDefaultCommand(
       new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
     ); // used to 0.4, makes slower speed
+
+    gi.setDefaultCommand(new ManualGroundIntake(gi, () -> operatorJoystick.getRightX()*0.2));
       
     // Configure the trigger bindings
     configureBindings();
@@ -128,13 +129,13 @@ public class RobotContainer {
     operatorJoystick.x().onTrue(
       new IntakeHPStation(elevator, intake)
     ).onFalse(
-      new SetElevatorHeight(elevator, 5).alongWith(intake.stop())
+      new ElevateDown(elevator).alongWith(intake.stop())
     );
 
     // RETURN TO NEUTRAL
     operatorJoystick.b().onTrue(
       new ParallelCommandGroup(
-        new SetElevatorHeight(elevator, 5),
+        new ElevateDown(elevator),
         intake.stop()
       )
     ).onFalse(
@@ -142,12 +143,12 @@ public class RobotContainer {
     );
 
     // SCORE CONE MID 
-    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)
-    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-9).alongWith(new WaitCommand(2).andThen(intake.runOut())));
+    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT, 0.25)
+    ).onFalse(intake.runOut());//(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-8.4, 0.25).alongWith(new WaitCommand(1.1).andThen(intake.runOut())));
     
     // SCORE CONE HIGH
     operatorJoystick.a().onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)
+      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25)
     ).onFalse(intake.runOut());
 
     // RESET ELEVATOR ENCODER VALUE
@@ -155,20 +156,21 @@ public class RobotContainer {
     
     // SCORE CUBE MID
     operatorJoystick.button(6).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT)
+      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT, 0.25)
     ).onFalse(intake.runOut());
     
     // SCORE CUBE HIGH
     operatorJoystick.button(5).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT)
+      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT, 0.25)
     ).onFalse(intake.runOut());
 
     // MANUAL INTAKE
-    operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop()); // manual intaking
-    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
+  //   operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop());
+  //  // operatorJoystick.button(7).onTrue(new SetGroundIntakeArmPos(gi, 30));//intake.runIn()).onFalse(intake.stop()); // manual intaking
+  //    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
 
     //LEDS TOGGLE
-    operatorJoystick.button(10).onTrue(new SetLEDCC(leds));
+    // operatorJoystick.button(10).onTrue(leds.toggleLEDs());
   }
 
   /**

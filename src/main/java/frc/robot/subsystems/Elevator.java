@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
@@ -69,7 +70,7 @@ public class Elevator extends SubsystemBase {
     elev_motor2 = TalonFactory.createTalonFX(Constants.Elevator.MOTOR_ID2, false);
 
     elev_motor2.follow(elev_motor);
-    int forwardLimit = 22500;
+    double forwardLimit = inchesToTicks(59.8);
     int reverseLimit = -50;
     elev_motor.configForwardSoftLimitThreshold(forwardLimit);
     elev_motor.configReverseSoftLimitThreshold(reverseLimit);
@@ -79,6 +80,7 @@ public class Elevator extends SubsystemBase {
     elev_motor2.configReverseSoftLimitThreshold(reverseLimit);
     elev_motor2.configForwardSoftLimitEnable(true, 0);
     elev_motor2.configReverseSoftLimitEnable(true, 0);
+   // elev_motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, reverseLimit, forwardLimit, reverseLimit))
 
     elev_motor.setNeutralMode(NeutralMode.Brake);
     elev_motor2.setNeutralMode(NeutralMode.Brake);
@@ -210,6 +212,7 @@ public class Elevator extends SubsystemBase {
      logger.recordOutput("Elevator/feedforward", feedforward);
      logger.recordOutput("Elevator/setvelocity", ((feedforward+pid.calculate(setpoint.velocity))/10));
      logger.recordOutput("Elevator/pidvalue", pid.calculate(setpoint.velocity));
+     logger.recordOutput("Elevator/motor_percent_output", elev_motor.getMotorOutputPercent());
      
     // sim
     //  elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));

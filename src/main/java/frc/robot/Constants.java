@@ -6,14 +6,13 @@ package frc.robot;
 
 import java.util.Map;
 
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -35,7 +34,7 @@ import frc.robot.subsystems.Elevator.ElevatorState;
  */
 public final class Constants {
 
-        public static final boolean isCompBot = false;
+        public static final boolean isCompBot = true;
 
         public static class DataLogging {
                 public static final Mode currMode = RobotBase.isSimulation() ? Mode.SIM : Mode.REAL;
@@ -62,6 +61,41 @@ public final class Constants {
                 public static final double kFJoystick = 0.0;
 
         }
+        public static class Intake {
+                public static final double kMarginOfError = 0.03;
+
+                public static final int kProximityPort = 6; // port number for element proximity sensor
+                public static final int kMotorPort = 16;
+
+                public static final double kP = 0, kI = 0, kD = 0;
+
+                public static final double kCompressedSpeed = isCompBot? -0.125 : -0.07;
+
+        public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
+
+        public static final double kOuttakeRPM = isCompBot?  0.125 :  0.08;
+    }
+
+    public static class GroundIntake {
+        // public static final double kMarginOfError = 0.03;
+
+        // public static final int kProximityPort = 6; // port number for element proximity sensor
+        public static final int kPivotId = 11;//isCompBot? 8 : 5;
+        public static final int kRollerId = 15;//isCompBot? 8 : 5;
+
+        public static final double kRollerOutput = 0.5;
+
+        public static final double kP = 0.01, kI = 0, kD = 0, kG = 0.15808;
+        public static final double initialAngle = 20.0;
+        public static final double kGearRatio = 30.0;
+        public static final double kIntakePositionThreshold = 120;
+
+
+
+        // public static final double kCompressedSpeed = isCompBot? -0.15 : -0.07;
+
+// public static final double kGoalRPM = 0.3;
+}
 
         public static class Leveling {
                 // Leveling PID
@@ -87,8 +121,8 @@ public final class Constants {
 
         public static class SwerveDrivetrain {
                 // Physical Constants
-                public static final double chassisWidth = Units.inchesToMeters(28);
-                public static final double chassisLength = Units.inchesToMeters(26);// swap for comp
+                public static final double chassisWidth = Units.inchesToMeters(26);
+                public static final double chassisLength = Units.inchesToMeters(28);// swap for comp
 
                 // Important locations for swerve
                 // consider swapping corners
@@ -252,9 +286,9 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.025;// .1;//.01;
+                public static final double P = 0.0237; //prac bot: 0.025;// .1;//.01;
                 public static final double I = 0;// .000006;
-                public static final double D = 0.1;
+                public static final double D = 0.13; //0.1;
                 public static final double F = 0;
 
                 // Wtvr it is
@@ -262,15 +296,15 @@ public final class Constants {
                 // public static final double INCHES_PER_TICK = 10.6224;
 
                 // Min/Max heights for the elevator (in inches)
-                public static final double MAX_HEIGHT = 65;
+                public static final double MAX_HEIGHT = 57;
                 public static final double MIN_HEIGHT = 0;
 
                 public static final double ZERO_HEIGHT = 0;
                 public static final double SHELF_HEIGHT = 0;
 
                 // MID, HIGH heights parwa cone (in ticks)
-                public static final double CONE_MID_HEIGHT = 43;
-                public static final double CONE_HIGH_HEIGHT = 56.9;
+                public static final double CONE_MID_HEIGHT = 38.7;
+                public static final double CONE_HIGH_HEIGHT = 57;
                 public static final double INTAKE_HEIGHT = 40.8;
 
                 // MID, HIGH heights para cube (in inches)
@@ -278,11 +312,11 @@ public final class Constants {
                 public static final double CUBE_HIGH_HEIGHT = 57;
 
                 // feed forward constants
-                public static final double kS = -0.086653;// -0.55996;//-0.086653;//-0.55996;
+                public static final double kS = isCompBot ? 0.11729 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = 0.79635;// 0.87635; // 0.79635: claw intake; //1.2265;
-                public static final double kV = 0.016763; // 0.035258;
-                public static final double kA = 0.0031226; // 0.0053228;
+                public static final double kG = isCompBot ? 0.49892 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
+                public static final double kV = isCompBot ? 0.029489 : 0.039238; // 0.035258;
+                public static final double kA = isCompBot ? 0.0018216 : 0.012817;//0.0031226; // 0.0053228;
                 // public static final double kA = 0;
                 // Game Object Heights
                 public static final double CONE_HEIGHT = 6;
@@ -292,8 +326,8 @@ public final class Constants {
                 public static final double KDt = 0.01;
 
                 // constraints
-                public static final double MAX_VELOCITY = 14; // 50;
-                public static final double MAX_ACCELERATION = 2; // 25;
+                public static final double MAX_VELOCITY = 6; // 10//50;
+                public static final double MAX_ACCELERATION = 2; //2 //25;
 
                 // initial elevator stages
                 public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
@@ -515,19 +549,5 @@ public final class Constants {
                                                                 Units.inchesToMeters(42.19),
                                                                 Units.inchesToMeters(18.22),
                                                                 new Rotation3d()));
-        }
-
-        public static class Intake {
-                public static final double kMarginOfError = 0.03;
-
-                public static final int kProximityPort = 6; // port number for element proximity sensor
-                public static final int kMotorPort = 5;
-
-                public static final double kP = 0, kI = 0, kD = 0;
-
-                public static final double kCompressedSpeed = -0.07;
-
-                public static final double kGoalRPM = -0.4;
-                public static final double kOuttakeRPM = 0.1;// 0.08;
         }
 }

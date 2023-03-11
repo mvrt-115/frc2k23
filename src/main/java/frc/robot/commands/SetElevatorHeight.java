@@ -16,13 +16,16 @@ public class SetElevatorHeight extends CommandBase
   private double height;
   private double startTime;
   private Logger logger;
+  private double heightThreshold;
+  
 
   /** Creates a new SetElevatorHeight. */
-  public SetElevatorHeight(Elevator elevator2, double height)
+  public SetElevatorHeight(Elevator elevator2, double height, double heightThreshold)
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator2;
     this.height = height; 
+    this.heightThreshold = heightThreshold;
     logger = Logger.getInstance();
     addRequirements(elevator2);
   }
@@ -60,6 +63,6 @@ public class SetElevatorHeight extends CommandBase
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(elevator.getHeightInches() -  height) <= 1);// && Math.abs(elevator.getVelocity()) <= 100);
+    return (Math.abs(elevator.getHeightInches() -  height) <= heightThreshold) && Math.abs(elevator.getVelocity()) <= 10;
   }
 }

@@ -17,6 +17,6 @@ public class IntakeHPStation extends ParallelCommandGroup {
   public IntakeHPStation(Elevator elevator, Intake2 intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SetElevatorHeight(elevator, Constants.Elevator.INTAKE_HEIGHT), intake.runIn());
+    addCommands(new SetElevatorHeight(elevator, Constants.Elevator.INTAKE_HEIGHT, 0.25), intake.runIn());
   }
 }

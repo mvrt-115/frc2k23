@@ -521,7 +521,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param heading
    */
   public double holdHeading(Rotation2d heading) {
-    double v_w = Constants.JoystickControls.kPJoystick * (getRotation2d().getRadians() - heading.getRadians()); //thetaController.calculate(getRotation2d().getRadians());
+    double v_w = Constants.JoystickControls.kPJoystick * (heading.getRadians() - getRotation2d().getRadians()); //thetaController.calculate(getRotation2d().getRadians());
     // this.setSpeeds(0, 0, v_w, Constants.SwerveDrivetrain.rotatePoints[this.getRotationPointIdx()]);
     return v_w;
   }

@@ -31,7 +31,7 @@ public class SwerveJoystickCommand extends CommandBase {
   private final SwerveDrivetrain drivetrain;
   private final Supplier<Double> xSpeedFunc, ySpeedFunc, turnSpeedFunc;
   private final Trigger fieldOrientedFunc;
-  private final SlewRateLimiter xLimiter, yLimiter, wLimiter;
+  // private final SlewRateLimiter xLimiter, yLimiter, wLimiter;
   private final JoystickIO joystick;
   private Timer timer;
   private Rotation2d heading;
@@ -48,9 +48,9 @@ public class SwerveJoystickCommand extends CommandBase {
     this.ySpeedFunc = ySpeedFunc;
     this.turnSpeedFunc = angularSpeedFunc;
     this.fieldOrientedFunc = fieldOrientedFunc;
-    this.xLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
-    this.yLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
-    this.wLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kTurnMaxAcceleration);
+    // this.xLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
+    // this.yLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kDriveMaxAcceleration);
+    // this.wLimiter = new SlewRateLimiter(Constants.SwerveDrivetrain.kTurnMaxAcceleration);
     this.joystick = joystick;
     thetaController = new PIDController(Constants.JoystickControls.kPJoystick, Constants.JoystickControls.kIJoystick, Constants.JoystickControls.kDJoystick);
     addRequirements(drivetrain);
@@ -119,9 +119,9 @@ public class SwerveJoystickCommand extends CommandBase {
   }
 
     // limit acceleration
-    vX = xLimiter.calculate(vX) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
-    vY = yLimiter.calculate(vY) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
-    vW = wLimiter.calculate(vW) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPS;
+    // vX = xLimiter.calculate(vX) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
+    // vY = yLimiter.calculate(vY) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPS;
+    // vW = wLimiter.calculate(vW) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPS;
 
     if (MathUtils.withinEpsilon(vW, 0, 0.01)) {
       double v_w_compensate = drivetrain.holdHeading(heading);
@@ -146,23 +146,12 @@ public class SwerveJoystickCommand extends CommandBase {
 
     SmartDashboard.putBoolean("Field Oriented", drivetrain.fieldOriented);
     logger.recordOutput("SwerveModule/Field_Oriented", drivetrain.fieldOriented);
-    boolean isTurnBroken = true;
-    // apply heading correction to the robot
-    double true_heading = Math.toRadians(drivetrain.getRelativeHeading());
-    double desired_heading = MathUtils.betterATanDeg(vX, vY); // deg
-    double omega_offset = desired_heading - thetaController.calculate(true_heading, desired_heading);
-    SmartDashboard.putNumber("Omega Offset", omega_offset);
-
-    double v_omega = vW;
-    if(!isTurnBroken){
-      v_omega = vW + omega_offset;
-    }
 
     if (drivetrain.fieldOriented) {
-      drivetrain.setSpeedsFieldOriented(vX, vY, v_omega);
+      drivetrain.setSpeedsFieldOriented(vX, vY, vW);
     }
     else {
-      drivetrain.setSpeeds(vX, vY, v_omega, Constants.SwerveDrivetrain.rotatePoints[0]);
+      drivetrain.setSpeeds(vX, vY, vW, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
     
     SmartDashboard.putNumber("vX", vX);
