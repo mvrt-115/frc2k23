@@ -106,14 +106,17 @@ public class RobotContainer {
     //Align to nearest column on click
     Pose2d nearestCol = localization.getClosestScoringLoc();
     driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    // driveJoystick.button(4).onTrue(new InstantCommand(() -> new TrajectoryAlign(swerveDrivetrain, localization, nearestCol)));
 
     //SHIFT LEFT
     Pose2d nearestLeft = localization.getLeftScoreLoc();
     driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, nearestLeft)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    // driveJoystick.button(-1).onTrue(new InstantCommand(() -> new TrajectoryAlign(swerveDrivetrain, localization, nearestLeft)));
     
     //SHIFT RIGHT
     Pose2d nearestRight = localization.getRightScoreLoc();
     driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, nearestRight)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    // driveJoystick.button(-1).onTrue(new InstantCommand(() -> new TrajectoryAlign(swerveDrivetrain, localization, nearestRight)));
 
     // AUTO LEVEL
     driveJoystick.button(2).onTrue(
