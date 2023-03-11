@@ -19,6 +19,9 @@ public class TrajectoryAlign extends SequentialCommandGroup {
   public TrajectoryAlign(SwerveDrivetrain swerveDrivetrain, Localization localization, Pose2d finalLocation) {
     addRequirements(swerveDrivetrain, localization);
 
+    localization.resetCameraEstimators();
+    localization.setAligning(true);
+
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
       localization.getCurrentPose(), 
       List.of(), 
