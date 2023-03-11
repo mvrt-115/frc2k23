@@ -66,9 +66,9 @@ public class RobotContainer {
     );
     
     // ELEVATOR MANUAL
-    //elevator.setDefaultCommand(
-      //new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
-    //); // used to 0.4, makes slower speed
+    elevator.setDefaultCommand(
+      new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
+    ); // used to 0.4, makes slower speed
       
     // Configure the trigger bindings
     configureBindings();
@@ -86,7 +86,7 @@ public class RobotContainer {
   private void configureBindings() {
     
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d())));
-    //driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
+    driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
     //driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, null));
     autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel"));
     autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel2"));

@@ -23,10 +23,10 @@ public class ElevateDown extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.runMotor(-0.15);
+    elevator.runMotor(-0.048);
   }
 
-  // Called once the command ends or is interrupted.
+  // Called once the comma\nd ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
   }
@@ -34,6 +34,6 @@ public class ElevateDown extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.getHeightInches() < 10;
+    return elevator.getHeightInches() < 20;
   }
 }

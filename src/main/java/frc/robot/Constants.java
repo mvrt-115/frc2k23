@@ -161,9 +161,9 @@ public final class Constants {
                 public static final double kWheelNonlinearity = 0.05;
 
                 public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
-                public static final double kDriveMaxAccelerationNormal = 3;
+                public static final double kDriveMaxAccelerationNormal = 2.5;
                 public static final double kTurnMaxAccelerationNormal = 1 * Math.PI;
-                public static final double kDriveMaxSpeedMPSNormal = 3.5;
+                public static final double kDriveMaxSpeedMPSNormal = 3;
                 public static final double kTurnMaxSpeedRPSNormal = 2 * Math.PI;
                 public static final double kDriveMaxSpeedCap = 13;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
@@ -270,8 +270,8 @@ public final class Constants {
 
                 // MID, HIGH heights parwa cone (in ticks)
                 public static final double CONE_MID_HEIGHT = 43;
-                public static final double CONE_HIGH_HEIGHT = 56.9;
-                public static final double INTAKE_HEIGHT = 40.8;
+                public static final double CONE_HIGH_HEIGHT = 58;
+                public static final double INTAKE_HEIGHT = 46;
 
                 // MID, HIGH heights para cube (in inches)
                 public static final double CUBE_MID_HEIGHT = 40.28;
