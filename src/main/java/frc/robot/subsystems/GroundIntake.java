@@ -35,10 +35,10 @@ public class GroundIntake extends SubsystemBase{
     public void periodic(){
         log();
 
-        if(getArmCurrentPositionDegrees() > Constants.GroundIntake.kIntakePositionThreshold)
-            setRollerOutput(Constants.GroundIntake.kRollerOutput);
-        else
-            stopRoller();
+        // if(getArmCurrentPositionDegrees() > Constants.GroundIntake.kIntakePositionThreshold)
+        //     setRollerOutput(Constants.GroundIntake.kRollerOutput);
+        // else
+        //     stopRoller();
     }
 
     public void log(){
