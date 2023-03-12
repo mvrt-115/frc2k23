@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -53,14 +54,16 @@ public class Align extends CommandBase {
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
+    double outX = -pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
     double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
-    double outTheta = pidTheta.calculate(swerve.getRotation2d().getRadians(),
+    double outTheta = pidTheta.calculate(localization.normalizeAngle(robotPose.getRotation()).getRadians(),
                          poseToGoTo.getRotation().getRadians());
+
+    SmartDashboard.putString("chicken alliance", DriverStation.getAlliance().toString());                    
 
     // swerve screwed up field oriented switched y axis; shoud be -outX
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta,
-        new Rotation2d(-swerve.getRotation2d().getRadians()));
+        new Rotation2d(-robotPose.getRotation().getRadians()));
     SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
     swerve.setModuleStates(states);
   }
@@ -78,7 +81,7 @@ public class Align extends CommandBase {
 
       return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
         Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
-        Math.abs(swerve.getRotation2d().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
+        Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
         Constants.VisionConstants.thetaTolerance;
   }
 }

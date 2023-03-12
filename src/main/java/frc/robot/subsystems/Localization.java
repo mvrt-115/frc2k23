@@ -58,7 +58,7 @@ public class Localization extends SubsystemBase {
       this.fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
 
     } catch(IOException e) {
-      System.err.println("[Localization 2 constructor] Error loading from resource");
+      System.err.println("[Localization constructor] Error loading from resource");
     }
     /*camera1Estimator = new PhotonPoseEstimator(
       fieldLayout,
@@ -115,17 +115,17 @@ public class Localization extends SubsystemBase {
 
     Pose2d poseToGoTo = getClosestScoringLoc();
     SmartDashboard.putString("chicken robot pose", getCurrentPose().toString());
-    SmartDashboard.putNumber("chicken robot gyro rot", swerveDrivetrain.getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("chicken robot gyro rot", normalizeAngle(swerveDrivetrain.getPose().getRotation()).getDegrees());
     SmartDashboard.putNumber("chicken robot score theta",  (poseToGoTo.getRotation().getDegrees()));
-    SmartDashboard.putNumber("chicken robot error theta", (poseToGoTo.getRotation().getDegrees()) - swerveDrivetrain.getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("chicken robot error theta", (poseToGoTo.getRotation().getDegrees()) - normalizeAngle(swerveDrivetrain.getPose().getRotation()).getDegrees());
     debugPID();
     SmartDashboard.putString("chicken - closest loc", poseToGoTo.toString());
 
     logger.recordOutput("chicken Robot Location", getCurrentPose());
     logger.recordOutput("chicken Robot Pose X", getCurrentPose().getX());
     logger.recordOutput("chicken Robot Pose Y", getCurrentPose().getY());
-    logger.recordOutput("chicken Robot Location W deg", getCurrentPose().getRotation().getDegrees());
-    logger.recordOutput("chicken Robot Location W rad", getCurrentPose().getRotation().getRadians());
+    //logger.recordOutput("chicken Robot Location W deg", getCurrentPose().getRotation().getDegrees());
+    //logger.recordOutput("chicken Robot Location W rad", getCurrentPose().getRotation().getRadians());
   }
 
   /**
@@ -150,6 +150,12 @@ public class Localization extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
+  public Rotation2d normalizeAngle(Rotation2d in){
+    // if(DriverStation.getAlliance() == DriverStation.Alliance.Red){
+      double curr = in.getRadians();
+      return new Rotation2d(Math.signum(curr)*(Math.PI-Math.abs(curr)));
+    // }
+  }
   public Pose2d combinePoses(Optional<EstimatedRobotPose> result1, Optional<EstimatedRobotPose> result2) {
     Pose3d first;
     Pose3d second;
@@ -337,10 +343,10 @@ public class Localization extends SubsystemBase {
 
     // SmartDashboard
     Pose2d poseToGoTo = getClosestScoringLoc();
-
-    SmartDashboard.putNumber("chicken robo theta", (swerveDrivetrain.getPose().getRotation().getDegrees()));
+    Rotation2d realTheta = normalizeAngle(swerveDrivetrain.getPose().getRotation());
+    SmartDashboard.putNumber("chicken robo theta", realTheta.getDegrees());
     SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
-    SmartDashboard.putNumber("chicken error theta", (poseToGoTo.getRotation().getDegrees()) - (swerveDrivetrain.getPose().getRotation().getDegrees()));
+    SmartDashboard.putNumber("chicken error theta", (poseToGoTo.getRotation().getDegrees()) - (realTheta.getDegrees()));
     SmartDashboard.putNumber("chicken scoring x", poseToGoTo.getX());
     SmartDashboard.putNumber("chicken scoring y", poseToGoTo.getY());
     SmartDashboard.putNumber("chicken robo x", robotPose.getX());
