@@ -337,8 +337,9 @@ public class Localization extends SubsystemBase {
 
     // SmartDashboard
     Pose2d poseToGoTo = getClosestScoringLoc();
-
-    SmartDashboard.putNumber("chicken robo theta", (swerveDrivetrain.getPose().getRotation().getDegrees()));
+    double realTheta = swerveDrivetrain.getPose().getRotation().getDegrees();
+    if(realTheta<0) realTheta=-(180-realTheta);
+    SmartDashboard.putNumber("chicken robo theta", realTheta);
     SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
     SmartDashboard.putNumber("chicken error theta", (poseToGoTo.getRotation().getDegrees()) - (swerveDrivetrain.getPose().getRotation().getDegrees()));
     SmartDashboard.putNumber("chicken scoring x", poseToGoTo.getX());
