@@ -42,10 +42,10 @@ public class Localization extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator;
   private SwerveDrivetrain swerveDrivetrain;
   private AprilTagFieldLayout fieldLayout;
-  private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(5));
+  private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.3, 0.3, Units.degreesToRadians(5));
   private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
   private final Field2d field;
-  Logger logger = Logger.getInstance();
+  private Logger logger = Logger.getInstance();
   
   private boolean aligning;
 
@@ -54,9 +54,9 @@ public class Localization extends SubsystemBase {
     this.camera2 = new PhotonCamera(Constants.VisionConstants.kCamera2Name);
     this.swerveDrivetrain = swerveDrivetrain;
     this.field = swerveDrivetrain.getField();
+    
     try {
       this.fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
-
     } catch(IOException e) {
       System.err.println("[Localization constructor] Error loading from resource");
     }

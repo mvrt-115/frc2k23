@@ -34,10 +34,12 @@ public class Align extends CommandBase {
     this.swerve = swerve;
     this.localization = localization;
     this.poseSup = poseSup;
-    addRequirements(localization, swerve);
+
     pidX = new PIDController(2.5, 0, 0.2); // pid x-coor 1.2
     pidY = new PIDController(2.5, 0, 0.2); // pid y-coor 1.2
     pidTheta = new PIDController(4, 0, 0); // pid t-coor 4
+    
+    addRequirements(localization, swerve);
   }
 
   // Called when the command is initially scheduled.
@@ -79,9 +81,9 @@ public class Align extends CommandBase {
   public boolean isFinished() {
     Pose2d robotPose = localization.getCurrentPose();
 
-      return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
-        Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
-        Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
-        Constants.VisionConstants.thetaTolerance;
+    return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
+      Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
+      Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
+      Constants.VisionConstants.thetaTolerance;
   }
 }
