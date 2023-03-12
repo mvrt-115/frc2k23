@@ -69,16 +69,16 @@ public class AutonRunner extends SequentialCommandGroup {
     //   swerveDrivetrain);
 
     HashMap<String, Command> eventMap = new HashMap<>();
-    eventMap.put(
-      "ScoreHigh", 
-      new SequentialCommandGroup(
+  /*  eventMap.put(
+      "ScoreHigh",
+       new SequentialCommandGroup(
         new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT),
         new WaitCommand(0.5),
         intake.runOut(),
         new WaitCommand(0.5),
         new ElevateDown(elevator)
       )
-    );
+    );*/ 
     // (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM)? new SequentialCommandGroup(
     //   new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550),
     //   new WaitCommand(0.25),

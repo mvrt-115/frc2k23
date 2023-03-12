@@ -69,7 +69,7 @@ public class Elevator extends SubsystemBase {
     elev_motor2 = TalonFactory.createTalonFX(Constants.Elevator.MOTOR_ID2, false);
 
     elev_motor2.follow(elev_motor);
-    int forwardLimit = 23500;
+    int forwardLimit = 24000;
     int reverseLimit = 50;
     elev_motor.configForwardSoftLimitThreshold(forwardLimit);
     elev_motor.configReverseSoftLimitThreshold(reverseLimit);

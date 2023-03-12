@@ -56,7 +56,7 @@ public final class Constants {
                 public static final boolean invertJoystickY = true;
                 public static final boolean invertJoystickW = true;
 
-                public static final double kPJoystick = 0.01;
+                public static final double kPJoystick = 0.1;
                 public static final double kIJoystick = 0.0;
                 public static final double kDJoystick = 0.0;
                 public static final double kFJoystick = 0.0;
@@ -156,6 +156,7 @@ public final class Constants {
                 // constants for joystick drive
                 public static final double kSensitivity = 0.90;
                 public static final double kWheelDeadband = 0.2;
+
                 public static final double kThrottleDeadband = 0.2;
                 public static final double kWheelGain = 0.05;
                 public static final double kWheelNonlinearity = 0.05;
@@ -164,7 +165,7 @@ public final class Constants {
                 public static final double kDriveMaxAccelerationNormal = 2.5;
                 public static final double kTurnMaxAccelerationNormal = 1 * Math.PI;
                 public static final double kDriveMaxSpeedMPSNormal = 3;
-                public static final double kTurnMaxSpeedRPSNormal = 2 * Math.PI;
+                public static final double kTurnMaxSpeedRPSNormal = 1 * Math.PI;
                 public static final double kDriveMaxSpeedCap = 13;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
                 public static double kTurnMaxSpeedRPS = kTurnMaxSpeedRPSNormal;
@@ -364,47 +365,47 @@ public final class Constants {
                         new Pose2d(
                                         Units.inchesToMeters(610.77 - scoringOffset),
                                         Units.inchesToMeters(20.6),
-                                        new Rotation2d()),
+                                        new Rotation2d(Math.PI)),
                         2, // Cube - 1
                         new Pose2d(
                                         Units.inchesToMeters(610.77 - scoringOffset),
                                         Units.inchesToMeters(41.9),
-                                        new Rotation2d()),
+                                        new Rotation2d(Math.PI)),
                         3, // Cone
                         new Pose2d(
                                         Units.inchesToMeters(610.77 - scoringOffset), // 597.1
                                         Units.inchesToMeters(64.6),
-                                        new Rotation2d()),
+                                        new Rotation2d(Math.PI)),
                         4, // Cone
                         new Pose2d(
                                         Units.inchesToMeters(610.77 - scoringOffset),
                                         Units.inchesToMeters(86.5),
-                                        new Rotation2d()),
+                                        new Rotation2d(Math.PI)),
                         5, // Cube - 2
                         new Pose2d(
                                         Units.inchesToMeters(610.77 - scoringOffset), // 597.1
                                         Units.inchesToMeters(108.9),
-                                        new Rotation2d()),
+                                        new Rotation2d(Math.PI)),
                         6, // Cone
                         new Pose2d(
                                         Units.inchesToMeters(610.77 - scoringOffset),
                                         Units.inchesToMeters(130.6),
-                                        new Rotation2d()),
+                                        new Rotation2d(Math.PI)),
                         7, // Cone
                         new Pose2d(
                                         Units.inchesToMeters(610.77 - scoringOffset),
                                         Units.inchesToMeters(157.6),
-                                        new Rotation2d()),
+                                        new Rotation2d(Math.PI)),
                         8, // Cube - 3
                         new Pose2d(
                                         Units.inchesToMeters(610.77 - scoringOffset),
                                         Units.inchesToMeters(174.9),
-                                        new Rotation2d()),
+                                        new Rotation2d(Math.PI)),
                         9, // Cone
                         new Pose2d(
                                         Units.inchesToMeters(610.77 - scoringOffset),
                                         Units.inchesToMeters(196.6),
-                                        new Rotation2d()));
+                                        new Rotation2d(Math.PI)));
 
                 public static final Map<Integer, Pose2d> kBlueScoreCols = Map.of(
                         9, // Cone

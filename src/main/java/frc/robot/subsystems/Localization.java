@@ -58,7 +58,7 @@ public class Localization extends SubsystemBase {
       this.fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
 
     } catch(IOException e) {
-      System.err.println("[Localization 2 constructor] Error loading from resource");
+      System.err.println("[Localization constructor] Error loading from resource");
     }
     /*camera1Estimator = new PhotonPoseEstimator(
       fieldLayout,
