@@ -42,8 +42,8 @@ public class Localization extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator;
   private SwerveDrivetrain swerveDrivetrain;
   private AprilTagFieldLayout fieldLayout;
-  private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.3, 0.3, Units.degreesToRadians(5));
-  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
+  private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
+  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.9, 0.9, Units.degreesToRadians(5));
   private final Field2d field;
   private Logger logger = Logger.getInstance();
   
@@ -344,6 +344,7 @@ public class Localization extends SubsystemBase {
     // SmartDashboard
     Pose2d poseToGoTo = getClosestScoringLoc();
     Rotation2d realTheta = normalizeAngle(swerveDrivetrain.getPose().getRotation());
+    SmartDashboard.putNumber("chicken raw theta", swerveDrivetrain.getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("chicken robo theta", realTheta.getDegrees());
     SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
     SmartDashboard.putNumber("chicken error theta", (poseToGoTo.getRotation().getDegrees()) - (realTheta.getDegrees()));

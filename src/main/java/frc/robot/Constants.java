@@ -218,10 +218,10 @@ public final class Constants {
                 public static final double kA = 0; // 0.35228 //units: Volts * Seconds^2 / Meters
 
                 // Position PID
-                public static final double m_x_control_P = 2.0;
+                public static final double m_x_control_P = 1.6;
                 public static final double m_x_control_I = 0.5;
                 public static final double m_x_control_D = 0.0;
-                public static final double m_y_control_P = 2.0;
+                public static final double m_y_control_P = 1.6;
                 public static final double m_y_control_I = 0.5;
                 public static final double m_y_control_D = 0.0;
                 public static final double m_r_control_P = 2.0;
@@ -348,7 +348,7 @@ public final class Constants {
 
         public static class VisionConstants {
                 public static final String kCamera1Name = "beholder";
-                public static final String kCamera2Name = "monocle";
+                public static final String kCamera2Name = "beholder";
 
                 public static final double minDistFromTag = 0.3; // Min dist necessary from tag to automate (0.3 meter
                                                                  // aprox)

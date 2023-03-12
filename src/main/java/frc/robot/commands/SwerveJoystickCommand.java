@@ -75,9 +75,9 @@ public class SwerveJoystickCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double vX = xSpeedFunc.get(); // as of here, negative X is backwards, positive X is forward
-    double vY = ySpeedFunc.get(); // as of here, positive Y is left, negative Y is right
-    double vW = turnSpeedFunc.get(); // as of here, negative W is down (CW) positive W is up (CCW)
+    double vX = xSpeedFunc.get()*0.8; // as of here, negative X is backwards, positive X is forward
+    double vY = ySpeedFunc.get()*0.8; // as of here, positive Y is left, negative Y is right
+    double vW = turnSpeedFunc.get()*0.8; // as of here, negative W is down (CW) positive W is up (CCW)
     if(elevator.getHeightInches() > 25) {
       vX *= 0.35;
       vY *= 0.35;
