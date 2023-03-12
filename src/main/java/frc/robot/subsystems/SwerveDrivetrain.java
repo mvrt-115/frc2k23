@@ -287,10 +287,10 @@ public class SwerveDrivetrain extends SubsystemBase {
       );
     }
 
-    logger.recordOutput("Robot Location", getPose());
-    logger.recordOutput("Robot Pose X", getPose().getX());
-    logger.recordOutput("Robot Pose Y", getPose().getY());
-    logger.recordOutput("Robot Location W deg", getPose().getRotation().getDegrees());
+    logger.recordOutput("Odometry Robot Location", getPose());
+    logger.recordOutput("Odometry Robot Pose X", getPose().getX());
+    logger.recordOutput("Odometry Robot Pose Y", getPose().getY());
+    logger.recordOutput("Odometry Robot Location W deg", getPose().getRotation().getDegrees());
     logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
   }
 

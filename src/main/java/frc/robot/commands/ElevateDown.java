@@ -23,7 +23,7 @@ public class ElevateDown extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.runMotor(-0.048);
+    elevator.runMotor(-0.1);
   }
 
   // Called once the comma\nd ends or is interrupted.

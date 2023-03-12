@@ -71,13 +71,14 @@ public class AutonRunner extends SequentialCommandGroup {
     HashMap<String, Command> eventMap = new HashMap<>();
     eventMap.put(
       "ScoreHigh",
-       new SequentialCommandGroup(
-        new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT),
-        new WaitCommand(0.5),
-        intake.runOut(),
-        new WaitCommand(0.5),
-        new ElevateDown(elevator)
-      )
+      //  new SequentialCommandGroup(
+      //   new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT),
+      //   new WaitCommand(0.5),
+      //   intake.runOut(),
+      //   new WaitCommand(0.5),
+      //   new ElevateDown(elevator)
+      // )
+      new PrintCommand("hi")
     );
     // (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM)? new SequentialCommandGroup(
     //   new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550),
@@ -90,7 +91,7 @@ public class AutonRunner extends SequentialCommandGroup {
     // );
     eventMap.put("Intake", new PrintCommand("!!!Should Intake Here!!!"));
     eventMap.put("LevelForwards", new SequentialCommandGroup(
-      new DriveForward(drivetrain, 4, 1.25),
+      new DriveForward(drivetrain, 2.5, 1.25),
       new Leveling(drivetrain))  
     );
     eventMap.put("LevelBackwards", new SequentialCommandGroup(
@@ -102,16 +103,18 @@ public class AutonRunner extends SequentialCommandGroup {
       pathName, 
       constraints);
 
-    SmartDashboard.putString("markers", trajectory.getMarkers().toString());
+
+
+    SmartDashboard.putString("markers" + pathName, fullTrajectoriesWithStopEvents.toString());
 
     // If only markers are not stop events: 
-    FollowPathWithEvents autoEventsCommand = new FollowPathWithEvents(
-      swerveDrivetrain.getAutonPathCommand(trajectory), 
-      trajectory.getMarkers(),
-      eventMap
-    );
+    // FollowPathWithEvents autoEventsCommand = new FollowPathWithEvents(
+    //   swerveDrivetrain.getAutonPathCommand(trajectory), 
+    //   trajectory.getMarkers(),
+    //   eventMap
+    // );
 
-    // Command autoEventsCommand = swerveDrivetrain.getAutonBuilder(eventMap).fullAuto(fullTrajectoriesWithStopEvents);
+    Command autoEventsCommand = swerveDrivetrain.getAutonBuilder(eventMap).fullAuto(fullTrajectoriesWithStopEvents);
 
     SmartDashboard.putNumber("Trajectory X init", trajectory.getInitialHolonomicPose().getX());
     SmartDashboard.putNumber("Trajectory Y init", trajectory.getInitialHolonomicPose().getY());

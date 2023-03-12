@@ -37,7 +37,7 @@ public class RobotContainer {
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
   private CANdleLEDSystem leds = new CANdleLEDSystem();
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
-  private Localization localization = new Localization(swerveDrivetrain);
+  // private Localization localization = new Localization(swerveDrivetrain);
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
@@ -92,20 +92,21 @@ public class RobotContainer {
     // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreExitLevel"));
     autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
     autonSelector.addOption("OnlyLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreLevel"));
-    // autonSelector.setDefaultOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreTwiceLevel"));
+    autonSelector.addOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreTwiceLevel"));
+    autonSelector.setDefaultOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreTwiceLevel"));
     SmartDashboard.putData("Auton Selector", autonSelector);
   
-    //Align to nearest column on click
-    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
-    driveJoystick.button(-1).onTrue(new TrajectoryAlign(swerveDrivetrain, localization, localization::getClosestScoringLoc));
+    // //Align to nearest column on click
+    // driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    // // driveJoystick.button(-1).onTrue(new TrajectoryAlign(swerveDrivetrain, localization, localization::getClosestScoringLoc));
 
-    //SHIFT LEFT
-    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, localization::getLeftScoreLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
-    driveJoystick.button(-1).onTrue(new TrajectoryAlign(swerveDrivetrain, localization, localization::getLeftScoreLoc));
+    // //SHIFT LEFT
+    // driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, localization::getLeftScoreLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    // // driveJoystick.button(-1).onTrue(new TrajectoryAlign(swerveDrivetrain, localization, localization::getLeftScoreLoc));
 
-    //SHIFT RIGHT
-    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, localization::getRightScoreLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
-    driveJoystick.button(-1).onTrue(new TrajectoryAlign(swerveDrivetrain, localization, localization::getRightScoreLoc));
+    // //SHIFT RIGHT
+    // driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, localization::getRightScoreLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    // // driveJoystick.button(-1).onTrue(new TrajectoryAlign(swerveDrivetrain, localization, localization::getRightScoreLoc));
 
     // AUTO LEVEL
     /*driveJoystick.button(2).onTrue(
