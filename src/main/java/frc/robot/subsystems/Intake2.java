@@ -82,12 +82,20 @@ public class Intake2 extends SubsystemBase {
     return new InstantCommand(() -> stopIntaking());
   }
 
+  public InstantCommand runOutCube() {
+    return new InstantCommand(()-> outtakeCube());
+  }
+
   /******************************************METHODS***************************************/
 
   public void stopIntaking()
   {
     isIntakingOrScoring = false;
    /* if(prox.get())*/ motor.set(ControlMode.PercentOutput, Constants.Intake.kCompressedSpeed);
+  }
+
+  public void outtakeCube() {
+    motor.set(ControlMode.PercentOutput, Constants.Intake.outtakeCube);
   }
 
   public void runMotor(boolean isIntaking)

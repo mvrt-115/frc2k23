@@ -69,11 +69,13 @@ public final class Constants {
 
                 public static final double kP = 0, kI = 0, kD = 0;
 
-                public static final double kCompressedSpeed = isCompBot? -0.125 : -0.07;
+                public static final double kCompressedSpeed = isCompBot? -0.105 : -0.07;
 
         public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
 
         public static final double kOuttakeRPM = isCompBot?  0.125 :  0.08;
+
+        public static final double outtakeCube = 0.3;
     }
 
     public static class GroundIntake {
@@ -118,7 +120,6 @@ public final class Constants {
                 public static final double driveForwardMPS = 4;
                 public static final double driveForwardTime = 1.25;
         }
-
         public static class SwerveDrivetrain {
                 // Physical Constants
                 public static final double chassisWidth = Units.inchesToMeters(26);
@@ -195,8 +196,9 @@ public final class Constants {
                 public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
                 public static final double kDriveMaxAccelerationNormal = 3;
                 public static final double kTurnMaxAccelerationNormal = 1 * Math.PI;
-                public static final double kDriveMaxSpeedMPSNormal = 6;
+                public static final double kDriveMaxSpeedMPSNormal = 3.5;
                 public static final double kTurnMaxSpeedRPSNormal = 2 * Math.PI;
+                public static final double kDriveMaxSpeedCap = 10;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
                 public static double kTurnMaxSpeedRPS = kTurnMaxSpeedRPSNormal;
                 public static double kDriveMaxAcceleration = kDriveMaxAccelerationNormal;
@@ -300,13 +302,13 @@ public final class Constants {
                 public static final double SHELF_HEIGHT = 0;
 
                 // MID, HIGH heights parwa cone (in ticks)
-                public static final double CONE_MID_HEIGHT = 39.5;
+                public static final double CONE_MID_HEIGHT = 38;
                 public static final double CONE_HIGH_HEIGHT = 59.1;
-                public static final double INTAKE_HEIGHT = 40;
+                public static final double INTAKE_HEIGHT = 39.6;
 
                 // MID, HIGH heights para cube (in inches)
-                public static final double CUBE_MID_HEIGHT = 40.28;
-                public static final double CUBE_HIGH_HEIGHT = 57;
+                public static final double CUBE_MID_HEIGHT = 32;
+                public static final double CUBE_HIGH_HEIGHT = 49;
 
                 // feed forward constants
                 public static final double kS = isCompBot ? 0.11729 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
