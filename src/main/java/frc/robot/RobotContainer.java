@@ -96,14 +96,17 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(-1).onTrue(new TrajectoryAlign(swerveDrivetrain, localization, localization::getClosestScoringLoc));
 
     //SHIFT LEFT
-    //driveJoystick.button(5).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
-    
+    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, localization::getLeftScoreLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(-1).onTrue(new TrajectoryAlign(swerveDrivetrain, localization, localization::getLeftScoreLoc));
+
     //SHIFT RIGHT
-    // driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
-  
+    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, localization::getRightScoreLoc)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(-1).onTrue(new TrajectoryAlign(swerveDrivetrain, localization, localization::getRightScoreLoc));
+
     // AUTO LEVEL
     /*driveJoystick.button(2).onTrue(
       new SequentialCommandGroup(
