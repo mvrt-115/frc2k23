@@ -19,11 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake2.INTAKE_TYPE;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -98,11 +95,14 @@ public class RobotContainer {
     driveJoystick.button(3).onTrue(new ResetOdometryWithVision(swerveDrivetrain, localization));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
-    autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ExitLevel"));
-    autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ExitLevel2"));
+    autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ExitLevel"));
+    autonSelector.addOption("ScoreExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ExitLevel2"));
     // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ScoreExitLevel"));
     autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
-    autonSelector.addOption("OnlyLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ScoreLevel"));
+    autonSelector.addOption("ScoreLevel", new SequentialCommandGroup( 
+      new AutoScoreCone(elevator, intake), 
+      new AutoLevel(swerveDrivetrain, -4)
+    ));
     autonSelector.addOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ScoreTwiceLevel"));
     autonSelector.setDefaultOption("DONOTHING", new PrintCommand("hi"));
     SmartDashboard.putData("Auton Selector", autonSelector);

@@ -71,17 +71,7 @@ public class AutonRunner extends SequentialCommandGroup {
     //   swerveDrivetrain);
 
     HashMap<String, Command> eventMap = new HashMap<>();
-    eventMap.put("ScoreHigh", new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        new ParallelRaceGroup(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT-0.25, 0.35),
-        new BetterWaitCommand(2)
-      ),
-      intake.stop()
-      ),
-      new BetterWaitCommand(0.35),
-        intake.runOut(),
-      new ElevateDown(elevator))  
-    );
+    eventMap.put("ScoreHigh", new AutoScoreCone(elevator, intake));
     eventMap.put("IntakeDown", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
       new ParallelCommandGroup(
@@ -111,14 +101,9 @@ public class AutonRunner extends SequentialCommandGroup {
       new ElevateDown(elevator)
     ));
 
-    eventMap.put("LevelForwards", new SequentialCommandGroup(
-      new DriveForward(drivetrain, 2.5, 1.25),
-      new Leveling(drivetrain))  
-    );
-    eventMap.put("LevelBackwards", new SequentialCommandGroup(
-      new DriveForward(drivetrain, -4, 1.25),
-      new Leveling(drivetrain))  
-    );
+    eventMap.put("LevelForwards", new AutoLevel(drivetrain, 2.5));
+    
+    eventMap.put("LevelBackwards", new AutoLevel(drivetrain, -4));
 
     List<PathPlannerTrajectory> fullTrajectoriesWithStopEvents = PathPlanner.loadPathGroup(
       pathName, 
