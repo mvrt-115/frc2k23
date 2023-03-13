@@ -66,10 +66,13 @@ public class Localization extends SubsystemBase {
       camera1,
       Constants.VisionConstants.cam1ToRobot);*/
     //camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // Rotation2d correctedAngle = Rotation2d.fromDegrees(swerveDrivetrain.getPose().getRotation().getDegrees() + 180)
+
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
     camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
       swerveDrivetrain.getPose().getRotation(), 
+      // correctedAngle,
       swerveDrivetrain.getModulePositions(), 
       new Pose2d(), stateStdDevs, visionMeasurementStdDevs); //Replace this with the starting pose in auton
 
@@ -82,7 +85,7 @@ public class Localization extends SubsystemBase {
   @Override
   public void periodic() {
     //camera1Estimator.setReferenceTheta(swerveDrivetrain.getPose().getRotation().getRadians());
-    camera2Estimator.setReferenceTheta(swerveDrivetrain.getPose().getRotation().getRadians());
+    //camera2Estimator.setReferenceTheta(swerveDrivetrain.getPose().getRotation().getRadians());
     //Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
     Pose2d result = combinePoses(null, result2);
@@ -133,6 +136,7 @@ public class Localization extends SubsystemBase {
    * @param pose
    */
   public void resetPoseEstimator(Pose2d pose){
+    // Rotation2d correctedAngle = Rotation2d.fromDegrees(swerveDrivetrain.getPose().getRotation().getDegrees() + 180);
     poseEstimator.resetPosition(swerveDrivetrain.getPose().getRotation(), swerveDrivetrain.getModulePositions(), pose);
   }
 
