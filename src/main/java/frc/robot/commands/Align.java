@@ -34,10 +34,12 @@ public class Align extends CommandBase {
     this.swerve = swerve;
     this.localization = localization;
     this.poseSup = poseSup;
-    addRequirements(localization, swerve);
+
     pidX = new PIDController(2.5, 0, 0.2); // pid x-coor 1.2
     pidY = new PIDController(2.5, 0, 0.2); // pid y-coor 1.2
     pidTheta = new PIDController(4, 0, 0); // pid t-coor 4
+    
+    addRequirements(localization, swerve);
   }
 
   // Called when the command is initially scheduled.
@@ -56,10 +58,9 @@ public class Align extends CommandBase {
     Pose2d robotPose = localization.getCurrentPose();
     double outX = -pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
     double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
-    double outTheta = pidTheta.calculate(localization.normalizeAngle(robotPose.getRotation()).getRadians(),
+    double theta = localization.normalizeAngle(robotPose.getRotation()).getRadians();
+    double outTheta = pidTheta.calculate(localization.computeThetaError(theta, true),
                          poseToGoTo.getRotation().getRadians());
-
-    SmartDashboard.putString("chicken alliance", DriverStation.getAlliance().toString());                    
 
     // swerve screwed up field oriented switched y axis; shoud be -outX
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta,
@@ -79,9 +80,9 @@ public class Align extends CommandBase {
   public boolean isFinished() {
     Pose2d robotPose = localization.getCurrentPose();
 
-      return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
-        Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
-        Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
-        Constants.VisionConstants.thetaTolerance;
+    return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
+      Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
+      Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
+      Constants.VisionConstants.thetaTolerance;
   }
 }

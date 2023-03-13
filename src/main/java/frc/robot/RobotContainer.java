@@ -94,8 +94,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    
-    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
+    driveJoystick.button(3).onTrue(new ResetOdometryWithVision(swerveDrivetrain, localization));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ExitLevel"));
@@ -111,10 +110,10 @@ public class RobotContainer {
     driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     //SHIFT LEFT
-    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    //driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
     
     //SHIFT RIGHT
-    driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    //driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     // AUTO LEVEL
     driveJoystick.button(2).onTrue(
@@ -127,10 +126,10 @@ public class RobotContainer {
     );
     
     //Brake baby brake
-    driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
+    //driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
 
     //No braking
-    driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
+    //driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
 
     // HP INTAKE
     operatorJoystick.x().onTrue(
