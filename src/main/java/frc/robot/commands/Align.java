@@ -58,10 +58,9 @@ public class Align extends CommandBase {
     Pose2d robotPose = localization.getCurrentPose();
     double outX = -pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
     double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
-    double outTheta = pidTheta.calculate(localization.normalizeAngle(robotPose.getRotation()).getRadians(),
+    double theta = localization.normalizeAngle(robotPose.getRotation()).getRadians();
+    double outTheta = pidTheta.calculate(localization.computeThetaError(theta, true),
                          poseToGoTo.getRotation().getRadians());
-
-    SmartDashboard.putString("chicken alliance", DriverStation.getAlliance().toString());                    
 
     // swerve screwed up field oriented switched y axis; shoud be -outX
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta,
