@@ -18,11 +18,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.GroundIntake;
 import frc.robot.subsystems.Intake2;
 import frc.robot.subsystems.SwerveDrivetrain;
 // import frc.robot.utils.BetterSwerveControllerCommand;
@@ -36,7 +38,7 @@ public class AutonRunner extends SequentialCommandGroup {
     Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
     Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration);
 
-  public AutonRunner(SwerveDrivetrain drivetrain, Elevator elevator, Intake2 intake, String pathName) {
+  public AutonRunner(SwerveDrivetrain drivetrain, Elevator elevator, Intake2 intake, GroundIntake groundIntake, String pathName) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
@@ -70,14 +72,47 @@ public class AutonRunner extends SequentialCommandGroup {
 
     HashMap<String, Command> eventMap = new HashMap<>();
     eventMap.put("ScoreHigh", new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25),
-      new WaitCommand(0.25),
+      new ParallelCommandGroup(
+        new ParallelRaceGroup(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT-0.25, 0.35),
+        new BetterWaitCommand(2)
+      ),
+      intake.stop()
+      ),
+      new BetterWaitCommand(0.35),
         intake.runOut(),
-      new ElevateDown(elevator)) 
+      new ElevateDown(elevator))  
     );
-    eventMap.put("Intake", new PrintCommand("!!!Should Intake Here!!!"));
+    eventMap.put("IntakeDown", new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new ParallelCommandGroup(
+        new SetGroundIntakePosition(groundIntake, 180),
+        new InstantCommand(() -> groundIntake.setRollerOutput(0.2))
+      ), 
+      new ElevateDown(elevator)
+    ));
+
+    eventMap.put("IntakeUp", new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new ParallelCommandGroup(
+        new SetGroundIntakePosition(groundIntake, 40),
+        new InstantCommand(() -> groundIntake.setRollerOutput(0.2))
+      ),
+      new ElevateDown(elevator)
+    ));
+    eventMap.put("GIScore", new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new ParallelCommandGroup(
+        new SetGroundIntakePosition(groundIntake, 120),
+        new InstantCommand(() -> groundIntake.setRollerOutput(-0.6))
+      ),
+      new BetterWaitCommand(0.5),
+      new SetGroundIntakePosition(groundIntake, 40),
+      new InstantCommand(() -> groundIntake.stopRoller()),
+      new ElevateDown(elevator)
+    ));
+
     eventMap.put("LevelForwards", new SequentialCommandGroup(
-      new DriveForward(drivetrain, 4, 1.25),
+      new DriveForward(drivetrain, 2.5, 1.25),
       new Leveling(drivetrain))  
     );
     eventMap.put("LevelBackwards", new SequentialCommandGroup(

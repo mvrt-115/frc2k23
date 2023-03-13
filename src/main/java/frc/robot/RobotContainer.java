@@ -98,12 +98,13 @@ public class RobotContainer {
     driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
-    autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel"));
-    autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel2"));
-    // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreExitLevel"));
+    autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ExitLevel"));
+    autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ExitLevel2"));
+    // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ScoreExitLevel"));
     autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
-    autonSelector.addOption("OnlyLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreLevel"));
-    autonSelector.setDefaultOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreTwiceLevel"));
+    autonSelector.addOption("OnlyLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ScoreLevel"));
+    autonSelector.addOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ScoreTwiceLevel"));
+    autonSelector.setDefaultOption("DONOTHING", new PrintCommand("hi"));
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
@@ -139,38 +140,19 @@ public class RobotContainer {
     );
 
     // RETURN TO NEUTRAL
-    // operatorJoystick.b().onTrue(new SequentialCommandGroup(
-    //   // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
-    //   // new InstantCommand(() -> swerveDrivetrain.stopModules()),
-    //   intake.runOut(),
-    //   new BetterWaitCommand(0.25),
-    //   new ParallelCommandGroup(
-    //     new ElevateDown(elevator),
-    //     intake.stop()
-    //     // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast))
-    //   )
-    // )).onFalse(
-    //   new InstantCommand(() -> elevator.runMotor(0))
-    // );
-
     operatorJoystick.b().onTrue(new SequentialCommandGroup(
+      // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
+      // new InstantCommand(() -> swerveDrivetrain.stopModules()),
+      intake.runOut(),
+      new BetterWaitCommand(0.25),
       new ParallelCommandGroup(
-        new ParallelRaceGroup(new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT-0.25, 0.35),
-        new BetterWaitCommand(2)
-      ),
-      intake.stop()
-      ),
-      new BetterWaitCommand(0.35),
-        intake.runOut(),
-      new ElevateDown(elevator)) 
+        new ElevateDown(elevator),
+        intake.stop()
+        // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast))
+      )
+    )).onFalse(
+      new InstantCommand(() -> elevator.runMotor(0))
     );
-
-    // //autonintake thing
-    // operatorJoystick.b().onTrue(
-    //   new SequentialCommandGroup(new SetElevatorHeight(elevator, 20,1),
-    //     new AutonIntake(gi)
-        
-    //   ));
 
     // gi.setDefaultCommand(new ManualGroundIntake(gi, () -> operatorJoystick.getRightX()*0.2  ));
 

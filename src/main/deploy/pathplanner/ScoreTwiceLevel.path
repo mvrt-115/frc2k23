@@ -26,16 +26,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.509196014112427,
-        "y": 4.631360475274445
+        "x": 5.664683390130669,
+        "y": 4.484093218186437
       },
       "prevControl": {
-        "x": 6.532066930039708,
-        "y": 4.642795933238086
+        "x": 5.68755430605795,
+        "y": 4.495528676150078
       },
       "nextControl": {
-        "x": 6.532066930039708,
-        "y": 4.642795933238086
+        "x": 5.68755430605795,
+        "y": 4.495528676150078
       },
       "holonomicAngle": 0,
       "isReversal": true,
@@ -44,25 +44,25 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Intake"
+          "IntakeDown"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 6.509196014112427,
-        "y": 4.631360475274445
+        "x": 6.935547591581294,
+        "y": 4.603780374227415
       },
       "prevControl": {
-        "x": 6.520631472076067,
-        "y": 4.637078204256266
+        "x": 6.95839464227693,
+        "y": 4.601571661515044
       },
       "nextControl": {
-        "x": 6.497760556148787,
-        "y": 4.625642746292623
+        "x": 6.912700540885658,
+        "y": 4.605989086939785
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -78,16 +78,43 @@
     },
     {
       "anchorPoint": {
-        "x": 1.832093706983419,
-        "y": 4.368344942110712
+        "x": 5.048722169559063,
+        "y": 4.768670677377552
       },
       "prevControl": {
-        "x": 1.8740052407280166,
-        "y": 5.008992672206706
+        "x": 5.060157627522703,
+        "y": 4.774388406359373
       },
       "nextControl": {
-        "x": 1.7520455012379348,
-        "y": 3.144750940001166
+        "x": 5.037286711595423,
+        "y": 4.76295294839573
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Intake Up"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.7831678317385076,
+        "y": 4.32155982795378
+      },
+      "prevControl": {
+        "x": 1.8192828764824025,
+        "y": 4.962560447517539
+      },
+      "nextControl": {
+        "x": 1.7152460891131311,
+        "y": 3.116026803878645
       },
       "holonomicAngle": -180.0,
       "isReversal": false,
@@ -96,7 +123,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "ScoreHigh"
+          "GIScore"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -105,17 +132,14 @@
     },
     {
       "anchorPoint": {
-        "x": 2.6325757644382612,
-        "y": 3.1104445661102447
+        "x": 1.78,
+        "y": 2.972853244284688
       },
       "prevControl": {
-        "x": 2.358124773310887,
-        "y": 3.1104445661102447
+        "x": 1.7356781632994551,
+        "y": 3.2862850559824346
       },
-      "nextControl": {
-        "x": 2.7134366631588995,
-        "y": 3.1104445661102447
-      },
+      "nextControl": null,
       "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": 4.0,
@@ -123,32 +147,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "DriveBackwards",
-          "Level"
-        ],
-        "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 3.924782514329651,
-        "y": 3.064702734255682
-      },
-      "prevControl": {
-        "x": 4.547608626860487,
-        "y": 3.058985005273861
-      },
-      "nextControl": null,
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [
-          "Leveling"
+          "LevelBackwards"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",

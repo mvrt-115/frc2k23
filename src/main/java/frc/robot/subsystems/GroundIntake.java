@@ -89,8 +89,8 @@ public class GroundIntake extends SubsystemBase{
         logger.recordOutput("GroundIntake/desiredOutput", output);
 
         
-        if(output > 0.5)
-            output = 0.5;
+        if(output > 0.7)
+            output = 0.7;
 
         setArmOutput(output);
     }
