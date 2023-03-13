@@ -6,78 +6,70 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.CANdle;
 
+import edu.wpi.first.math.spline.CubicHermiteSpline;
 import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CANdleLEDSystem extends SubsystemBase {
+  private final CANdle candle = new CANdle(0);
   private final int ledCount = 65;
   /** true for cube, false for cone */
-  boolean roborio = true;
-  boolean purpleYellow = true;
-  boolean prevpurpleYellow = true;
+  final BooleanEntry cubeCone;
+  boolean prevCubeCone = false;
 
-  AddressableLED leds;
-  AddressableLEDBuffer ledBuffer;
-
- 
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  NetworkTable table = inst.getTable("LEDsData");
   /** Creates a new CANdleLEDSystem. */
   public CANdleLEDSystem() {
-   
-   
-    leds = new AddressableLED(3);
-    ledBuffer = new AddressableLEDBuffer(115);
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable table = inst.getTable("LEDs");
 
-    leds.setLength(ledBuffer.getLength());
-    leds.start();
-    
+    BooleanTopic topic = table.getBooleanTopic("cubeCone");
+
+    cubeCone = topic.getEntry(false);
+  }
+
+  public CommandBase setPurple() {
+    return this.runOnce(() -> setPrupMethod());
   }
   
-
-  //George Was here
+  public CommandBase setYellow() {
+    return this.runOnce(() -> setYellowMethod());
+  }
+  public CommandBase setSolidColor(int r, int g, int b) {
+    return this.runOnce(() -> candle.setLEDs(r, g, b));
+  }
+  private void setPrupMethod() {
+    setColor(200, 0, 200);
+  }
+  private void setYellowMethod() {
+  //  cand
+    setColor(0, 255, 0);
+  }
   private void updateLEDCubeCone() {
-    //George coded this
-    if (purpleYellow) {
-     setColor(200, 0, 200);
+    if (cubeCone.getAsBoolean()) {
+      candle.setLEDs(200, 0, 200);
     }
     else {
-     setColor(200, 150, 5);
+      candle.setLEDs(160, 200, 5);
     }
-
-
-  }
-
-  public void updatePurpYellow(){
-    // System.out.println("PRUPR YELLOW UPDATE");
-    purpleYellow = !purpleYellow;
   }
 
   private void setColor(int r, int g, int b) {
-   
-      for (int i = 0; i < ledBuffer.getLength(); i++) {
-        ledBuffer.setRGB(i, r, g, b);
-      }
-      leds.setData(ledBuffer);
-    
+    candle.setLEDs(r, g, b);
   }
   @Override
   public void periodic() {
-    if (prevpurpleYellow != purpleYellow) {
-      updateLEDCubeCone();
-    }
-    prevpurpleYellow = purpleYellow;
-    // System.out.println("curr color: " + purpleYellow);
     //you have to compare prev network tables state to new one to see if it changed because 
     //CANdle cannot be set periodically or else it will lag
-    // if(prevCubeCone != cubeCone.getAsBoolean()){
-    //   updateLEDCubeCone();
-    // }
-    // prevCubeCone = cubeCone.getAsBoolean();
+    if(prevCubeCone != cubeCone.getAsBoolean()){
+      updateLEDCubeCone();
+    }
+    prevCubeCone = cubeCone.getAsBoolean();
    
   }
 }
