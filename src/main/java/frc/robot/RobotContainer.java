@@ -195,7 +195,8 @@ public class RobotContainer {
 
     testJoystick.a().onTrue(new SetGroundIntakePosition(gi, 180));
     testJoystick.b().onTrue(new SetGroundIntakePosition(gi, 120));
-    testJoystick.b().onTrue(new SetGroundIntakePosition(gi, 40));
+    testJoystick.x().onTrue(new SetGroundIntakePosition(gi, 40));
+    testJoystick.x().onTrue(leds.toggleColor());
 
     
 

@@ -33,6 +33,10 @@ public class CANdleLEDSystem extends SubsystemBase {
     cubeCone = topic.getEntry(false);
   }
 
+  public CommandBase toggleColor() {
+    return this.runOnce(() -> cubeCone.set(!cubeCone.getAsBoolean()));
+  }
+
   public CommandBase setPurple() {
     return this.runOnce(() -> setPrupMethod());
   }
