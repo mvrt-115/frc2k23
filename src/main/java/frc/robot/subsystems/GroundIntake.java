@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.TalonFactory;
@@ -35,15 +36,14 @@ public class GroundIntake extends SubsystemBase{
     public void periodic(){
         log();
 
-        // if(getArmCurrentPositionDegrees() > Constants.GroundIntake.kIntakePositionThreshold)
-        //     setRollerOutput(Constants.GroundIntake.kRollerOutput);
-        // else
-        //     stopRoller();
+        
     }
 
     public void log(){
         logger.recordOutput("GroundIntake/armMotor/position_ticks", getArmCurrentPositionTicks());
         logger.recordOutput("GroundIntake/armMotor/position_degrees", getArmCurrentPositionDegrees());
+        SmartDashboard.putNumber("gi - arm pos deg", getArmCurrentPositionDegrees());
+        SmartDashboard.putNumber("gi - arm output", armMotor.getAppliedOutput());
         logger.recordOutput("GroundIntake/armMotor/percent_output", armMotor.getAppliedOutput());
         logger.recordOutput("GroundIntake/clawMotor/velocity", rollerMotor.getSelectedSensorVelocity());
     }

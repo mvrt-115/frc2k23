@@ -71,33 +71,30 @@ public final class Constants {
 
                 public static final double kCompressedSpeed = isCompBot? -0.105 : -0.07;
 
-        public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
+                public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
 
-        public static final double kOuttakeRPM = isCompBot?  0.125 :  0.08;
+                public static final double kOuttakeRPM = isCompBot?  0.125 :  0.08;
 
-        public static final double outtakeCube = 0.3;
-    }
+                public static final double outtakeCube = 0.3;
+        }
 
-    public static class GroundIntake {
-        // public static final double kMarginOfError = 0.03;
+        public static class GroundIntake {
+                // public static final double kMarginOfError = 0.03;
 
-        // public static final int kProximityPort = 6; // port number for element proximity sensor
-        public static final int kPivotId = 11;//isCompBot? 8 : 5;
-        public static final int kRollerId = 15;//isCompBot? 8 : 5;
+                // public static final int kProximityPort = 6; // port number for element proximity sensor
+                public static final int kPivotId = 11;//isCompBot? 8 : 5;
+                public static final int kRollerId = 15;//isCompBot? 8 : 5;
 
-        public static final double kRollerOutput = 0.5;
+                public static final double kRollerOutput = 0.5;
 
-        public static final double kP = 0.01, kI = 0, kD = 0, kG = 0.15808;
-        public static final double initialAngle = 30.0;
-        public static final double kGearRatio = 30.0;
-        public static final double kIntakePositionThreshold = 120;
+                public static final double kP = 0.01;
+                public static final double kI = 0;
+                public static final double kD = 0;
+                public static final double kG = 0.15808;
+                public static final double initialAngle = 30.0;
+                public static final double kGearRatio = 30.0;
 
-
-
-        // public static final double kCompressedSpeed = isCompBot? -0.15 : -0.07;
-
-// public static final double kGoalRPM = 0.3;
-}
+        }
 
         public static class Leveling {
                 // Leveling PID
