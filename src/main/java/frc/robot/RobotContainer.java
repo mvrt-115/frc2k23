@@ -139,71 +139,55 @@ public class RobotContainer {
       new ElevateDown(elevator).alongWith(intake.stop())
     );
 
-    // RETURN TO NEUTRAL
+    // SHOOT CONE AND DOWN
     operatorJoystick.b().onTrue(new SequentialCommandGroup(
-      // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
-      // new InstantCommand(() -> swerveDrivetrain.stopModules()),
       intake.runOut(),
       new BetterWaitCommand(0.25),
       new ParallelCommandGroup(
         new ElevateDown(elevator),
         intake.stop()
-        // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast))
       )
     )).onFalse(
       new InstantCommand(() -> elevator.runMotor(0))
     );
 
-    // gi.setDefaultCommand(new ManualGroundIntake(gi, () -> operatorJoystick.getRightX()*0.2  ));
-
-    // SCORE CONE MID 
+    // ELEV MID 
     operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT, 0.25));
 
-    // SCORE CONE HIGH
+    // ELEV HIGH
     operatorJoystick.a().onTrue(
       new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25)
     ).onFalse(intake.runOut());
 
-    // RESET ELEVATOR ENCODER VALUE
-     operatorJoystick.button(7).onTrue(new InstantCommand(() -> elevator.resetEncoder()));
-
-    operatorJoystick.button(8).onTrue(new SequentialCommandGroup(
-      // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
-      // new InstantCommand(() -> swerveDrivetrain.stopModules()),
-      intake.runOut(),
+    // SHOOT CUBE AND DOWN
+    operatorJoystick.rightBumper().onTrue(new SequentialCommandGroup(
+      intake.runOutCube(),
       new BetterWaitCommand(0.25),
       new ParallelCommandGroup(
         new ElevateDown(elevator),
-        intake.runOutCube()
-        // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast))
+        intake.stop()
       )
     )).onFalse(
       new InstantCommand(() -> elevator.runMotor(0))
-    );
-    
-    // SCORE CUBE MID
-    operatorJoystick.button(5).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT, 0.25)
-    );
-    
-    // SCORE CUBE HIGH
-    operatorJoystick.button(6).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT, 0.25)
-    );
+    );  
 
-    operatorJoystick.button(7).onTrue(intake.runOutCube()).onFalse(intake.stop());
+    // MANUAL INTAKE
+    operatorJoystick.start().onTrue(intake.runIn()).onFalse(intake.stop());
+
+    // MANUAL OUTTAKE
+    operatorJoystick.back().onTrue(intake.runOutCube()).onFalse(intake.stop());
 
     testJoystick.a().onTrue(new SetGroundIntakePosition(gi, 180));
     testJoystick.b().onTrue(new SetGroundIntakePosition(gi, 120));
     testJoystick.x().onTrue(new SetGroundIntakePosition(gi, 40));
     testJoystick.x().onTrue(leds.toggleColor());
 
-    
+    // RESET ELEVATOR ENCODER VALUE
+    //  operatorJoystick.button(7).onTrue(new InstantCommand(() -> elevator.resetEncoder()));
 
-    // MANUAL INTAKE
-  //   operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop());
+    
   //  // operatorJoystick.button(7).onTrue(new SetGroundIntakeArmPos(gi, 30));//intake.runIn()).onFalse(intake.stop()); // manual intaking
-  //    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
+    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
 
     //LEDS TOGGLE
     // operatorJoystick.button(10).onTrue(leds.toggleLEDs());
