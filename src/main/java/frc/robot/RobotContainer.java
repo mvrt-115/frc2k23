@@ -74,9 +74,7 @@ public class RobotContainer {
     // ELEVATOR MANUAL
     elevator.setDefaultCommand(
       new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
-    ); // used to 0.4, makes slower speed
-
-    gi.setDefaultCommand(new ManualGroundIntake(gi, () -> operatorJoystick.getRightX()*0.2));
+    );
       
     // Configure the trigger bindings
     configureBindings();
@@ -97,7 +95,6 @@ public class RobotContainer {
 
     autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, "ExitLevel"));
     autonSelector.addOption("ScoreExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds,"ExitLevel2"));
-    // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ScoreExitLevel"));
     autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
     autonSelector.addOption("ScoreLevel", new SequentialCommandGroup( 
       new AutoScoreCone(elevator, intake), 
@@ -125,6 +122,18 @@ public class RobotContainer {
     ).onFalse( 
       new InstantCommand(() -> swerveDrivetrain.stopModules())
     );
+
+    // GROUND INTAKE DOWN / UP
+    driveJoystick.button(6).onTrue(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 180),
+      new InstantCommand(() -> gi.setRollerOutput(0.3)),
+      new ElevateDown(elevator)
+    )).onFalse(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 40),
+      new InstantCommand(() -> gi.stopRoller())
+    ));
     
     //Brake baby brake
     //driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
@@ -177,18 +186,6 @@ public class RobotContainer {
     // MANUAL OUTTAKE
     operatorJoystick.back().onTrue(intake.runOutCube()).onFalse(intake.stop());
 
-    // GROUND INTAKE DOWN / UP
-    operatorJoystick.rightTrigger().onTrue(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1),
-      new SetGroundIntakePosition(gi, 180),
-      new InstantCommand(() -> gi.setRollerOutput(0.3)),
-      new ElevateDown(elevator)
-    )).onFalse(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1),
-      new SetGroundIntakePosition(gi, 40),
-      new InstantCommand(() -> gi.stopRoller())
-    ));
-
     // GROUND INTAKE SHOOT LOW
     operatorJoystick.leftTrigger().onTrue(new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
@@ -220,33 +217,5 @@ public class RobotContainer {
 
   public void putTestCommand() {
     swerveDrivetrain.setupTests();
-  }
-
-  public Command getReleaseCommand() {
-    if(Math.abs(elevator.getHeightInches() - Constants.Elevator.CONE_MID_HEIGHT) < 3) {
-      return (
-        new SequentialCommandGroup(
-          new ParallelCommandGroup(
-            new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3, 0.25),
-            intake.runOut()
-          ),
-          new WaitCommand(0.5),
-          new ElevateDown(elevator)
-        )
-      );
-    }
-    return (
-      new SequentialCommandGroup(
-        new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
-        new InstantCommand(() -> swerveDrivetrain.stopModules()),
-        intake.runOut(),
-        new WaitCommand(0.3),
-        new ParallelCommandGroup(
-          new ElevateDown(elevator),
-          intake.stop(),
-          new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast))
-        )
-      )
-    );
   }
 }
