@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.subsystems.CANdleLEDSystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.GroundIntake;
 import frc.robot.subsystems.Intake2;
@@ -38,7 +39,7 @@ public class AutonRunner extends SequentialCommandGroup {
     Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
     Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration);
 
-  public AutonRunner(SwerveDrivetrain drivetrain, Elevator elevator, Intake2 intake, GroundIntake groundIntake, String pathName) {
+  public AutonRunner(SwerveDrivetrain drivetrain, Elevator elevator, Intake2 intake, GroundIntake groundIntake, CANdleLEDSystem candleLEDs, String pathName) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
@@ -101,9 +102,9 @@ public class AutonRunner extends SequentialCommandGroup {
       new ElevateDown(elevator)
     ));
 
-    eventMap.put("LevelForwards", new AutoLevel(drivetrain, 2.5));
+    eventMap.put("LevelForwards", new AutoLevel(drivetrain, 2.5, candleLEDs));
     
-    eventMap.put("LevelBackwards", new AutoLevel(drivetrain, -4));
+    eventMap.put("LevelBackwards", new AutoLevel(drivetrain, -4, candleLEDs));
 
     List<PathPlannerTrajectory> fullTrajectoriesWithStopEvents = PathPlanner.loadPathGroup(
       pathName, 

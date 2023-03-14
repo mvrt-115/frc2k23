@@ -57,7 +57,7 @@ public class GroundIntake extends SubsystemBase{
     }
 
     public void stopRoller() {
-        setRollerOutput(0);
+        setRollerOutput(0.2);
     }
 
     public double getArmCurrentPositionTicks(){
@@ -82,7 +82,7 @@ public class GroundIntake extends SubsystemBase{
     
     public void setPosition(double goalPositionDegrees){
 
-        double pidOutput = armPIDController.calculate(goalPositionDegrees - getArmCurrentPositionDegrees())/10.0;
+        double pidOutput = armPIDController.calculate(getArmCurrentPositionDegrees() - goalPositionDegrees)/10.0;
         
         double output = pidOutput + getFeedForward();
 

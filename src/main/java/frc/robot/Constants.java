@@ -87,10 +87,10 @@ public final class Constants {
 
                 public static final double kRollerOutput = 0.5;
 
-                public static final double kP = 0.01;
+                public static final double kP = 0.04;
                 public static final double kI = 0;
                 public static final double kD = 0;
-                public static final double kG = 0.15808;
+                public static final double kG = 0.18808;
                 public static final double initialAngle = 30.0;
                 public static final double kGearRatio = 30.0;
 

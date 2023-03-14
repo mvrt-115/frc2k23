@@ -5,75 +5,82 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.RainbowAnimation;
+import com.ctre.phoenix.led.StrobeAnimation;
 
-import edu.wpi.first.math.spline.CubicHermiteSpline;
-import edu.wpi.first.networktables.BooleanEntry;
-import edu.wpi.first.networktables.BooleanTopic;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CANdleLEDSystem extends SubsystemBase {
   private final CANdle candle = new CANdle(0);
-  private final int ledCount = 65;
-  /** true for cube, false for cone */
-  final BooleanEntry cubeCone;
-  boolean prevCubeCone = false;
+  private final StrobeAnimation yell = new StrobeAnimation(150, 150, 20, 0, 1, 300);
+  private final StrobeAnimation purp = new StrobeAnimation(200, 0, 200, 20, 1, 300);
+  RainbowAnimation whileLeveling = new RainbowAnimation(.8, 0.8, 300);
 
-  NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable table = inst.getTable("LEDsData");
+  /** true for cube, false for cone */
+  boolean prevCubeCone = false;
+  boolean cubeCone = false;
+  boolean leveling = false;
+
+ 
   /** Creates a new CANdleLEDSystem. */
   public CANdleLEDSystem() {
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    NetworkTable table = inst.getTable("LEDs");
-
-    BooleanTopic topic = table.getBooleanTopic("cubeCone");
-
-    cubeCone = topic.getEntry(false);
+   candle.configFactoryDefault();
+    candle.configBrightnessScalar(.2);
   }
 
-  public CommandBase toggleColor() {
-    return this.runOnce(() -> cubeCone.set(!cubeCone.getAsBoolean()));
+  
+  public void setLeveling(boolean aboutToLevel) {
+    leveling = aboutToLevel;
   }
-
-  public CommandBase setPurple() {
-    return this.runOnce(() -> setPrupMethod());
+  public void toggleCubeCone(){
+    cubeCone = !cubeCone;
   }
   
-  public CommandBase setYellow() {
-    return this.runOnce(() -> setYellowMethod());
-  }
-  public CommandBase setSolidColor(int r, int g, int b) {
-    return this.runOnce(() -> candle.setLEDs(r, g, b));
-  }
+ 
   private void setPrupMethod() {
-    setColor(200, 0, 200);
+    // setColor(200, 0, 200);
+    candle.animate(purp);
   }
   private void setYellowMethod() {
   //  cand
-    setColor(0, 255, 0);
+    // setColor(0, 255, 0)
+    candle.animate(yell);
   }
   private void updateLEDCubeCone() {
-    if (cubeCone.getAsBoolean()) {
-      candle.setLEDs(200, 0, 200);
+    // System.out.println("UPADTEDDDddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddD");
+    if (cubeCone) {
+      setPrupMethod();
     }
     else {
-      candle.setLEDs(160, 200, 5);
+      setYellowMethod();
     }
   }
 
-  private void setColor(int r, int g, int b) {
-    candle.setLEDs(r, g, b);
-  }
+  
+
   @Override
   public void periodic() {
     //you have to compare prev network tables state to new one to see if it changed because 
     //CANdle cannot be set periodically or else it will lag
-    if(prevCubeCone != cubeCone.getAsBoolean()){
-      updateLEDCubeCone();
+    // if(prevCubeCone != cubeCone){
+    //   updateLEDCubeCone();
+    //   // System.out.println("UPDATED TO: " + cubeCone);
+    // }
+    // prevCubeCone = cubeCone;
+    // candle.get
+    if (leveling) {
+      candle.animate(whileLeveling);
     }
-    prevCubeCone = cubeCone.getAsBoolean();
-   
+    else{
+
+      if (cubeCone) {
+        setPrupMethod();
+      }
+      else {
+        setYellowMethod();
+      }
+    }
+    // RainbowAnimation r = new RainbowAnimation(1, 0.55, 100);
+    // candle.animate(r);
   }
 }
