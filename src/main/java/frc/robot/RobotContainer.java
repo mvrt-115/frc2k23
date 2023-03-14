@@ -177,19 +177,36 @@ public class RobotContainer {
     // MANUAL OUTTAKE
     operatorJoystick.back().onTrue(intake.runOutCube()).onFalse(intake.stop());
 
-    testJoystick.a().onTrue(new SetGroundIntakePosition(gi, 180).andThen(new InstantCommand(() -> gi.setRollerOutput(0.3)))).onFalse(new InstantCommand(() -> gi.stopRoller()));
-    testJoystick.b().onTrue(new SetGroundIntakePosition(gi, 120).andThen(new InstantCommand(() -> gi.setRollerOutput(-0.8)))).onFalse(new InstantCommand(() -> gi.stopRoller()));
-    testJoystick.x().onTrue(new SetGroundIntakePosition(gi, 40));
+    // GROUND INTAKE DOWN / UP
+    operatorJoystick.rightTrigger().onTrue(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 180),
+      new InstantCommand(() -> gi.setRollerOutput(0.3)),
+      new ElevateDown(elevator)
+    )).onFalse(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 40),
+      new InstantCommand(() -> gi.stopRoller())
+    ));
+
+    // GROUND INTAKE SHOOT LOW
+    operatorJoystick.leftTrigger().onTrue(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 120),
+      new InstantCommand(() -> gi.setRollerOutput(-0.8)),
+      new ElevateDown(elevator)
+    )).onFalse(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 0),
+      new SetGroundIntakePosition(gi, 40),
+      new InstantCommand(() -> gi.stopRoller())
+    ));
+
+    // LED TOGGLE
+    operatorJoystick.leftBumper().onTrue(new SetLEDCC(leds));
 
     // RESET ELEVATOR ENCODER VALUE
-    //  operatorJoystick.button(7).onTrue(new InstantCommand(() -> elevator.resetEncoder()));
+    operatorJoystick.rightStick().onTrue(new InstantCommand(() -> elevator.resetEncoder()));
 
-    
-  //  // operatorJoystick.button(7).onTrue(new SetGroundIntakeArmPos(gi, 30));//intake.runIn()).onFalse(intake.stop()); // manual intaking
-    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
-
-    //LEDS TOGGLE
-    testJoystick.button(10).onTrue(new SetLEDCC(leds));
   }
 
   /**
