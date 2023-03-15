@@ -75,27 +75,20 @@ public class AutonRunner extends SequentialCommandGroup {
     eventMap.put("ScoreHigh", new AutoScoreCone(elevator, intake));
     eventMap.put("IntakeDown", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
-      new ParallelCommandGroup(
-        new SetGroundIntakePosition(groundIntake, 180),
-        new InstantCommand(() -> groundIntake.setRollerOutput(0.2))
-      ), 
+      new SetGroundIntakePosition(groundIntake, 180),
+      new InstantCommand(() -> groundIntake.setRollerOutput(0.3)),
       new ElevateDown(elevator)
     ));
 
     eventMap.put("IntakeUp", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
-      new ParallelCommandGroup(
-        new SetGroundIntakePosition(groundIntake, 40),
-        new InstantCommand(() -> groundIntake.setRollerOutput(0.2))
-      ),
-      new ElevateDown(elevator)
+      new SetGroundIntakePosition(groundIntake, 40),
+      new InstantCommand(() -> groundIntake.stopRoller())
     ));
     eventMap.put("GIScore", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
-      new ParallelCommandGroup(
-        new SetGroundIntakePosition(groundIntake, 120),
-        new InstantCommand(() -> groundIntake.setRollerOutput(-0.6))
-      ),
+      new SetGroundIntakePosition(groundIntake, 120),
+      new InstantCommand(() -> groundIntake.setRollerOutput(-0.8)),
       new BetterWaitCommand(0.5),
       new SetGroundIntakePosition(groundIntake, 40),
       new InstantCommand(() -> groundIntake.stopRoller()),

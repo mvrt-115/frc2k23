@@ -74,9 +74,7 @@ public class RobotContainer {
     // ELEVATOR MANUAL
     elevator.setDefaultCommand(
       new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
-    ); // used to 0.4, makes slower speed
-
-    gi.setDefaultCommand(new ManualGroundIntake(gi, () -> operatorJoystick.getRightX()*0.2));
+    );
       
     // Configure the trigger bindings
     configureBindings();
@@ -97,7 +95,6 @@ public class RobotContainer {
 
     autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, "ExitLevel"));
     autonSelector.addOption("ScoreExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds,"ExitLevel2"));
-    // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, "ScoreExitLevel"));
     autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
     autonSelector.addOption("ScoreLevel", new SequentialCommandGroup( 
       new AutoScoreCone(elevator, intake), 
@@ -125,6 +122,18 @@ public class RobotContainer {
     ).onFalse( 
       new InstantCommand(() -> swerveDrivetrain.stopModules())
     );
+
+    // GROUND INTAKE DOWN / UP
+    driveJoystick.button(6).onTrue(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 180),
+      new InstantCommand(() -> gi.setRollerOutput(0.3)),
+      new ElevateDown(elevator)
+    )).onFalse(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 40),
+      new InstantCommand(() -> gi.stopRoller())
+    ));
     
     //Brake baby brake
     //driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
@@ -139,73 +148,62 @@ public class RobotContainer {
       new ElevateDown(elevator).alongWith(intake.stop())
     );
 
-    // RETURN TO NEUTRAL
+    // SHOOT CONE AND DOWN
     operatorJoystick.b().onTrue(new SequentialCommandGroup(
-      // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
-      // new InstantCommand(() -> swerveDrivetrain.stopModules()),
       intake.runOut(),
       new BetterWaitCommand(0.25),
       new ParallelCommandGroup(
         new ElevateDown(elevator),
         intake.stop()
-        // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast))
       )
     )).onFalse(
       new InstantCommand(() -> elevator.runMotor(0))
     );
 
-    // gi.setDefaultCommand(new ManualGroundIntake(gi, () -> operatorJoystick.getRightX()*0.2  ));
-
-    // SCORE CONE MID 
+    // ELEV MID 
     operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT, 0.25));
 
-    // SCORE CONE HIGH
+    // ELEV HIGH
     operatorJoystick.a().onTrue(
       new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25)
     ).onFalse(intake.runOut());
 
-    // RESET ELEVATOR ENCODER VALUE
-     operatorJoystick.button(7).onTrue(new InstantCommand(() -> elevator.resetEncoder()));
-
-    operatorJoystick.button(8).onTrue(new SequentialCommandGroup(
-      // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
-      // new InstantCommand(() -> swerveDrivetrain.stopModules()),
-      intake.runOut(),
+    // SHOOT CUBE AND DOWN
+    operatorJoystick.rightBumper().onTrue(new SequentialCommandGroup(
+      intake.runOutCube(),
       new BetterWaitCommand(0.25),
       new ParallelCommandGroup(
         new ElevateDown(elevator),
-        intake.runOutCube()
-        // new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast))
+        intake.stop()
       )
     )).onFalse(
       new InstantCommand(() -> elevator.runMotor(0))
-    );
-    
-    // SCORE CUBE MID
-    operatorJoystick.button(5).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT, 0.25)
-    );
-    
-    // SCORE CUBE HIGH
-    operatorJoystick.button(6).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT, 0.25)
-    );
-
-    operatorJoystick.button(7).onTrue(intake.runOutCube()).onFalse(intake.stop());
-
-    testJoystick.a().onTrue(new SetGroundIntakePosition(gi, 180).andThen(new InstantCommand(() -> gi.setRollerOutput(0.3)))).onFalse(new InstantCommand(() -> gi.stopRoller()));
-    testJoystick.b().onTrue(new SetGroundIntakePosition(gi, 120).andThen(new InstantCommand(() -> gi.setRollerOutput(-0.8)))).onFalse(new InstantCommand(() -> gi.stopRoller()));
-    testJoystick.x().onTrue(new SetGroundIntakePosition(gi, 40));
-
-    
+    );  
 
     // MANUAL INTAKE
-  //   operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop());
-  //  // operatorJoystick.button(7).onTrue(new SetGroundIntakeArmPos(gi, 30));//intake.runIn()).onFalse(intake.stop()); // manual intaking
-  //    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
+    operatorJoystick.start().onTrue(intake.runIn()).onFalse(intake.stop());
 
-    //LEDS TOGGLE
-    testJoystick.button(10).onTrue(new SetLEDCC(leds));
+    // MANUAL OUTTAKE
+    operatorJoystick.back().onTrue(intake.runOutCube()).onFalse(intake.stop());
+
+    // GROUND INTAKE SHOOT LOW
+    operatorJoystick.leftTrigger().onTrue(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 120),
+      new InstantCommand(() -> gi.setRollerOutput(-0.8)),
+      new ElevateDown(elevator)
+    )).onFalse(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 0),
+      new SetGroundIntakePosition(gi, 40),
+      new InstantCommand(() -> gi.stopRoller())
+    ));
+
+    // LED TOGGLE
+    operatorJoystick.leftBumper().onTrue(new SetLEDCC(leds));
+
+    // RESET ELEVATOR ENCODER VALUE
+    operatorJoystick.rightStick().onTrue(new InstantCommand(() -> elevator.resetEncoder()));
+
   }
 
   /**
@@ -219,33 +217,5 @@ public class RobotContainer {
 
   public void putTestCommand() {
     swerveDrivetrain.setupTests();
-  }
-
-  public Command getReleaseCommand() {
-    if(Math.abs(elevator.getHeightInches() - Constants.Elevator.CONE_MID_HEIGHT) < 3) {
-      return (
-        new SequentialCommandGroup(
-          new ParallelCommandGroup(
-            new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3, 0.25),
-            intake.runOut()
-          ),
-          new WaitCommand(0.5),
-          new ElevateDown(elevator)
-        )
-      );
-    }
-    return (
-      new SequentialCommandGroup(
-        new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
-        new InstantCommand(() -> swerveDrivetrain.stopModules()),
-        intake.runOut(),
-        new WaitCommand(0.3),
-        new ParallelCommandGroup(
-          new ElevateDown(elevator),
-          intake.stop(),
-          new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast))
-        )
-      )
-    );
   }
 }

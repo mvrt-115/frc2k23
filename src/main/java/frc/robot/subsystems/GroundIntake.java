@@ -57,7 +57,7 @@ public class GroundIntake extends SubsystemBase{
     }
 
     public void stopRoller() {
-        setRollerOutput(0.2);
+        setRollerOutput(0.1);
     }
 
     public double getArmCurrentPositionTicks(){
