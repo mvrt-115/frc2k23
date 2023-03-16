@@ -130,7 +130,7 @@ public class RobotContainer {
       new InstantCommand(() -> gi.setRollerOutput(0.3)),
       new ElevateDown(elevator)
     ));
-    driveJoystick.button(6).toggleOnFalse(new SequentialCommandGroup(
+    driveJoystick.button(-1).toggleOnFalse(new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
       new SetGroundIntakePosition(gi, 40),
       new InstantCommand(() -> gi.stopRoller())
