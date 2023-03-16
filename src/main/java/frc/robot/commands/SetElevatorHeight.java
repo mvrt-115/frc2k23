@@ -17,6 +17,7 @@ public class SetElevatorHeight extends CommandBase
   private double startTime;
   private Logger logger;
   private double heightThreshold;
+  private double maxRunTime;
   
 
   /** Creates a new SetElevatorHeight. */
@@ -27,6 +28,18 @@ public class SetElevatorHeight extends CommandBase
     this.height = height; 
     this.heightThreshold = heightThreshold;
     logger = Logger.getInstance();
+    maxRunTime = 2;
+    addRequirements(elevator2);
+  }
+
+  public SetElevatorHeight(Elevator elevator2, double height, double heightThreshold, double maxRunTime)
+  {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.elevator = elevator2;
+    this.height = height; 
+    this.heightThreshold = heightThreshold;
+    logger = Logger.getInstance();
+    this.maxRunTime = maxRunTime;
     addRequirements(elevator2);
   }
 
@@ -63,6 +76,8 @@ public class SetElevatorHeight extends CommandBase
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(Timer.getFPGATimestamp() > startTime + maxRunTime)
+      return true;
     return (Math.abs(elevator.getHeightInches() -  height) <= heightThreshold) && Math.abs(elevator.getVelocity()) <= 10;
   }
 }
