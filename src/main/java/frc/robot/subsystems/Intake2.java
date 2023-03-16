@@ -70,7 +70,7 @@ public class Intake2 extends SubsystemBase {
   }
 
   public InstantCommand runIn(){
-    logger.recordOutput("Intake/isIntake", "hi");
+    // logger.recordOutput("Intake/isIntake", "hi");
     return new InstantCommand(() -> runMotor(true));
   }
   
@@ -118,8 +118,8 @@ public class Intake2 extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("item in intake", !prox.get());
-    logger.recordOutput("intake/element", !prox.get());
-    logger.recordOutput("intake/voltage", motor.getMotorOutputPercent());
+    // logger.recordOutput("intake/element", !prox.get());
+    // logger.recordOutput("intake/voltage", motor.getMotorOutputPercent());
   }
 
   /******************************************CALCULATIONS***************************************/

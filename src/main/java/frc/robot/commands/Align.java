@@ -35,8 +35,8 @@ public class Align extends CommandBase {
     this.localization = localization;
     this.poseSup = poseSup;
 
-    pidX = new PIDController(2.5, 0, 0.2); // pid x-coor 1.2
-    pidY = new PIDController(2.5, 0, 0.2); // pid y-coor 1.2
+    pidX = new PIDController(2.7, 0, 0.0); // pid x-coor 1.2
+    pidY = new PIDController(2.7, 0, 0.0); // pid y-coor 1.2
     pidTheta = new PIDController(4, 0, 0); // pid t-coor 4
     
     addRequirements(localization, swerve);
@@ -56,15 +56,14 @@ public class Align extends CommandBase {
   @Override
   public void execute() {
     Pose2d robotPose = localization.getCurrentPose();
-    double outX = -pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
+    double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
     double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
-    double theta = localization.normalizeAngle(robotPose.getRotation()).getRadians();
+    double theta = robotPose.getRotation().getRadians();
     double outTheta = pidTheta.calculate(localization.computeThetaError(theta, true),
                          poseToGoTo.getRotation().getRadians());
 
     // swerve screwed up field oriented switched y axis; shoud be -outX
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta,
-        new Rotation2d(-robotPose.getRotation().getRadians()));
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta, new Rotation2d(-theta));
     SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
     swerve.setModuleStates(states);
   }
@@ -82,7 +81,7 @@ public class Align extends CommandBase {
 
     return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
       Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
-      Math.abs(robotPose.getRotation().getDegrees() - poseToGoTo.getRotation().getDegrees()) <
+      Math.abs(localization.computeThetaError(robotPose.getRotation().getRadians(), true) - poseToGoTo.getRotation().getRadians()) <
       Constants.VisionConstants.thetaTolerance;
   }
 }

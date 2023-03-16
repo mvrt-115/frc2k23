@@ -40,12 +40,12 @@ public class GroundIntake extends SubsystemBase{
     }
 
     public void log(){
-        logger.recordOutput("GroundIntake/armMotor/position_ticks", getArmCurrentPositionTicks());
-        logger.recordOutput("GroundIntake/armMotor/position_degrees", getArmCurrentPositionDegrees());
-        SmartDashboard.putNumber("gi - arm pos deg", getArmCurrentPositionDegrees());
-        SmartDashboard.putNumber("gi - arm output", armMotor.getAppliedOutput());
-        logger.recordOutput("GroundIntake/armMotor/percent_output", armMotor.getAppliedOutput());
-        logger.recordOutput("GroundIntake/clawMotor/velocity", rollerMotor.getSelectedSensorVelocity());
+        // logger.recordOutput("GroundIntake/armMotor/position_ticks", getArmCurrentPositionTicks());
+        // logger.recordOutput("GroundIntake/armMotor/position_degrees", getArmCurrentPositionDegrees());
+        // SmartDashboard.putNumber("gi - arm pos deg", getArmCurrentPositionDegrees());
+        // SmartDashboard.putNumber("gi - arm output", armMotor.getAppliedOutput());
+        // logger.recordOutput("GroundIntake/armMotor/percent_output", armMotor.getAppliedOutput());
+        // logger.recordOutput("GroundIntake/clawMotor/velocity", rollerMotor.getSelectedSensorVelocity());
     }
 
     public void resetPID() {

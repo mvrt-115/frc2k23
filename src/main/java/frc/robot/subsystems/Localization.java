@@ -78,7 +78,7 @@ public class Localization extends SubsystemBase {
 
     for(int i = 1;i<=8;i++) {
     //   SmartDashboard.putString("WPILIB Apriltag"+i, fieldLayout.getTagPose(i).get().toString());
-       logger.recordOutput("Apriltag " + i + " Location", Constants.VisionConstants.aprilTags.get(i));
+      //  logger.recordOutput("Apriltag " + i + " Location", Constants.VisionConstants.aprilTags.get(i));
     }  
   }
 
@@ -124,9 +124,9 @@ public class Localization extends SubsystemBase {
     debugPID();
     SmartDashboard.putString("chicken - closest loc", poseToGoTo.toString());
 
-    logger.recordOutput("chicken Robot Location", getCurrentPose());
-    logger.recordOutput("chicken Robot Pose X", getCurrentPose().getX());
-    logger.recordOutput("chicken Robot Pose Y", getCurrentPose().getY());
+    // logger.recordOutput("chicken Robot Location", getCurrentPose());
+    // logger.recordOutput("chicken Robot Pose X", getCurrentPose().getX());
+    // logger.recordOutput("chicken Robot Pose Y", getCurrentPose().getY());
     //logger.recordOutput("chicken Robot Location W deg", getCurrentPose().getRotation().getDegrees());
     //logger.recordOutput("chicken Robot Location W rad", getCurrentPose().getRotation().getRadians());
   }
@@ -365,11 +365,11 @@ public class Localization extends SubsystemBase {
 
     // SmartDashboard
     Pose2d poseToGoTo = getClosestScoringLoc();
-    Rotation2d realTheta = normalizeAngle(swerveDrivetrain.getPose().getRotation());
+    //Rotation2d realTheta = normalizeAngle(swerveDrivetrain.getPose().getRotation());
     SmartDashboard.putNumber("chicken raw theta", swerveDrivetrain.getPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("chicken robo theta", realTheta.getDegrees());
+    SmartDashboard.putNumber("chicken robo theta", robotPose.getRotation().getDegrees());
     SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
-    SmartDashboard.putNumber("chicken error theta", poseToGoTo.getRotation().getDegrees() - computeThetaError(realTheta.getDegrees(), false));
+    SmartDashboard.putNumber("chicken error theta", poseToGoTo.getRotation().getDegrees() - computeThetaError(robotPose.getRotation().getDegrees(), false));
     SmartDashboard.putNumber("chicken scoring x", poseToGoTo.getX());
     SmartDashboard.putNumber("chicken scoring y", poseToGoTo.getY());
     SmartDashboard.putNumber("chicken robo x", robotPose.getX());

@@ -84,9 +84,9 @@ public class SwerveJoystickCommand extends CommandBase {
       vW *= 0.7;
 
     }
-    Logger.getInstance().recordOutput("Controller/vX raw", vX);
-    Logger.getInstance().recordOutput("Controller/vY raw", vY);
-    Logger.getInstance().recordOutput("Controller/vW raw", vW);
+    // Logger.getInstance().recordOutput("Controller/vX raw", vX);
+    // Logger.getInstance().recordOutput("Controller/vY raw", vY);
+    // Logger.getInstance().recordOutput("Controller/vW raw", vW);
 
     // apply deadband
     vX = MathUtils.handleDeadband(vX, Constants.SwerveDrivetrain.kThrottleDeadband);
@@ -103,9 +103,10 @@ public class SwerveJoystickCommand extends CommandBase {
       Constants.SwerveDrivetrain.kTurnMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
     else if (right_trigger > 0.05) {
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + (right_trigger < 0.75 ? right_trigger : (
-        ((Constants.SwerveDrivetrain.kDriveMaxSpeedCap - Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal * (1.75))/0.25) * (right_trigger - 1) + Constants.SwerveDrivetrain.kDriveMaxSpeedCap
-      ))) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + right_trigger) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+      // (right_trigger < 0.75 ? right_trigger : (
+      //   ((Constants.SwerveDrivetrain.kDriveMaxSpeedCap - Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal * (1.75))/0.25) * (right_trigger - 1) + Constants.SwerveDrivetrain.kDriveMaxSpeedCap
+      // ))) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
     }
     else {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;

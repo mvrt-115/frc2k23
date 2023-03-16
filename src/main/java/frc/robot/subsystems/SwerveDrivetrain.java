@@ -272,10 +272,10 @@ public class SwerveDrivetrain extends SubsystemBase {
        m.logMeasuredData();
     }
 
-    logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
-    logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
-    logger.recordOutput("OdometryHeadingRad", getPose().getRotation().getRadians());
-    logger.recordOutput("OdometryHeadingDeg", getPose().getRotation().getDegrees());
+    // logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
+    // logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
+    // logger.recordOutput("OdometryHeadingRad", getPose().getRotation().getRadians());
+    // logger.recordOutput("OdometryHeadingDeg", getPose().getRotation().getDegrees());
 
     odometry.update(getRotation2d(), modulePositions);
 
@@ -287,11 +287,11 @@ public class SwerveDrivetrain extends SubsystemBase {
       );
     }
 
-    logger.recordOutput("Robot Location", getPose());
-    logger.recordOutput("Robot Pose X", getPose().getX());
-    logger.recordOutput("Robot Pose Y", getPose().getY());
-    logger.recordOutput("Robot Location W deg", getPose().getRotation().getDegrees());
-    logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
+    // logger.recordOutput("Robot Location", getPose());
+    // logger.recordOutput("Robot Pose X", getPose().getX());
+    // logger.recordOutput("Robot Pose Y", getPose().getY());
+    // logger.recordOutput("Robot Location W deg", getPose().getRotation().getDegrees());
+    // logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
   }
 
   public void simulationPeriodic() {
