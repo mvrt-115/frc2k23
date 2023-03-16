@@ -105,7 +105,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     //SHIFT LEFT
     //driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
@@ -124,7 +124,7 @@ public class RobotContainer {
     );
 
     // GROUND INTAKE DOWN / UP
-    driveJoystick.button(6).onTrue(new SequentialCommandGroup(
+    driveJoystick.button(-1).onTrue(new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
       new SetGroundIntakePosition(gi, 180),
       new InstantCommand(() -> gi.setRollerOutput(0.3)),
@@ -166,7 +166,7 @@ public class RobotContainer {
     // ELEV HIGH
     operatorJoystick.a().onTrue(
       new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25)
-    ).onFalse(intake.runOut());
+    );
 
     // SHOOT CUBE AND DOWN
     operatorJoystick.rightBumper().onTrue(new SequentialCommandGroup(

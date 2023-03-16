@@ -73,9 +73,9 @@ public final class Constants {
 
                 public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
 
-                public static final double kOuttakeRPM = isCompBot?  0.125 :  0.08;
+                public static final double kOuttakeRPM = isCompBot?  0.1 :  0.08;
 
-                public static final double outtakeCube = 0.3;
+                public static final double outtakeCube = 0.2;
         }
 
         public static class GroundIntake {
@@ -98,7 +98,7 @@ public final class Constants {
 
         public static class Leveling {
                 // Leveling PID
-                public static final double levelkP = 0.025;
+                public static final double levelkP = 0.05;
                 public static final double levelkI = 0;
                 public static final double levelkD = 0;
                 public static final double rotatekP = 0;
@@ -192,9 +192,9 @@ public final class Constants {
 
                 public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
                 public static final double kDriveMaxAccelerationNormal = 3;
-                public static final double kTurnMaxAccelerationNormal = 1 * Math.PI;
+                public static final double kTurnMaxAccelerationNormal = 0.5 * Math.PI;
                 public static final double kDriveMaxSpeedMPSNormal = 3.5;
-                public static final double kTurnMaxSpeedRPSNormal = 2 * Math.PI;
+                public static final double kTurnMaxSpeedRPSNormal = 1 * Math.PI;
                 public static final double kDriveMaxSpeedCap = 10;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
                 public static double kTurnMaxSpeedRPS = kTurnMaxSpeedRPSNormal;
@@ -205,7 +205,7 @@ public final class Constants {
                 public static final int kDriveXAxis = 0;
                 public static final int kDriveYAxis = 1;
                 public static final int kDriveWAxis = 4;
-                public static final int kDriveFieldOrientButtonIdx = 1;
+                public static final int kDriveFieldOrientButtonIdx = 8;
                 public static final int kDriveLeftTrigger = 2;
                 public static final int kDriveRightTrigger = 3;
 
@@ -308,11 +308,11 @@ public final class Constants {
                 public static final double CUBE_HIGH_HEIGHT = 49;
 
                 // feed forward constants
-                public static final double kS = isCompBot ? 0.11729 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
+                public static final double kS = isCompBot ? 0.15639 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = isCompBot ? 0.47892 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
-                public static final double kV = isCompBot ? 0.029489 : 0.039238; // 0.035258;
-                public static final double kA = isCompBot ? 0.0018216 : 0.012817;//0.0031226; // 0.0053228;
+                public static final double kG = isCompBot ? 0.43098 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
+                public static final double kV = isCompBot ? 0.024236 : 0.039238; // 0.035258;
+                public static final double kA = isCompBot ? 0.0034545 : 0.012817;//0.0031226; // 0.0053228;
                 // public static final double kA = 0;
                 // Game Object Heights
                 public static final double CONE_HEIGHT = 6;

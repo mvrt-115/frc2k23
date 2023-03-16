@@ -51,7 +51,7 @@ public class Leveling extends CommandBase {
     SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
 
     double vX = -Math.min(-currentPitch*Constants.Leveling.levelkP, 1) * Constants.Leveling.levelVelocityMPS;
-    double vXpid = pidLevel.calculate(currentPitch, 0) * Constants.Leveling.levelVelocityMPS;
+    double vXpid = -pidLevel.calculate(currentPitch, 0) * Constants.Leveling.levelVelocityMPS;
     double angularSpeed = pidRotate.calculate(currentYaw, 0) * Constants.Leveling.maxAngularSpeed;
     double vY = 0;
 

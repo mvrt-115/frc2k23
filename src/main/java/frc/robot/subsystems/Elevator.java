@@ -129,18 +129,18 @@ public class Elevator extends SubsystemBase {
    // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
    // SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
    // SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
-   logger.recordOutput("Elevator/motor1/position_ticks", elev_motor.getSelectedSensorPosition());
-//    logger.recordOutput("Elevator/motor2/position_ticks", elev_motor2.getSelectedSensorPosition());
-   logger.recordOutput("Elevator/motor1/position_inches", ticksToInches(elev_motor.getSelectedSensorPosition()));
-//   logger.recordOutput("Elevator/motor2/position_inches", ticksToInches(elev_motor2.getSelectedSensorPosition()));
-   logger.recordOutput("Elevator/motor1/velocity", elev_motor.getSelectedSensorVelocity());
-//    logger.recordOutput("Elevator/motor1/closed_loop_error", elev_motor.getClosedLoopError());
-   logger.recordOutput("Elevator/motor1/percent_output", elev_motor.getMotorOutputPercent());
-   logger.recordOutput("Elevator/motor1/output_current", elev_motor.getStatorCurrent());
-   logger.recordOutput("Elevator/motor2/output_current", elev_motor.getStatorCurrent());
-   logger.recordOutput("Elevator/motor2/percent_output", elev_motor2.getMotorOutputPercent());
-   logger.recordOutput("Elevator/motor1/temp", elev_motor.getTemperature());
-   logger.recordOutput("Elevator/motor2/temp", elev_motor2.getTemperature());
+//    logger.recordOutput("Elevator/motor1/position_ticks", elev_motor.getSelectedSensorPosition());
+// //    logger.recordOutput("Elevator/motor2/position_ticks", elev_motor2.getSelectedSensorPosition());
+//    logger.recordOutput("Elevator/motor1/position_inches", ticksToInches(elev_motor.getSelectedSensorPosition()));
+// //   logger.recordOutput("Elevator/motor2/position_inches", ticksToInches(elev_motor2.getSelectedSensorPosition()));
+//    logger.recordOutput("Elevator/motor1/velocity", elev_motor.getSelectedSensorVelocity());
+// //    logger.recordOutput("Elevator/motor1/closed_loop_error", elev_motor.getClosedLoopError());
+//    logger.recordOutput("Elevator/motor1/percent_output", elev_motor.getMotorOutputPercent());
+//    logger.recordOutput("Elevator/motor1/output_current", elev_motor.getStatorCurrent());
+//    logger.recordOutput("Elevator/motor2/output_current", elev_motor.getStatorCurrent());
+//    logger.recordOutput("Elevator/motor2/percent_output", elev_motor2.getMotorOutputPercent());
+//    logger.recordOutput("Elevator/motor1/temp", elev_motor.getTemperature());
+//    logger.recordOutput("Elevator/motor2/temp", elev_motor2.getTemperature());
   }
 
  
@@ -193,26 +193,26 @@ public class Elevator extends SubsystemBase {
    */ 
   public void goToSetpoint()
   {
-    logger.recordOutput("Elevator/motor1/targetHeight", (targetHeight));
+    // logger.recordOutput("Elevator/motor1/targetHeight", (targetHeight));
     double t = Timer.getFPGATimestamp() - startTime; 
     TrapezoidProfile.State setpoint = profile.calculate(t);
 
-    logger.recordOutput("Elevator/profile/setpointposition", setpoint.position);
-    logger.recordOutput("Elevator/profile/setpointvelocity", setpoint.velocity);
-    logger.recordOutput("Elevator/profile/goalvelocity", goal.velocity);
-    logger.recordOutput("Elevator/profile/goalposition", goal.position);
-    logger.recordOutput("Elevator/profile/initialvelocity", initial.velocity);
-    logger.recordOutput("Elevator/profile/initialposition", initial.position);
-    logger.recordOutput("Elevator/profile/t_relative", t);
+    // logger.recordOutput("Elevator/profile/setpointposition", setpoint.position);
+    // logger.recordOutput("Elevator/profile/setpointvelocity", setpoint.velocity);
+    // logger.recordOutput("Elevator/profile/goalvelocity", goal.velocity);
+    // logger.recordOutput("Elevator/profile/goalposition", goal.position);
+    // logger.recordOutput("Elevator/profile/initialvelocity", initial.velocity);
+    // logger.recordOutput("Elevator/profile/initialposition", initial.position);
+    // logger.recordOutput("Elevator/profile/t_relative", t);
     
      double feedforward = eFeedforward.calculate(setpoint.velocity);
     
-     logger.recordOutput("Elevator/targetheight_in", ticksToInches(targetHeight));
-     logger.recordOutput("Elevator/targetheight_ticks", (targetHeight));
-     logger.recordOutput("Elevator/feedforward", feedforward);
-     logger.recordOutput("Elevator/setvelocity", ((feedforward+pid.calculate(setpoint.velocity))/10));
-     logger.recordOutput("Elevator/pidvalue", pid.calculate(setpoint.velocity));
-     logger.recordOutput("Elevator/motor_percent_output", elev_motor.getMotorOutputPercent());
+    //  logger.recordOutput("Elevator/targetheight_in", ticksToInches(targetHeight));
+    //  logger.recordOutput("Elevator/targetheight_ticks", (targetHeight));
+    //  logger.recordOutput("Elevator/feedforward", feedforward);
+    //  logger.recordOutput("Elevator/setvelocity", ((feedforward+pid.calculate(setpoint.velocity))/10));
+    //  logger.recordOutput("Elevator/pidvalue", pid.calculate(setpoint.velocity));
+    //  logger.recordOutput("Elevator/motor_percent_output", elev_motor.getMotorOutputPercent());
      
     // sim
     //  elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));

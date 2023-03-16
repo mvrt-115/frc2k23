@@ -78,7 +78,7 @@ public class Localization extends SubsystemBase {
 
     for(int i = 1;i<=8;i++) {
     //   SmartDashboard.putString("WPILIB Apriltag"+i, fieldLayout.getTagPose(i).get().toString());
-       logger.recordOutput("Apriltag " + i + " Location", Constants.VisionConstants.aprilTags.get(i));
+      //  logger.recordOutput("Apriltag " + i + " Location", Constants.VisionConstants.aprilTags.get(i));
     }  
   }
 
@@ -124,9 +124,9 @@ public class Localization extends SubsystemBase {
     debugPID();
     SmartDashboard.putString("chicken - closest loc", poseToGoTo.toString());
 
-    logger.recordOutput("chicken Robot Location", getCurrentPose());
-    logger.recordOutput("chicken Robot Pose X", getCurrentPose().getX());
-    logger.recordOutput("chicken Robot Pose Y", getCurrentPose().getY());
+    // logger.recordOutput("chicken Robot Location", getCurrentPose());
+    // logger.recordOutput("chicken Robot Pose X", getCurrentPose().getX());
+    // logger.recordOutput("chicken Robot Pose Y", getCurrentPose().getY());
     //logger.recordOutput("chicken Robot Location W deg", getCurrentPose().getRotation().getDegrees());
     //logger.recordOutput("chicken Robot Location W rad", getCurrentPose().getRotation().getRadians());
   }

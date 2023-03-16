@@ -26,8 +26,8 @@ public class AutoScoreCone extends SequentialCommandGroup {
       ),
       intake.stop()
       ),
-      new BetterWaitCommand(0.35),
       intake.runOut(),
+      new BetterWaitCommand(0.35),
       new ElevateDown(elevator)  
     );
   }
