@@ -124,7 +124,7 @@ public class RobotContainer {
     );
 
     // GROUND INTAKE DOWN / UP
-    driveJoystick.button(-1).onTrue(new SequentialCommandGroup(
+    driveJoystick.button(6).onTrue(new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
       new SetGroundIntakePosition(gi, 180),
       new InstantCommand(() -> gi.setRollerOutput(0.3)),

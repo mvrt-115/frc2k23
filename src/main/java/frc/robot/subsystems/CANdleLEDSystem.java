@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CANdleLEDSystem extends SubsystemBase {
   private final CANdle candle = new CANdle(0);
-  private final StrobeAnimation yell = new StrobeAnimation(150, 150, 20, 0, 1, 300);
-  private final StrobeAnimation purp = new StrobeAnimation(200, 0, 200, 20, 1, 300);
+  private final StrobeAnimation yell = new StrobeAnimation(200, 150, 0, 0, 1, 300);
+  private final StrobeAnimation purp = new StrobeAnimation(255, 0, 255, 20, 1, 300);
   RainbowAnimation whileLeveling = new RainbowAnimation(.8, 0.8, 300);
 
   /** true for cube, false for cone */
