@@ -79,9 +79,9 @@ public class SwerveJoystickCommand extends CommandBase {
     double vY = ySpeedFunc.get(); // as of here, positive Y is left, negative Y is right
     double vW = turnSpeedFunc.get(); // as of here, negative W is down (CW) positive W is up (CCW)
     if(elevator.getHeightInches() > 25) {
-      vX *= 0.6;
-      vY *= 0.6;
-      vW *= 0.6;
+      vX *= 0.7;
+      vY *= 0.7;
+      vW *= 0.7;
 
     }
     // Logger.getInstance().recordOutput("Controller/vX raw", vX);
