@@ -92,7 +92,8 @@ public class Localization extends SubsystemBase {
     //camera2Estimator.setReferenceTheta(swerveDrivetrain.getPose().getRotation().getRadians());
     //Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
-    Pose2d result = combinePoses(null, result2);
+    Pose2d result =
+     combinePoses(null, result2);
 
     if(!firstSee && swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
       Pose2d curr = getCurrentPose();

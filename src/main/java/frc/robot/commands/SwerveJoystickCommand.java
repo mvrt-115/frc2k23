@@ -116,8 +116,10 @@ public class SwerveJoystickCommand extends CommandBase {
     }
 
     if (elevator.getHeightInches() > 25){
-        Constants.SwerveDrivetrain.kDriveMaxAcceleration *= 0.5;
-        Constants.SwerveDrivetrain.kTurnMaxAcceleration *= 0.5;
+        Constants.SwerveDrivetrain.kDriveMaxAcceleration *= 0.2;
+        Constants.SwerveDrivetrain.kTurnMaxAcceleration *= 0.2;
+        Constants.SwerveDrivetrain.kTurnMaxSpeedRPS *= 0.5;
+        Constants.SwerveDrivetrain.kDriveMaxSpeedMPS *= 0.5;
     }
 
     // limit acceleration
