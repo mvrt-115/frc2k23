@@ -79,9 +79,9 @@ public class SwerveJoystickCommand extends CommandBase {
     double vY = ySpeedFunc.get(); // as of here, positive Y is left, negative Y is right
     double vW = turnSpeedFunc.get(); // as of here, negative W is down (CW) positive W is up (CCW)
     if(elevator.getHeightInches() > 25) {
-      vX *= 0.7;
-      vY *= 0.7;
-      vW *= 0.7;
+      vX *= 0.8;
+      vY *= 0.8;
+      vW *= 0.8;
 
     }
     // Logger.getInstance().recordOutput("Controller/vX raw", vX);
@@ -97,16 +97,17 @@ public class SwerveJoystickCommand extends CommandBase {
     double left_trigger = joystick.getRawAxis(Constants.SwerveDrivetrain.kDriveLeftTrigger);
     double right_trigger = joystick.getRawAxis(Constants.SwerveDrivetrain.kDriveRightTrigger);
     if (left_trigger > 0.05) {
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 - left_trigger + 0.1) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
-      Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = (1 - left_trigger + 0.1) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 - left_trigger + 0.3) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+      Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = (1 - left_trigger + 0.3) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
       Constants.SwerveDrivetrain.kDriveMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kDriveMaxAccelerationNormal;
       Constants.SwerveDrivetrain.kTurnMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
     else if (right_trigger > 0.05) {
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + right_trigger) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + 2.00 * right_trigger) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
       // (right_trigger < 0.75 ? right_trigger : (
       //   ((Constants.SwerveDrivetrain.kDriveMaxSpeedCap - Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal * (1.75))/0.25) * (right_trigger - 1) + Constants.SwerveDrivetrain.kDriveMaxSpeedCap
       // ))) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
+        Constants.SwerveDrivetrain.kTurnMaxAcceleration = Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
     else {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;

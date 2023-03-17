@@ -91,17 +91,14 @@ public class RobotContainer {
    */
   private void configureBindings() {
     driveJoystick.button(3).onTrue(new ResetOdometryWithVision(swerveDrivetrain, localization));
-    driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
+    driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(swerveDrivetrain.getPose().getTranslation(), new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel"));
     autonSelector.addOption("ScoreExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization,"ExitLevel2"));
-    autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
-    autonSelector.addOption("ScoreLevel", new SequentialCommandGroup( 
-      new AutoScoreCone(elevator, intake), 
-      new AutoLevel(swerveDrivetrain, -4, leds) 
-    ));
+    autonSelector.addOption("DONOTHING", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "DONOTHING"));
+    autonSelector.addOption("ScoreLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreLevel"));
     autonSelector.addOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreTwiceLevel"));
-    autonSelector.setDefaultOption("DONOTHING", new PrintCommand("hi"));
+    autonSelector.setDefaultOption("DONOTHING", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "DONOTHING"));
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
@@ -133,7 +130,7 @@ public class RobotContainer {
       new SetGroundIntakePosition(gi, 40),
       new InstantCommand(() -> gi.stopRoller()),
       new ElevateDown(elevator)
-      ));
+    )); 
 
     // GROUND INTAKE SHOOT LOW
     driveJoystick.button(5).onTrue(new SequentialCommandGroup(

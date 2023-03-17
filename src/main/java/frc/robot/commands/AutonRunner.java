@@ -14,6 +14,9 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,6 +33,7 @@ import frc.robot.subsystems.Intake2;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 // import frc.robot.utils.BetterSwerveControllerCommand;
+import frc.robot.subsystems.SwerveDrivetrain.DrivetrainState;
 
 public class AutonRunner extends SequentialCommandGroup {
   /** Creates a new AutonPathExample. */
@@ -58,6 +62,7 @@ public class AutonRunner extends SequentialCommandGroup {
     trajectory = PathPlanner.loadPath(
       pathName, 
       constraints);
+    trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
     
     swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
 
@@ -75,22 +80,24 @@ public class AutonRunner extends SequentialCommandGroup {
     HashMap<String, Command> eventMap = new HashMap<>();
     eventMap.put("ScoreHigh", new AutoScoreCone(elevator, intake));
     eventMap.put("IntakeDown", new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1, 1),
+      new SetElevatorHeight(elevator, 20, 1, 0.5),
       new SetGroundIntakePosition(groundIntake, 180),
-      new InstantCommand(() -> groundIntake.setRollerOutput(0.3)),
+      new InstantCommand(() -> groundIntake.setRollerOutput(0.7)),
       new ElevateDown(elevator)
     ));
-
     eventMap.put("IntakeUp", new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1, 1),
+      new SetElevatorHeight(elevator, 20, 1, 0.5),
       new SetGroundIntakePosition(groundIntake, 40),
-      new InstantCommand(() -> groundIntake.stopRoller())
+      new InstantCommand(() -> groundIntake.stopRoller()),
+      new ElevateDown(elevator)
     ));
     eventMap.put("GIScore", new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 15, 1, 0.75),
-      new SetGroundIntakePosition(groundIntake, 120, 0.5),
+      new SetElevatorHeight(elevator, 20, 1, 0.5),
+      new SetGroundIntakePosition(groundIntake, 130),
       new InstantCommand(() -> groundIntake.setRollerOutput(-0.8)),
+      new ElevateDown(elevator),
       new BetterWaitCommand(0.5),
+      new SetElevatorHeight(elevator, 20, 0, 0.5),
       new SetGroundIntakePosition(groundIntake, 40),
       new InstantCommand(() -> groundIntake.stopRoller()),
       new ElevateDown(elevator)
@@ -120,11 +127,15 @@ public class AutonRunner extends SequentialCommandGroup {
 
     addCommands(
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
-      new InstantCommand(() -> localization.resetPoseEstimator(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
       new InstantCommand(() -> swerveDrivetrain.resetModules()),
       new InstantCommand(() -> swerveDrivetrain.resetModuleDrive()),
       new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
+      // new InstantCommand(() -> localization.resetPoseEstimator(new Pose2d(
+      //   trajectory.getInitialHolonomicPose().getTranslation(), 
+      //   localization.normalizeAngle(trajectory.getInitialHolonomicPose().getRotation())
+      // ))),
+      new InstantCommand(() -> localization.resetPoseEstimator(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
       autoEventsCommand,

@@ -36,7 +36,7 @@ public class Align extends CommandBase {
     this.poseSup = poseSup;
 
     pidX = new PIDController(2.7, 0, 0.0); // pid x-coor 1.2
-    pidY = new PIDController(2.7, 0, 0.0); // pid y-coor 1.2
+    pidY = new PIDController(2.75, 0, 0.0); // pid y-coor 1.2
     pidTheta = new PIDController(4, 0, 0); // pid t-coor 4
     
     addRequirements(localization, swerve);
