@@ -87,10 +87,10 @@ public final class Constants {
 
                 public static final double kRollerOutput = 0.5;
 
-                public static final double kP = 0.04;
+                public static final double kP = 0.05;
                 public static final double kI = 0;
                 public static final double kD = 0;
-                public static final double kG = 0.21808;
+                public static final double kG = 0.22808;
                 public static final double initialAngle = 30.0;
                 public static final double kGearRatio = 30.0;
 
@@ -143,7 +143,8 @@ public final class Constants {
 
                 // Motor ID
                 public static final int m_frontRightDriveID = 1;
-                public static final int m_frontLeftDriveID = 3;
+                public static 
+                final int m_frontLeftDriveID = 3;
                 public static final int m_backLeftDriveID = 5;
                 public static final int m_backRightDriveID = 7;
 
@@ -310,7 +311,7 @@ public final class Constants {
                 // feed forward constants
                 public static final double kS = isCompBot ? 0.15639 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = isCompBot ? 0.43098 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
+                public static final double kG = isCompBot ? 0.48098 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
                 public static final double kV = isCompBot ? 0.024236 : 0.039238; // 0.035258;
                 public static final double kA = isCompBot ? 0.0034545 : 0.012817;//0.0031226; // 0.0053228;
                 // public static final double kA = 0;

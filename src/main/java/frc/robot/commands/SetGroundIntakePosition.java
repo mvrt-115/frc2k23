@@ -26,7 +26,7 @@ public class SetGroundIntakePosition extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     groundIntake = gi;
     this.position = position;
-    this.maxRunTime = 2;
+    this.maxRunTime = 1;
 
     addRequirements(gi);
   }
@@ -46,7 +46,7 @@ public class SetGroundIntakePosition extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    groundIntake.setArmOutput(groundIntake.getFeedForward());
   }
 
   // Returns true when the command should end.

@@ -31,8 +31,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.SwerveDrivetrain.DrivetrainState;
 
 public class Localization extends SubsystemBase {
   private PhotonCamera camera1;
@@ -48,6 +50,8 @@ public class Localization extends SubsystemBase {
   private Logger logger = Logger.getInstance();
   
   private boolean aligning;
+
+  private boolean firstSee;
 
   public Localization(SwerveDrivetrain swerveDrivetrain) {
     //this.camera1 = new PhotonCamera(Constants.VisionConstants.kCamera1Name);
@@ -90,6 +94,15 @@ public class Localization extends SubsystemBase {
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
     Pose2d result = combinePoses(null, result2);
 
+    if(!firstSee && swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
+      Pose2d curr = getCurrentPose();
+      if(curr!=null){
+        swerveDrivetrain.resetOdometry(curr);
+      }
+
+      firstSee = true;
+    }
+
     SmartDashboard.putBoolean("chicken robot present", result != null);
     if(result != null) {
       //update here rotation to whatever gyro gives us
@@ -124,7 +137,7 @@ public class Localization extends SubsystemBase {
     debugPID();
     SmartDashboard.putString("chicken - closest loc", poseToGoTo.toString());
 
-    // logger.recordOutput("chicken Robot Location", getCurrentPose());
+    logger.recordOutput("chicken Robot Location", getCurrentPose());
     // logger.recordOutput("chicken Robot Pose X", getCurrentPose().getX());
     // logger.recordOutput("chicken Robot Pose Y", getCurrentPose().getY());
     //logger.recordOutput("chicken Robot Location W deg", getCurrentPose().getRotation().getDegrees());

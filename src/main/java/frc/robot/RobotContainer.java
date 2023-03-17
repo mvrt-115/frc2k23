@@ -93,14 +93,14 @@ public class RobotContainer {
     driveJoystick.button(3).onTrue(new ResetOdometryWithVision(swerveDrivetrain, localization));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
-    autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, "ExitLevel"));
-    autonSelector.addOption("ScoreExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds,"ExitLevel2"));
+    autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel"));
+    autonSelector.addOption("ScoreExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization,"ExitLevel2"));
     autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
     autonSelector.addOption("ScoreLevel", new SequentialCommandGroup( 
       new AutoScoreCone(elevator, intake), 
-      new AutoLevel(swerveDrivetrain, -4, leds)
+      new AutoLevel(swerveDrivetrain, -4, leds) 
     ));
-    autonSelector.addOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, "ScoreTwiceLevel"));
+    autonSelector.addOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreTwiceLevel"));
     autonSelector.setDefaultOption("DONOTHING", new PrintCommand("hi"));
     SmartDashboard.putData("Auton Selector", autonSelector);
   
@@ -116,7 +116,6 @@ public class RobotContainer {
     // AUTO LEVEL
     driveJoystick.button(2).onTrue(
       new SequentialCommandGroup(
-        new DriveForward(swerveDrivetrain, Constants.Leveling.driveForwardMPS, Constants.Leveling.driveForwardTime),
         new Leveling(swerveDrivetrain, leds) 
       )
     ).onFalse( 
@@ -129,9 +128,21 @@ public class RobotContainer {
       new SetGroundIntakePosition(gi, 180),
       new InstantCommand(() -> gi.setRollerOutput(0.3)),
       new ElevateDown(elevator)
-    ));
-    driveJoystick.button(-1).toggleOnFalse(new SequentialCommandGroup(
+    )).onFalse(new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 40),
+      new InstantCommand(() -> gi.stopRoller()),
+      new ElevateDown(elevator)
+      ));
+
+    // GROUND INTAKE SHOOT LOW
+    driveJoystick.button(5).onTrue(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1),
+      new SetGroundIntakePosition(gi, 130),
+      new InstantCommand(() -> gi.setRollerOutput(-0.8)),
+      new ElevateDown(elevator)
+    )).onFalse(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 0),
       new SetGroundIntakePosition(gi, 40),
       new InstantCommand(() -> gi.stopRoller())
     ));
@@ -186,18 +197,6 @@ public class RobotContainer {
 
     // MANUAL OUTTAKE
     operatorJoystick.back().onTrue(intake.runOutCube()).onFalse(intake.stop());
-
-    // GROUND INTAKE SHOOT LOW
-    operatorJoystick.leftTrigger().onTrue(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1),
-      new SetGroundIntakePosition(gi, 120),
-      new InstantCommand(() -> gi.setRollerOutput(-0.8)),
-      new ElevateDown(elevator)
-    )).onFalse(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 0),
-      new SetGroundIntakePosition(gi, 40),
-      new InstantCommand(() -> gi.stopRoller())
-    ));
 
     // LED TOGGLE
     operatorJoystick.leftBumper().onTrue(new SetLEDCC(leds));
