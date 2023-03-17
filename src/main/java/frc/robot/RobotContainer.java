@@ -124,16 +124,16 @@ public class RobotContainer {
 
     // GROUND INTAKE DOWN / UP
     driveJoystick.button(6).onTrue(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1),
-      new SetGroundIntakePosition(gi, 180),
+      new SetElevatorHeight(elevator, 20, 1, 1),
+      new SetGroundIntakePosition(gi, 180, 0.75),
       new InstantCommand(() -> gi.setRollerOutput(0.3)),
       new ElevateDown(elevator)
     )).onFalse(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1),
-      new SetGroundIntakePosition(gi, 40),
+      new SetElevatorHeight(elevator, 20, 1, 1),
+      new SetGroundIntakePosition(gi, 40, 0.75),
       new InstantCommand(() -> gi.stopRoller()),
       new ElevateDown(elevator)
-      ));
+    ));
 
     // GROUND INTAKE SHOOT LOW
     driveJoystick.button(5).onTrue(new SequentialCommandGroup(
@@ -144,7 +144,8 @@ public class RobotContainer {
     )).onFalse(new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 0),
       new SetGroundIntakePosition(gi, 40),
-      new InstantCommand(() -> gi.stopRoller())
+      new InstantCommand(() -> gi.stopRoller()),
+      new ElevateDown(elevator)
     ));
     
     //Brake baby brake
