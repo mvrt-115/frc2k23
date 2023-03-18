@@ -92,7 +92,7 @@ public class Localization extends SubsystemBase {
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
     Pose2d result = combinePoses(null, result2);
 
-    if((!firstSee || (Timer.getFPGATimestamp() - lastReset >= 5))&& swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
+    if((!firstSee)&& swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
       Pose2d curr = getCurrentPose();
       if(curr!=null){
         swerveDrivetrain.resetOdometry(curr);

@@ -62,7 +62,6 @@ public class AutonRunner extends SequentialCommandGroup {
     trajectory = PathPlanner.loadPath(
       pathName, 
       constraints);
-    trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
     
     swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
 
