@@ -45,15 +45,13 @@ public class Localization extends SubsystemBase {
   private SwerveDrivetrain swerveDrivetrain;
   private AprilTagFieldLayout fieldLayout;
   private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
-  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(2, 2, Units.degreesToRadians(5));
+  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.9, 0.9, Units.degreesToRadians(5));
   private final Field2d field;
   private Logger logger = Logger.getInstance();
   
   private boolean aligning;
 
   private boolean firstSee;
-
-  private double lastReset;
 
   public Localization(SwerveDrivetrain swerveDrivetrain) {
     //this.camera1 = new PhotonCamera(Constants.VisionConstants.kCamera1Name);
@@ -66,8 +64,14 @@ public class Localization extends SubsystemBase {
     } catch(IOException e) {
       System.err.println("[Localization constructor] Error loading from resource");
     }
-    //camera1Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera1, Constants.VisionConstants.cam1ToRobot);
+    /*camera1Estimator = new PhotonPoseEstimator(
+      fieldLayout,
+      PoseStrategy.MULTI_TAG_PNP,
+      camera1,
+      Constants.VisionConstants.cam1ToRobot);*/
     //camera1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // Rotation2d correctedAngle = Rotation2d.fromDegrees(swerveDrivetrain.getPose().getRotation().getDegrees() + 180)
+
     camera2Estimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP, camera2, Constants.VisionConstants.cam2ToRobot);
     camera2Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     poseEstimator = new SwerveDrivePoseEstimator(swerveDrivetrain.getKinematics(), 
@@ -75,8 +79,6 @@ public class Localization extends SubsystemBase {
       // correctedAngle,
       swerveDrivetrain.getModulePositions(), 
       new Pose2d(), stateStdDevs, visionMeasurementStdDevs); //Replace this with the starting pose in auton
-
-    lastReset = Timer.getFPGATimestamp();
 
     for(int i = 1;i<=8;i++) {
     //   SmartDashboard.putString("WPILIB Apriltag"+i, fieldLayout.getTagPose(i).get().toString());
@@ -90,16 +92,15 @@ public class Localization extends SubsystemBase {
     //camera2Estimator.setReferenceTheta(swerveDrivetrain.getPose().getRotation().getRadians());
     //Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
-    Pose2d result = combinePoses(null, result2);
+    Pose2d result =
+     combinePoses(null, result2);
 
-    if((!firstSee)&& swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
+    if(!firstSee && swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
       Pose2d curr = getCurrentPose();
-      if(curr!=null) {
+      if(curr!=null){
         swerveDrivetrain.resetOdometry(curr);
-        // swerveDrivetrain.resetOdometry(new Pose2d(curr.getTranslation(), swerveDrivetrain.getRotation2d()));
       }
 
-      lastReset = Timer.getFPGATimestamp();
       firstSee = true;
     }
 
