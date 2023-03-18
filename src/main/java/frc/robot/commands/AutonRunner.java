@@ -134,7 +134,9 @@ public class AutonRunner extends SequentialCommandGroup {
       //   trajectory.getInitialHolonomicPose().getTranslation(), 
       //   localization.normalizeAngle(trajectory.getInitialHolonomicPose().getRotation())
       // ))),
+      // new InstantCommand(() -> localization.resetPoseEstimator(new Pose2d(trajectory.getInitialHolonomicPose().getTranslation(), localization.normalizeAngle(trajectory.getInitialHolonomicPose().getRotation())))),
       new InstantCommand(() -> localization.resetPoseEstimator(trajectory.getInitialHolonomicPose())),
+      
       new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
       autoEventsCommand,
