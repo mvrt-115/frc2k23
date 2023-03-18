@@ -80,7 +80,6 @@ public class AutonRunner extends SequentialCommandGroup {
       new InstantCommand(() -> groundIntake.setRollerOutput(0.3)),
       new ElevateDown(elevator)
     ));
-
     eventMap.put("IntakeUp", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1, 1),
       new SetGroundIntakePosition(groundIntake, 40),
@@ -90,12 +89,13 @@ public class AutonRunner extends SequentialCommandGroup {
       new SetElevatorHeight(elevator, 15, 1, 0.75),
       new SetGroundIntakePosition(groundIntake, 120, 0.5),
       new InstantCommand(() -> groundIntake.setRollerOutput(-0.8)),
+      new ElevateDown(elevator),
       new BetterWaitCommand(0.5),
+      new SetElevatorHeight(elevator, 20, 0, 0.5),
       new SetGroundIntakePosition(groundIntake, 40),
       new InstantCommand(() -> groundIntake.stopRoller()),
       new ElevateDown(elevator)
     ));
-
     eventMap.put("LevelForwards", new AutoLevel(drivetrain, 2.5, candleLEDs));
     
     eventMap.put("LevelBackwards", new AutoLevel(drivetrain, -2.75, candleLEDs));

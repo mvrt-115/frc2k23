@@ -124,29 +124,29 @@ public class RobotContainer {
 
     // GROUND INTAKE DOWN / UP
     driveJoystick.button(6).onTrue(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1, 1),
-      new SetGroundIntakePosition(gi, 180, 0.75),
-      new InstantCommand(() -> gi.setRollerOutput(0.3)),
+      new SetElevatorHeight(elevator, 20, 1, 0.5),
+      new SetGroundIntakePosition(gi, 180),
+      new InstantCommand(() -> gi.setRollerOutput(0.7)),
       new ElevateDown(elevator)
     )).onFalse(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1, 1),
-      new SetGroundIntakePosition(gi, 40, 0.75),
+      new SetElevatorHeight(elevator, 20, 1, 0.5),
+      new SetGroundIntakePosition(gi, 40),
       new InstantCommand(() -> gi.stopRoller()),
       new ElevateDown(elevator)
-    ));
+    )); 
 
     // GROUND INTAKE SHOOT LOW
     driveJoystick.button(5).onTrue(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1),
+      new SetElevatorHeight(elevator, 20, 1, 0.5),
       new SetGroundIntakePosition(gi, 130),
       new InstantCommand(() -> gi.setRollerOutput(-0.8)),
       new ElevateDown(elevator)
     )).onFalse(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 0),
+      new SetElevatorHeight(elevator, 20, 0, 0.5),
       new SetGroundIntakePosition(gi, 40),
       new InstantCommand(() -> gi.stopRoller()),
       new ElevateDown(elevator)
-    ));
+      ));
     
     //Brake baby brake
     //driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
