@@ -45,7 +45,7 @@ public class Align extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
+    // localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
     poseToGoTo = poseSup.get();
     SmartDashboard.putString("chicken align initialize scoring loc", poseToGoTo.toString());
@@ -59,11 +59,11 @@ public class Align extends CommandBase {
     double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
     double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
     double theta = robotPose.getRotation().getRadians();
-    double outTheta = pidTheta.calculate(localization.computeThetaError(theta, true),
-                         poseToGoTo.getRotation().getRadians());
+    // double outTheta = pidTheta.calculate(localization.computeThetaError(theta, true),
+    //                      poseToGoTo.getRotation().getRadians());
 
     // swerve screwed up field oriented switched y axis; shoud be -outX
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta, new Rotation2d(-theta));
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, 0, new Rotation2d(-theta));
     SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
     swerve.setModuleStates(states);
   }
@@ -79,9 +79,10 @@ public class Align extends CommandBase {
   public boolean isFinished() {
     Pose2d robotPose = localization.getCurrentPose();
 
-    return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
-      Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
-      Math.abs(localization.computeThetaError(robotPose.getRotation().getRadians(), true) - poseToGoTo.getRotation().getRadians()) <
-      Constants.VisionConstants.thetaTolerance;
+    return true;
+    // return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
+    //   Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
+    //   Math.abs(localization.computeThetaError(robotPose.getRotation().getRadians(), true) - poseToGoTo.getRotation().getRadians()) <
+    //   Constants.VisionConstants.thetaTolerance;
   }
 }

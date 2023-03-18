@@ -24,7 +24,7 @@ public class TrajectoryAlign extends SequentialCommandGroup {
   public TrajectoryAlign(SwerveDrivetrain swerveDrivetrain, Localization localization, Supplier<Pose2d> finalLocation) {
     addRequirements(swerveDrivetrain, localization);
 
-    localization.resetCameraEstimators();
+    // localization.resetPoseEstimator();
     localization.setAligning(true);
 
     Pose2d currLoc = localization.getCurrentPose();

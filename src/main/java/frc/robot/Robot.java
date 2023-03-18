@@ -11,9 +11,6 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -47,13 +44,13 @@ public class Robot extends LoggedRobot {
     switch (Constants.DataLogging.currMode) {
       // Running on a real robot, log to a USB stick
       case REAL:
-        // logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
+        logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
         logger.addDataReceiver(new NT4Publisher());
         break;
 
       // Running a simulator, log to local folder
       case SIM:
-        // logger.addDataReceiver(new WPILOGWriter(""));
+        logger.addDataReceiver(new WPILOGWriter(""));
         logger.addDataReceiver(new NT4Publisher());
         break;
 
@@ -62,7 +59,7 @@ public class Robot extends LoggedRobot {
         setUseTiming(false); // Run as fast as possible
         String logPath = LogFileUtil.findReplayLog();
         logger.setReplaySource(new WPILOGReader(logPath));
-        // logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
         break;
     }
 
