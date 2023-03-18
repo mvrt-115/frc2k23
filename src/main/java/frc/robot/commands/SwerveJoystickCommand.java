@@ -103,12 +103,12 @@ public class SwerveJoystickCommand extends CommandBase {
       Constants.SwerveDrivetrain.kTurnMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
     else if (right_trigger > 0.05) {
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + 2.00 * right_trigger) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + 2.50 * right_trigger) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
         Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
       // (right_trigger < 0.75 ? right_trigger : (
       //   ((Constants.SwerveDrivetrain.kDriveMaxSpeedCap - Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal * (1.75))/0.25) * (right_trigger - 1) + Constants.SwerveDrivetrain.kDriveMaxSpeedCap
       // ))) * Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
-        // Constants.SwerveDrivetrain.kTurnMaxAcceleration = Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
+        Constants.SwerveDrivetrain.kTurnMaxAcceleration = Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
     else {
       Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal;
@@ -118,8 +118,8 @@ public class SwerveJoystickCommand extends CommandBase {
     }
 
     if (elevator.getHeightInches() > 25){
-        // Constants.SwerveDrivetrain.kDriveMaxAcceleration *= 0.2;
-        // Constants.SwerveDrivetrain.kTurnMaxAcceleration *= 0.2;
+        Constants.SwerveDrivetrain.kDriveMaxAcceleration *= 0.2;
+        Constants.SwerveDrivetrain.kTurnMaxAcceleration *= 0.2;
         Constants.SwerveDrivetrain.kTurnMaxSpeedRPS *= 0.5;
         Constants.SwerveDrivetrain.kDriveMaxSpeedMPS *= 0.5;
     }

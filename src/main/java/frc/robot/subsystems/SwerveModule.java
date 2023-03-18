@@ -353,9 +353,9 @@ public class SwerveModule {
    * get the swerve module name (useful for SmartDashboard)
    */
   public void logMeasuredData() {
-    // logger.recordOutput(swerveID+"/CancoderDeg", absEncoder.getAbsolutePosition());
+     logger.recordOutput(swerveID+"/CancoderDeg", absEncoder.getAbsolutePosition());
     // logger.recordOutput(swerveID+"/OffsetCancoderDeg", getAbsoluteEncoderRad() * 180 / Math.PI);
-    // logger.recordOutput(swerveID+"/TalonEncoderDeg", getRawEncoderRad() * 180 / Math.PI);
+     //logger.recordOutput(swerveID+"/TalonEncoderDeg", getRawEncoderRad() * 180 / Math.PI);
     // logger.recordOutput(swerveID+"/CurrentVelocityMPS", getDriveVelocity());
   }
 
