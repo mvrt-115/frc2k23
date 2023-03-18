@@ -72,8 +72,10 @@ public class AutonRunner extends SequentialCommandGroup {
     //   swerveDrivetrain::setModuleStates,
     //   swerveDrivetrain);
 
+    
     HashMap<String, Command> eventMap = new HashMap<>();
     eventMap.put("ScoreHigh", new AutoScoreCone(elevator, intake));
+    eventMap.put("Sit", new PrintCommand("sittin pretty"));
     eventMap.put("IntakeDown", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1, 1),
       new SetGroundIntakePosition(groundIntake, 180),
@@ -98,7 +100,7 @@ public class AutonRunner extends SequentialCommandGroup {
     ));
     eventMap.put("LevelForwards", new AutoLevel(drivetrain, 2.5, candleLEDs));
     
-    eventMap.put("LevelBackwards", new AutoLevel(drivetrain, -2.75, candleLEDs));
+    eventMap.put("LevelBackwards", new AutoLevel(drivetrain, -2.5, candleLEDs));
 
     List<PathPlannerTrajectory> fullTrajectoriesWithStopEvents = PathPlanner.loadPathGroup(
       pathName, 

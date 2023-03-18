@@ -95,13 +95,13 @@ public class RobotContainer {
 
     autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel"));
     autonSelector.addOption("ScoreExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization,"ExitLevel2"));
-    autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
-    autonSelector.addOption("ScoreLevel", new SequentialCommandGroup( 
-      new AutoScoreCone(elevator, intake), 
-      new AutoLevel(swerveDrivetrain, -4, leds) 
-    ));
+    autonSelector.addOption("DONOTHING", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "DONOTHING"));
+    autonSelector.addOption("ScoreExit", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "Exit"));
+    autonSelector.addOption("ScoreExit2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "Exit2"));
+    autonSelector.addOption("JustScore", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "Score"));
+    autonSelector.addOption("ScoreLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreLevel"));
     autonSelector.addOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreTwiceLevel"));
-    autonSelector.setDefaultOption("DONOTHING", new PrintCommand("hi"));
+    autonSelector.setDefaultOption("DONOTHING", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "DONOTHING"));
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
