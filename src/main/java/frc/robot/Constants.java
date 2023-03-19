@@ -55,6 +55,11 @@ public final class Constants {
                 public static final boolean invertJoystickY = true;
                 public static final boolean invertJoystickW = true;
 
+                // //red
+                // public static final boolean invertJoystickX = false;
+                // public static final boolean invertJoystickY = false;
+                // public static final boolean invertJoystickW = true;
+                
                 public static final double kPJoystick = 0.001;
                 public static final double kIJoystick = 0.0;
                 public static final double kDJoystick = 0.0;
