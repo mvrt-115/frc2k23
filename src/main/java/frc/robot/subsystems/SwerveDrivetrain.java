@@ -272,10 +272,10 @@ public class SwerveDrivetrain extends SubsystemBase {
        m.logMeasuredData();
     }
 
-    logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
-    logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
-    logger.recordOutput("OdometryHeadingRad", getPose().getRotation().getRadians());
-    logger.recordOutput("OdometryHeadingDeg", getPose().getRotation().getDegrees());
+    // logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
+    // logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
+    // logger.recordOutput("OdometryHeadingRad", getPose().getRotation().getRadians());
+    // logger.recordOutput("OdometryHeadingDeg", getPose().getRotation().getDegrees());
 
     odometry.update(getRotation2d(), modulePositions);
 
@@ -288,10 +288,10 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     logger.recordOutput("Robot Location", getPose());
-    logger.recordOutput("Robot Pose X", getPose().getX());
-    logger.recordOutput("Robot Pose Y", getPose().getY());
-    logger.recordOutput("Robot Location W deg", getPose().getRotation().getDegrees());
-    logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
+    // logger.recordOutput("Robot Pose X", getPose().getX());
+    // logger.recordOutput("Robot Pose Y", getPose().getY());
+    // logger.recordOutput("Robot Location W deg", getPose().getRotation().getDegrees());
+    // logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
   }
 
   public void simulationPeriodic() {
@@ -395,6 +395,15 @@ public class SwerveDrivetrain extends SubsystemBase {
     return speeds.omegaRadiansPerSecond;
   }
 
+  /**
+   * get the linear speed of the robot in mps
+   * @return linear speed
+   */
+  public double getTranslationSpeedMPS() {
+    Translation2d linearVel = getLinearVelocity();
+    return Math.hypot(linearVel.getX(), linearVel.getY());
+  }
+  
   /**
    * get the actual states of all swerve modules
    * @return SwerveModuleState[] states
@@ -556,4 +565,8 @@ public class SwerveDrivetrain extends SubsystemBase {
   private void resetFakeOdometry(Pose2d pose) {
     return;
   }
+
+public DrivetrainState getState() {
+    return state;
+}
 }

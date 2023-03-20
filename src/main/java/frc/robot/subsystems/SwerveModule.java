@@ -70,7 +70,7 @@ public class SwerveModule {
     turnMotor.config_kD(Constants.Talon.kPIDIdx, Constants.SwerveModule.kDTurn);
     turnMotor.config_kF(Constants.Talon.kPIDIdx, Constants.SwerveModule.kFTurn);
 
-    turnMotor.setNeutralMode(NeutralMode.Brake);
+    turnMotor.setNeutralMode(NeutralMode.Coast);
 
     if (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM) {
       absEncoderOffsetRad = encoderOffset;
@@ -225,9 +225,9 @@ public class SwerveModule {
    */
   private void setVelocity(double v_mps) {
     
-    logger.recordOutput(swerveID+"/targetVelocityTicks",  MathUtils.rpmToTicks(
-      MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
-      Constants.SwerveModule.gear_ratio_drive));
+    // logger.recordOutput(swerveID+"/targetVelocityTicks",  MathUtils.rpmToTicks(
+    //   MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
+    //   Constants.SwerveModule.gear_ratio_drive));
 
     SmartDashboard.putNumber("tpsIn" + absEncoder.getDeviceID(), MathUtils.rpmToTicks(
         MathUtils.mpsToRPM(v_mps, Constants.SwerveModule.radius),
@@ -273,8 +273,8 @@ public class SwerveModule {
    * @param state
    */
   public void setRawState(SwerveModuleState state) {
-    logger.recordOutput(swerveID+"/DesiredState", state);
-    logger.recordOutput(swerveID+"/Disabled", false);
+    // logger.recordOutput(swerveID+"/DesiredState", state);
+    // logger.recordOutput(swerveID+"/Disabled", false);
     logModuleTargetData(state);
     setAngle(state.angle.getRadians());
     setVelocity(state.speedMetersPerSecond);
@@ -286,7 +286,7 @@ public class SwerveModule {
    * @param state
    */
   public void setDesiredState(SwerveModuleState state) {
-    logger.recordOutput(swerveID+"/DesiredStatePreOptimized", state);
+    // logger.recordOutput(swerveID+"/DesiredStatePreOptimized", state);
     if (Math.abs(state.speedMetersPerSecond) < 0.001) {
       disableModule();
       return;
@@ -338,7 +338,7 @@ public class SwerveModule {
   public void disableModule() {
     driveMotor.set(ControlMode.PercentOutput, 0);
     turnMotor.set(ControlMode.PercentOutput, 0);
-    logger.recordOutput(swerveID+"/Disabled", true);
+    // logger.recordOutput(swerveID+"/Disabled", true);
   }
 
   /**
@@ -353,10 +353,10 @@ public class SwerveModule {
    * get the swerve module name (useful for SmartDashboard)
    */
   public void logMeasuredData() {
-    logger.recordOutput(swerveID+"/CancoderDeg", absEncoder.getAbsolutePosition());
-    logger.recordOutput(swerveID+"/OffsetCancoderDeg", getAbsoluteEncoderRad() * 180 / Math.PI);
-    logger.recordOutput(swerveID+"/TalonEncoderDeg", getRawEncoderRad() * 180 / Math.PI);
-    logger.recordOutput(swerveID+"/CurrentVelocityMPS", getDriveVelocity());
+     logger.recordOutput(swerveID+"/CancoderDeg", absEncoder.getAbsolutePosition());
+    // logger.recordOutput(swerveID+"/OffsetCancoderDeg", getAbsoluteEncoderRad() * 180 / Math.PI);
+     //logger.recordOutput(swerveID+"/TalonEncoderDeg", getRawEncoderRad() * 180 / Math.PI);
+    // logger.recordOutput(swerveID+"/CurrentVelocityMPS", getDriveVelocity());
   }
 
   /**
@@ -365,8 +365,8 @@ public class SwerveModule {
    * @param state
    */
   public void logModuleTargetData(SwerveModuleState state){
-    logger.recordOutput(swerveID+"/TargetAngleDeg", state.angle.getDegrees());
-    logger.recordOutput(swerveID+"/TargetVelocityMPS", state.speedMetersPerSecond);
+    // logger.recordOutput(swerveID+"/TargetAngleDeg", state.angle.getDegrees());
+    // logger.recordOutput(swerveID+"/TargetVelocityMPS", state.speedMetersPerSecond);
   }
 
   /**

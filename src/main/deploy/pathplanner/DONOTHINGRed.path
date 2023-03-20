@@ -2,48 +2,48 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.7936389188750599,
-        "y": 0.4380410739988148
+        "x": 14.82383078510233,
+        "y": 3.0488367137871717
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.465144383413767,
-        "y": 0.4323582536053961
+        "x": 14.751434111781148,
+        "y": 3.0488367137871717
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "ScoreHigh"
+          "Sit"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 5.247575970846386,
-        "y": 2.500904876809753
+        "x": 14.633872111346117,
+        "y": 3.0488367137871717
       },
       "prevControl": {
-        "x": 6.2964042612113005,
-        "y": 0.5794157282759002
+        "x": 14.756080085851984,
+        "y": 3.0488367137871717
       },
       "nextControl": null,
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "LevelForwards"
+          "Sit"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }

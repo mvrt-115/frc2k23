@@ -4,45 +4,35 @@
 
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.Elevator;
 
-public class ManualElevator extends CommandBase {
-  /** Creates a new ManualElevator. */
-  private Elevator e;
-  private Supplier<Double> speed;
-  public ManualElevator(Elevator q, Supplier<Double> speed) {
-    e = q;
-    addRequirements(e);
-    this.speed = speed;
+public class BetterWaitCommand extends CommandBase {
+  double sec;
+  double init;
+  /** Creates a new BetterWaitCommand. */
+  public BetterWaitCommand(double sec) {
+    this.sec = sec;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    init = Timer.getFPGATimestamp();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if (e.getHeightInches() < 15)
-      e.runMotor(speed.get());
-    else
-      e.runMotor(speed.get()+Constants.Elevator.kG/10.0);///Constants.Talon.MAX_VOLTAGE);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Timer.getFPGATimestamp() > init + sec;
   }
 }

@@ -18,12 +18,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.subsystems.CANdleLEDSystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.GroundIntake;
 import frc.robot.subsystems.Intake2;
+import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 // import frc.robot.utils.BetterSwerveControllerCommand;
 
@@ -36,7 +39,7 @@ public class AutonRunner extends SequentialCommandGroup {
     Constants.SwerveDrivetrain.kMaxAutonDriveSpeed, 
     Constants.SwerveDrivetrain.kMaxAutonDriveAcceleration);
 
-  public AutonRunner(SwerveDrivetrain drivetrain, Elevator elevator, Intake2 intake, String pathName) {
+  public AutonRunner(SwerveDrivetrain drivetrain, Elevator elevator, Intake2 intake, GroundIntake groundIntake, CANdleLEDSystem candleLEDs, Localization localization, String pathName) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
@@ -68,26 +71,35 @@ public class AutonRunner extends SequentialCommandGroup {
     //   swerveDrivetrain::setModuleStates,
     //   swerveDrivetrain);
 
+    
     HashMap<String, Command> eventMap = new HashMap<>();
-    eventMap.put("ScoreHigh", new PrintCommand("SCORING HERE ON HIGH"));
-    // (Constants.DataLogging.currMode != Constants.DataLogging.Mode.SIM)? new SequentialCommandGroup(
-    //   new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT+550),
-    //   new WaitCommand(0.25),
-    //   new ParallelCommandGroup(
-    //     new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-3700),
-    //     intake.runOut()
-    //   ),
-    //   new SetElevatorHeight(elevator, 400)) : new PrintCommand("!!!Should Score High Here!!!")
-    // );
-    eventMap.put("Intake", new PrintCommand("!!!Should Intake Here!!!"));
-    eventMap.put("LevelForwards", new SequentialCommandGroup(
-      new DriveForward(drivetrain, 4, 1.25),
-      new Leveling(drivetrain))  
-    );
-    eventMap.put("LevelBackwards", new SequentialCommandGroup(
-      new DriveForward(drivetrain, -4, 1.25),
-      new Leveling(drivetrain))  
-    );
+    eventMap.put("ScoreHigh", new AutoScoreCone(elevator, intake));
+    eventMap.put("Sit", new PrintCommand("sittin pretty"));
+    eventMap.put("IntakeDown", new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1, 1),
+      new SetGroundIntakePosition(groundIntake, 180),
+      new InstantCommand(() -> groundIntake.setRollerOutput(0.3)),
+      new ElevateDown(elevator)
+    ));
+    eventMap.put("IntakeUp", new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1, 1),
+      new SetGroundIntakePosition(groundIntake, 40),
+      new InstantCommand(() -> groundIntake.stopRoller())
+    ));
+    eventMap.put("GIScore", new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 15, 1, 0.75),
+      new SetGroundIntakePosition(groundIntake, 120, 0.5),
+      new InstantCommand(() -> groundIntake.setRollerOutput(-0.8)),
+      new ElevateDown(elevator),
+      new BetterWaitCommand(0.5),
+      new SetElevatorHeight(elevator, 20, 0, 0.5),
+      new SetGroundIntakePosition(groundIntake, 40),
+      new InstantCommand(() -> groundIntake.stopRoller()),
+      new ElevateDown(elevator)
+    ));
+    eventMap.put("LevelForwards", new AutoLevel(drivetrain, 2.5, candleLEDs));
+    
+    eventMap.put("LevelBackwards", new AutoLevel(drivetrain, -2.5, candleLEDs));
 
     List<PathPlannerTrajectory> fullTrajectoriesWithStopEvents = PathPlanner.loadPathGroup(
       pathName, 
@@ -109,6 +121,7 @@ public class AutonRunner extends SequentialCommandGroup {
 
     addCommands(
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
+      new InstantCommand(() -> localization.resetPoseEstimator(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
       new InstantCommand(() -> swerveDrivetrain.resetModules()),
       new InstantCommand(() -> swerveDrivetrain.resetModuleDrive()),
@@ -117,6 +130,7 @@ public class AutonRunner extends SequentialCommandGroup {
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
       autoEventsCommand,
       new InstantCommand(() -> swerveDrivetrain.stopModules()),
-      new InstantCommand(() -> swerveDrivetrain.setDisabled()));
+      new InstantCommand(() -> swerveDrivetrain.setDisabled())
+    );
   }
 }

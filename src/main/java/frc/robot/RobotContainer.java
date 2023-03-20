@@ -8,18 +8,14 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utils.JoystickIO;
 
-import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.SetElevatorHeight;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake2.INTAKE_TYPE;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -42,11 +37,14 @@ public class RobotContainer {
 
   private Elevator elevator;
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
+  private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+  private Localization localization = new Localization(swerveDrivetrain);
   private CANdleLEDSystem leds = new CANdleLEDSystem();
 
-  private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+  GroundIntake gi = new GroundIntake();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
+  private final CommandXboxController testJoystick = new CommandXboxController(2);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -75,7 +73,7 @@ public class RobotContainer {
     // ELEVATOR MANUAL
     elevator.setDefaultCommand(
       new ManualElevator(elevator, () -> -operatorJoystick.getRawAxis(1)*0.1)
-    ); // used to 0.4, makes slower speed
+    );
       
     // Configure the trigger bindings
     configureBindings();
@@ -91,83 +89,110 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    
-    driveJoystick.button(3).onTrue(new InstantCommand(() -> swerveDrivetrain.resetModules()));
+    driveJoystick.button(3).onTrue(new ResetOdometryWithVision(swerveDrivetrain, localization));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
-
-    autonSelector.addOption("ExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel"));
-    autonSelector.addOption("ExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, "ExitLevel2"));
-    // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreExitLevel"));
-    autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
-    autonSelector.addOption("OnlyLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreLevel"));
-    autonSelector.setDefaultOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, "ScoreTwiceLevel"));
-    SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    // Pose2d nearestCol = localization.getClosestScoringLoc();
-    // driveJoystick.button(4).whileTrue(new Align(swerveDrivetrain, localization, nearestCol)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    // driveJoystick.button(1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+
+    //SHIFT LEFT
+    //driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    
+    //SHIFT RIGHT
+    //driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     // AUTO LEVEL
     driveJoystick.button(2).onTrue(
       new SequentialCommandGroup(
-        new DriveForward(swerveDrivetrain, Constants.Leveling.driveForwardMPS, Constants.Leveling.driveForwardTime),
-        new Leveling(swerveDrivetrain) 
+        new Leveling(swerveDrivetrain, leds) 
       )
     ).onFalse( 
       new InstantCommand(() -> swerveDrivetrain.stopModules())
     );
+
+    // GROUND INTAKE DOWN / UP
+    driveJoystick.button(6).onTrue(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1, 0.5),
+      new SetGroundIntakePosition(gi, 180),
+      new InstantCommand(() -> gi.setRollerOutput(0.7)),
+      new ElevateDown(elevator)
+    )).onFalse(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1, 0.5),
+      new SetGroundIntakePosition(gi, 40),
+      new InstantCommand(() -> gi.stopRoller()),
+      new ElevateDown(elevator)
+    )); 
+
+    // GROUND INTAKE SHOOT LOW
+    driveJoystick.button(5).onTrue(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1, 0.5),
+      new SetGroundIntakePosition(gi, 130),
+      new InstantCommand(() -> gi.setRollerOutput(-0.8)),
+      new ElevateDown(elevator)
+    )).onFalse(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 0, 0.5),
+      new SetGroundIntakePosition(gi, 40),
+      new InstantCommand(() -> gi.stopRoller()),
+      new ElevateDown(elevator)
+      ));
     
     //Brake baby brake
-    driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
+    //driveJoystick.button(5).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)));
 
     //No braking
-    driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
+    //driveJoystick.button(6).onTrue(new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Coast)));
 
     // HP INTAKE
     operatorJoystick.x().onTrue(
       new IntakeHPStation(elevator, intake)
     ).onFalse(
-      new SetElevatorHeight(elevator, 5).alongWith(intake.stop())
+      new ElevateDown(elevator).alongWith(intake.stop())
     );
 
-    // RETURN TO NEUTRAL
-    operatorJoystick.b().onTrue(
+    // SHOOT CONE AND DOWN
+    operatorJoystick.b().onTrue(new SequentialCommandGroup(
+      intake.runOut(),
+      new BetterWaitCommand(0.25),
       new ParallelCommandGroup(
-        new SetElevatorHeight(elevator, 5),
+        new ElevateDown(elevator),
         intake.stop()
       )
-    ).onFalse(
+    )).onFalse(
       new InstantCommand(() -> elevator.runMotor(0))
     );
 
-    // SCORE CONE MID 
-    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT)
-    ).onFalse(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT-8.4).alongWith(new WaitCommand(1.1).andThen(intake.runOut())));
-    
-    // SCORE CONE HIGH
-    operatorJoystick.a().onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT)
-    ).onFalse(intake.runOut());
+    // ELEV MID 
+    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT, 0.25));
 
-    // RESET ELEVATOR ENCODER VALUE
-    operatorJoystick.button(9).onTrue(new InstantCommand(() -> elevator.resetEncoder()));
-    
-    // SCORE CUBE MID
-    operatorJoystick.button(6).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_MID_HEIGHT)
-    ).onFalse(intake.runOut());
-    
-    // SCORE CUBE HIGH
-    operatorJoystick.button(5).onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CUBE_HIGH_HEIGHT)
-    ).onFalse(intake.runOut());
+    // ELEV HIGH
+    operatorJoystick.a().onTrue(
+      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25)
+    );
+
+    // SHOOT CUBE AND DOWN
+    operatorJoystick.rightBumper().onTrue(new SequentialCommandGroup(
+      intake.runOutCube(),
+      new BetterWaitCommand(0.25),
+      new ParallelCommandGroup(
+        new ElevateDown(elevator),
+        intake.stop()
+      )
+    )).onFalse(
+      new InstantCommand(() -> elevator.runMotor(0))
+    );  
 
     // MANUAL INTAKE
-    operatorJoystick.button(7).onTrue(intake.runIn()).onFalse(intake.stop()); // manual intaking
-    operatorJoystick.button(8).onTrue(intake.runOut()).onFalse(intake.stop()); // manual scoring
+    operatorJoystick.start().onTrue(intake.runIn()).onFalse(intake.stop());
 
-    //LEDS TOGGLE
-    operatorJoystick.button(10).onTrue(leds.toggleLEDs());
+    // MANUAL OUTTAKE
+    operatorJoystick.back().onTrue(intake.runOutCube()).onFalse(intake.stop());
+
+    // LED TOGGLE
+    operatorJoystick.leftBumper().onTrue(new SetLEDCC(leds));
+
+    // RESET ELEVATOR ENCODER VALUE
+    operatorJoystick.rightStick().onTrue(new InstantCommand(() -> elevator.resetEncoder()));
+
   }
 
   /**
@@ -176,7 +201,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autonSelector.getSelected();
+    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "Exit");
   }
 
   public void putTestCommand() {

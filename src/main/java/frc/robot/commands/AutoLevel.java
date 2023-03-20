@@ -4,19 +4,21 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.Constants;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake2;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.CANdleLEDSystem;
+import frc.robot.subsystems.SwerveDrivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeHPStation extends ParallelCommandGroup {
-  /** Creates a new IntakeHPStation. */
-  public IntakeHPStation(Elevator elevator, Intake2 intake) {
+public class AutoLevel extends SequentialCommandGroup {
+  /** Creates a new AutoLevel. */
+  public AutoLevel(SwerveDrivetrain drivetrain, double driveSpeed, CANdleLEDSystem cc) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SetElevatorHeight(elevator, Constants.Elevator.INTAKE_HEIGHT, 0.25), intake.runIn());
+    addCommands(
+      new DriveForward(drivetrain, driveSpeed, 1.5),
+      new Leveling(drivetrain, cc)
+    );
   }
 }

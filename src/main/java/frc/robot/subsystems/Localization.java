@@ -48,45 +48,45 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Pose2d camPose = weightTargets();
-    if(camPose!=null){
-      SmartDashboard.putString("weightedCamPose", camPose.toString());
+    // Pose2d camPose = weightTargets();
+    // if(camPose!=null){
+    //   SmartDashboard.putString("weightedCamPose", camPose.toString());
 
-      //If aligning, reset pose to whatever camera gives us
-      if(aligning){
-        resetPoseEstimator(camPose);
+    //   //If aligning, reset pose to whatever camera gives us
+    //   if(aligning){
+    //     // resetPoseEstimator(camPose);
 
-      } else{
-        double latency = 0;
-        PhotonPipelineResult cam1Result = camera1.getLatestResult();
-        PhotonPipelineResult cam2Result = camera2.getLatestResult();
+    //   } else{
+    //     double latency = 0;
+    //     PhotonPipelineResult cam1Result = camera1.getLatestResult();
+    //     PhotonPipelineResult cam2Result = camera2.getLatestResult();
 
-        if(cam1Result.hasTargets()){
-          latency = cam1Result.getLatencyMillis();
+    //     if(cam1Result.hasTargets()){
+    //       latency = cam1Result.getLatencyMillis();
 
-        } if(cam2Result.hasTargets()){
-            if(latency==0){
-              latency = cam2Result.getLatencyMillis();
-            }
-            else{
-              latency+=cam2Result.getLatencyMillis();
-              latency/=2;
-            }
-        }
-        poseEstimator.addVisionMeasurement(camPose, latency);
-      }
-    }
+    //     } if(cam2Result.hasTargets()){
+    //         if(latency==0){
+    //           latency = cam2Result.getLatencyMillis();
+    //         }
+    //         else{
+    //           latency+=cam2Result.getLatencyMillis();
+    //           latency/=2;
+    //         }
+    //     }
+    //     poseEstimator.addVisionMeasurement(camPose, latency);
+    //   }
+    // }
 
-    log();
+    // log();
 
-    Pose2d currPose = getCurrentPose();
-    if(currPose != null){
-      // field.setRobotPose(currPose); 
-    }
+    // Pose2d currPose = getCurrentPose();
+    // if(currPose != null){
+    //   // field.setRobotPose(currPose); 
+    // }
 
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
-    // field.setRobotPose(getCurrentPose());
-    log();
+    // poseEstimator.updateWithTime(Timer.getFPGATimestamp(), swerveDrivetrain.getRotation2d(), swerveDrivetrain.getModulePositions());
+    // // field.setRobotPose(getCurrentPose());
+    // log();
     
   }
 

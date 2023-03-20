@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.CANdleLEDSystem;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.Constants;
 
@@ -15,10 +16,12 @@ public class Leveling extends CommandBase {
   private PIDController pidLevel; 
   private PIDController pidRotate;
   private boolean level;
+  private CANdleLEDSystem cc;
 
   /** Creates a new Leveling. */
-  public Leveling(SwerveDrivetrain _swerveDt) {
+  public Leveling(SwerveDrivetrain _swerveDt, CANdleLEDSystem _cc) {
     this.swerveDt = _swerveDt;
+    this.cc = _cc;
     this.pidLevel = new PIDController(Constants.Leveling.levelkP, Constants.Leveling.levelkI, Constants.Leveling.levelkD);
     this.pidRotate = new PIDController(Constants.Leveling.rotatekP, Constants.Leveling.rotatekI, Constants.Leveling.rotatekD);
     this.level = false;
@@ -30,6 +33,7 @@ public class Leveling extends CommandBase {
   @Override
   public void initialize() {
     // pidRotate.enableContinuousInput(-180, 180);
+    cc.setLeveling(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,7 +51,7 @@ public class Leveling extends CommandBase {
     SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
 
     double vX = -Math.min(-currentPitch*Constants.Leveling.levelkP, 1) * Constants.Leveling.levelVelocityMPS;
-    double vXpid = pidLevel.calculate(currentPitch, 0) * Constants.Leveling.levelVelocityMPS;
+    double vXpid = -pidLevel.calculate(currentPitch, 0) * Constants.Leveling.levelVelocityMPS;
     double angularSpeed = pidRotate.calculate(currentYaw, 0) * Constants.Leveling.maxAngularSpeed;
     double vY = 0;
 
@@ -57,6 +61,7 @@ public class Leveling extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    cc.setLeveling(false);
     // call a command that locks the wheels
     swerveDt.setSpeeds(0, 0, 0, Constants.SwerveDrivetrain.rotatePoints[0]);
   }

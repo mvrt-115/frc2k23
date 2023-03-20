@@ -5,101 +5,82 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.RainbowAnimation;
+import com.ctre.phoenix.led.StrobeAnimation;
 
-import edu.wpi.first.networktables.BooleanEntry;
-import edu.wpi.first.networktables.BooleanTopic;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CANdleLEDSystem extends SubsystemBase {
   private final CANdle candle = new CANdle(0);
-  private final int ledCount = 65;
+  private final StrobeAnimation yell = new StrobeAnimation(200, 150, 0, 0, 1, 300);
+  private final StrobeAnimation purp = new StrobeAnimation(255, 0, 255, 20, 1, 300);
+  RainbowAnimation whileLeveling = new RainbowAnimation(.8, 0.8, 300);
+
   /** true for cube, false for cone */
-  final BooleanEntry cubeCone;
   boolean prevCubeCone = false;
-  boolean roborio = true;
-  boolean purpleYellow = true;
+  boolean cubeCone = false;
+  boolean leveling = false;
 
-  AddressableLED leds;
-  AddressableLEDBuffer ledBuffer;
-
-  NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable table = inst.getTable("LEDsData");
+ 
   /** Creates a new CANdleLEDSystem. */
   public CANdleLEDSystem() {
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    NetworkTable table = inst.getTable("LEDs");
-
-    BooleanTopic topic = table.getBooleanTopic("cubeCone");
-
-    cubeCone = topic.getEntry(false);
-    if (roborio) {
-      leds = new AddressableLED(0);
-      ledBuffer = new AddressableLEDBuffer(115);
-
-      leds.setLength(ledBuffer.getLength());
-    }
+   candle.configFactoryDefault();
+    candle.configBrightnessScalar(.2);
   }
-  public CommandBase toggleLEDs() {
-    return this.runOnce(() -> setPrupMethod());
+
+  
+  public void setLeveling(boolean aboutToLevel) {
+    leveling = aboutToLevel;
   }
-  public void toggle(){
-    purpleYellow = !purpleYellow;
-    if (purpleYellow) {
-      setPrupMethod();
-    }
-    else{
-      setYellowMethod();
-    }
-    
-  }
-  public CommandBase setPurple() {
-    return this.runOnce(() -> setPrupMethod());
+  public void toggleCubeCone(){
+    cubeCone = !cubeCone;
   }
   
-  public CommandBase setYellow() {
-    return this.runOnce(() -> setYellowMethod());
-  }
-  public CommandBase setSolidColor(int r, int g, int b) {
-    return this.runOnce(() -> candle.setLEDs(r, g, b));
-  }
+ 
   private void setPrupMethod() {
-    setColor(200, 0, 200);
+    // setColor(200, 0, 200);
+    candle.animate(purp);
   }
   private void setYellowMethod() {
   //  cand
-    setColor(0, 255, 0);
+    // setColor(0, 255, 0)
+    candle.animate(purp);
   }
   private void updateLEDCubeCone() {
-    // if (cubeCone.getAsBoolean()) {
-    //   candle.setLEDs(200, 0, 200);
-    // }
-    // else {
-    //   candle.setLEDs(160, 200, 5);
-    // }
+    // System.out.println("UPADTEDDDddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddD");
+    if (cubeCone) {
+      setPrupMethod();
+    }
+    else {
+      setYellowMethod();
+    }
   }
 
-  private void setColor(int r, int g, int b) {
-    if (roborio) {
-      for (int i = 0; i < ledBuffer.getLength(); i++) {
-        ledBuffer.setRGB(i, r, g, b);
-      }
-      leds.setData(ledBuffer);
-    }
-    candle.setLEDs(r, g, b);
-  }
+  
+
   @Override
   public void periodic() {
     //you have to compare prev network tables state to new one to see if it changed because 
     //CANdle cannot be set periodically or else it will lag
-    // if(prevCubeCone != cubeCone.getAsBoolean()){
+    // if(prevCubeCone != cubeCone){
     //   updateLEDCubeCone();
+    //   // System.out.println("UPDATED TO: " + cubeCone);
     // }
-    // prevCubeCone = cubeCone.getAsBoolean();
-   
+    // prevCubeCone = cubeCone;
+    // candle.get
+    if (leveling) {
+      candle.animate(whileLeveling);
+    }
+    else{
+
+      if (cubeCone) {
+        setPrupMethod();
+      }
+      else {
+        setYellowMethod();
+      }
+    }
+    // RainbowAnimation r = new RainbowAnimation(1, 0.55, 100);
+    // candle.animate(r);
   }
 }
