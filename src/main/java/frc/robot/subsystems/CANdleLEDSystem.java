@@ -44,7 +44,7 @@ public class CANdleLEDSystem extends SubsystemBase {
   private void setYellowMethod() {
   //  cand
     // setColor(0, 255, 0)
-    candle.animate(yell);
+    candle.animate(purp);
   }
   private void updateLEDCubeCone() {
     // System.out.println("UPADTEDDDddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddD");
