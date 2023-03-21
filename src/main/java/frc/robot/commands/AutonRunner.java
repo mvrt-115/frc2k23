@@ -14,6 +14,8 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -54,9 +56,29 @@ public class AutonRunner extends SequentialCommandGroup {
     //   new Pose2d(0, 2, Rotation2d.fromDegrees(90.0)),
     //   swerveDrivetrain.getTrajectoryConfig());
 
+    if(DriverStation.getAlliance() == Alliance.Red)
+      pathName += "Red";
+
     trajectory = PathPlanner.loadPath(
       pathName, 
-      constraints);
+      constraints
+    );
+    
+    if(trajectory == null) {
+      pathName = pathName.substring(0, pathName.length() - 3);
+      
+      trajectory = PathPlanner.loadPath(
+        pathName, 
+        constraints
+      );
+
+      if(trajectory == null) {
+        addCommands(
+          new PrintCommand("Failed to load path")
+        );
+        return;
+      }
+    }
     
     swerveDrivetrain.getField().getObject("traj").setTrajectory(trajectory);
 

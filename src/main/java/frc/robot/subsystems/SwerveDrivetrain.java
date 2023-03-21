@@ -28,8 +28,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.networktables.NetworkTableInstance.NetworkMode;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -356,6 +358,10 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot) {
+    if(DriverStation.getAlliance() == Alliance.Red) {
+      v_forwardMps = -v_forwardMps;
+      v_sideMps = -v_sideMps;
+    }
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(v_forwardMps, v_sideMps, v_rot, getPose().getRotation());
     SmartDashboard.putString("ChassisSpeedsFO", speeds.toString());
     SwerveModuleState[] moduleStates = this.swerveKinematics.toSwerveModuleStates(speeds);
