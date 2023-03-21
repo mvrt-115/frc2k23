@@ -79,10 +79,9 @@ public class Align extends CommandBase {
   public boolean isFinished() {
     Pose2d robotPose = localization.getCurrentPose();
 
-    return true;
-    // return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
-    //   Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
-    //   Math.abs(localization.computeThetaError(robotPose.getRotation().getRadians(), true) - poseToGoTo.getRotation().getRadians()) <
-    //   Constants.VisionConstants.thetaTolerance;
+    return Math.abs(robotPose.getX() - poseToGoTo.getX()) < Constants.VisionConstants.xTolerance &&
+      Math.abs(robotPose.getY() - poseToGoTo.getY()) < Constants.VisionConstants.yTolerance &&
+      Math.abs(localization.computeThetaError(robotPose.getRotation().getRadians(), true) - poseToGoTo.getRotation().getRadians()) <
+      Constants.VisionConstants.thetaTolerance;
   }
 }
