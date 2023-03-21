@@ -35,7 +35,7 @@ public class SwerveJoystickCommand extends CommandBase {
   private final JoystickIO joystick;
   private Timer timer;
   private Rotation2d heading;
-  private Logger logger; 
+  private Logger logger;
   private Elevator elevator;
 
   public PIDController thetaController;
@@ -103,7 +103,7 @@ public class SwerveJoystickCommand extends CommandBase {
       Constants.SwerveDrivetrain.kTurnMaxAcceleration = (1 - (left_trigger / 2)) * Constants.SwerveDrivetrain.kTurnMaxAccelerationNormal;
     }
     else if (right_trigger > 0.05) {
-      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + 3 * right_trigger) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
+      Constants.SwerveDrivetrain.kDriveMaxSpeedMPS = (1 + 2.50 * right_trigger) * Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
         Constants.SwerveDrivetrain.kTurnMaxSpeedRPS = Constants.SwerveDrivetrain.kTurnMaxSpeedRPSNormal;
       // (right_trigger < 0.75 ? right_trigger : (
       //   ((Constants.SwerveDrivetrain.kDriveMaxSpeedCap - Constants.SwerveDrivetrain.kDriveMaxSpeedMPSNormal * (1.75))/0.25) * (right_trigger - 1) + Constants.SwerveDrivetrain.kDriveMaxSpeedCap

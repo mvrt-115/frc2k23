@@ -334,9 +334,9 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param states
    */
   public void setModuleStates(SwerveModuleState[] states) {
-    Logger.getInstance().recordOutput("SwerveModuleStatesDesired", states);
+    // Logger.getInstance().recordOutput("SwerveModuleStatesDesired", states);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.SwerveDrivetrain.kMaxSpeedMPS);
-    Logger.getInstance().recordOutput("SwerveModuleStatesDesiredNorm", states);
+    // Logger.getInstance().recordOutput("SwerveModuleStatesDesiredNorm", states);
     for (int i = 0; i < modules.length; i++)
     {
       modules[i].setDesiredState(states[i]);

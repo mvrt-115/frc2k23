@@ -379,7 +379,12 @@ public class Localization extends SubsystemBase {
     SmartDashboard.putNumber("chicken robo x", robotPose.getX());
     SmartDashboard.putNumber("chicken robo y", robotPose.getY());
     SmartDashboard.putNumber("chicken distance from final", Localization.distFromTag(robotPose, poseToGoTo));
+    logger.recordOutput("Vision/error_x", poseToGoTo.getX() - robotPose.getX());
+    logger.recordOutput("Vision/error_y", poseToGoTo.getY() - robotPose.getY());
+    logger.recordOutput("Vision/error_theta", poseToGoTo.getRotation().getDegrees() - computeThetaError(robotPose.getRotation().getDegrees(), false));
+    logger.recordOutput("Vision/goalPose", poseToGoTo);
     SmartDashboard.putNumber("chicken error x", poseToGoTo.getX() - robotPose.getX());
+    SmartDashboard.putNumber("chicken error y", poseToGoTo.getY() - robotPose.getY());
     SmartDashboard.putNumber("chicken error y", poseToGoTo.getY() - robotPose.getY());
   }
 }

@@ -58,7 +58,7 @@ public class SetElevatorHeight extends CommandBase
     //   elevator.setTargetHeight(0);
     // }
     // else {
-      logger.recordOutput("Elevator/elev/target_height", height);
+      // logger.recordOutput("Elevator/elev/target_height", height);
       elevator.goToSetpoint();
 //      System.out.println("executeeeee");
     //  System.out.println("target height: " + height);
