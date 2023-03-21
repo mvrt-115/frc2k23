@@ -95,13 +95,14 @@ public class Localization extends SubsystemBase {
     Pose2d result =
      combinePoses(null, result2);
 
-    if(!firstSee && swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
+    if(swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
       Pose2d curr = getCurrentPose();
       if(curr!=null){
-        swerveDrivetrain.resetOdometry(curr);
+        double odometryHeadingDeg = swerveDrivetrain.getPose().getRotation().getDegrees();
+        double visionHeadingDeg = curr.getRotation().getDegrees();
+        if(Math.abs(visionHeadingDeg - odometryHeadingDeg) < 10)
+          swerveDrivetrain.resetOdometry(curr);
       }
-
-      firstSee = true;
     }
 
     SmartDashboard.putBoolean("chicken robot present", result != null);
