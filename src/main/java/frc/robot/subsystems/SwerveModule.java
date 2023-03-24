@@ -356,7 +356,7 @@ public class SwerveModule {
      logger.recordOutput(swerveID+"/CancoderDeg", absEncoder.getAbsolutePosition());
     // logger.recordOutput(swerveID+"/OffsetCancoderDeg", getAbsoluteEncoderRad() * 180 / Math.PI);
      //logger.recordOutput(swerveID+"/TalonEncoderDeg", getRawEncoderRad() * 180 / Math.PI);
-    // logger.recordOutput(swerveID+"/CurrentVelocityMPS", getDriveVelocity());
+    logger.recordOutput(swerveID+"/CurrentVelocityMPS", getDriveVelocity());
   }
 
   /**
@@ -366,7 +366,7 @@ public class SwerveModule {
    */
   public void logModuleTargetData(SwerveModuleState state){
     // logger.recordOutput(swerveID+"/TargetAngleDeg", state.angle.getDegrees());
-    // logger.recordOutput(swerveID+"/TargetVelocityMPS", state.speedMetersPerSecond);
+    logger.recordOutput(swerveID+"/TargetVelocityMPS", state.speedMetersPerSecond);
   }
 
   /**
