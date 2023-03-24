@@ -100,8 +100,8 @@ public class Localization extends SubsystemBase {
       if(curr!=null){
         double odometryHeadingDeg = swerveDrivetrain.getPose().getRotation().getDegrees();
         double visionHeadingDeg = curr.getRotation().getDegrees();
-        if(Math.abs(visionHeadingDeg - odometryHeadingDeg) < 10)
-          swerveDrivetrain.resetOdometry(curr);
+        //if(Math.abs(visionHeadingDeg - odometryHeadingDeg) < 10)
+        swerveDrivetrain.resetOdometry(new Pose2d(curr.getTranslation(), swerveDrivetrain.getPose().getRotation()));
       }
     }
 

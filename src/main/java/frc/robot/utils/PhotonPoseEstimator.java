@@ -428,7 +428,7 @@
  
          // Although there are confirmed to be targets, none of them may be fiducial
          // targets.
-         if (lowestAmbiguityTarget == null || lowestAmbiguityTarget.getPoseAmbiguity()>0.2) return Optional.empty();
+         if (lowestAmbiguityTarget == null || lowestAmbiguityTarget.getPoseAmbiguity()>0.15) return Optional.empty();
  
          int targetFiducialId = lowestAmbiguityTarget.getFiducialId();
  
