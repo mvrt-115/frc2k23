@@ -19,7 +19,7 @@ public class LoggingUtils {
     private ArrayList<Double> avg_values; // for overall avg
     private int roll_index; // for rolling avg index
     private int nums;
-    public LogType state;
+    private LogType state;
 
     /**
      * logging constructor, uses Max logging
@@ -105,5 +105,21 @@ public class LoggingUtils {
         roll_index += 1;
         if (roll_index == nums)
             roll_index = 0;
+    }
+
+    /**
+     * get the log value
+     * @return value
+     */
+    private double getValue() {
+        return value;
+    }
+
+    /**
+     * get the log type
+     * @return logtype 
+     */
+    private LogType getLogType() {
+        return state;
     }
 }
