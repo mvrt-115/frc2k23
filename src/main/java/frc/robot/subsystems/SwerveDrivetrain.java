@@ -357,6 +357,12 @@ public class SwerveDrivetrain extends SubsystemBase {
     setModuleStates(moduleStates);
   }
 
+  /**
+   * Set the speeds in field oriented (v_forward is the x direction, side is the y direction)
+   * @param v_forwardMps
+   * @param v_sideMps
+   * @param v_rot pos is counterclockwise, neg is clockwise
+   */
   public void setSpeedsFieldOriented(double v_forwardMps, double v_sideMps, double v_rot) {
     if(DriverStation.getAlliance() == Alliance.Red) {
       v_forwardMps = -v_forwardMps;
