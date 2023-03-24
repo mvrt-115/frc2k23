@@ -1,0 +1,78 @@
+{
+  "version": "2.2.2",
+  "layout": [
+    {
+      "type": 6,
+      "fields": [],
+      "listFields": [
+        [
+          {
+            "type": "Component (Robot)",
+            "key": "/AdvantageKit/RealOutputs/GroundIntakeComponent",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Component (Robot)",
+            "key": "/AdvantageKit/RealOutputs/Stage2Component",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Component (Robot)",
+            "key": "/AdvantageKit/RealOutputs/Stage3Component",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Component (Robot)",
+            "key": "/AdvantageKit/RealOutputs/IntakeComponent",
+            "fieldTypeIndex": 0
+          }
+        ],
+        [
+          {
+            "type": "Robot",
+            "key": "/AdvantageKit/RealOutputs/Robot Location",
+            "fieldTypeIndex": 0
+          }
+        ]
+      ],
+      "options": {
+        "field": "2023",
+        "alliance": "blue",
+        "robot": "Ultraviolet",
+        "unitDistance": "meters",
+        "unitRotation": "radians"
+      },
+      "title": "3D Field"
+    },
+    {
+      "type": 2,
+      "fields": [],
+      "title": "Table"
+    },
+    {
+      "type": 1,
+      "legends": {
+        "left": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        },
+        "discrete": {
+          "fields": []
+        },
+        "right": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        }
+      },
+      "title": "Line Graph"
+    }
+  ]
+}
