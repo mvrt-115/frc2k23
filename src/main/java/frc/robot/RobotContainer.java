@@ -90,7 +90,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driveJoystick.button(3).onTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc));
+    driveJoystick.button(3).onTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc, leds));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, "ExitLevel"));
@@ -105,7 +105,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc(), leds)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     //SHIFT LEFT
     //driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
@@ -128,7 +128,7 @@ public class RobotContainer {
       new SetElevatorHeight(elevator, 20, 1),
       new SetGroundIntakePosition(gi, 180),
       new InstantCommand(() -> gi.setRollerOutput(0.3)),
-      new ElevateDown(elevator)
+      new ElevateDown(elevator, leds)
     )).onFalse(new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1),
       new SetGroundIntakePosition(gi, 40),
@@ -139,7 +139,7 @@ public class RobotContainer {
     operatorJoystick.x().onTrue(
       new IntakeHPStation(elevator, intake)
     ).onFalse(
-      new ElevateDown(elevator).alongWith(intake.stop())
+      new ElevateDown(elevator, leds).alongWith(intake.stop())
     );
 
     // SHOOT CONE AND DOWN
@@ -147,7 +147,7 @@ public class RobotContainer {
       intake.runOut(),
       new BetterWaitCommand(0.25),
       new ParallelCommandGroup(
-        new ElevateDown(elevator),
+        new ElevateDown(elevator, leds),
         intake.stop()
       )
     )).onFalse(
@@ -167,7 +167,7 @@ public class RobotContainer {
       intake.runOutCube(),
       new BetterWaitCommand(0.25),
       new ParallelCommandGroup(
-        new ElevateDown(elevator),
+        new ElevateDown(elevator, leds),
         intake.stop()
       )
     )).onFalse(
@@ -185,7 +185,7 @@ public class RobotContainer {
       new SetElevatorHeight(elevator, 20, 1),
       new SetGroundIntakePosition(gi, 120),
       new InstantCommand(() -> gi.setRollerOutput(-0.8)),
-      new ElevateDown(elevator)
+      new ElevateDown(elevator, leds)
     )).onFalse(new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 0),
       new SetGroundIntakePosition(gi, 40),

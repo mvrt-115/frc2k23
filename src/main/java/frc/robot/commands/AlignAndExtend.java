@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.CANdleLEDSystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Localization;
 
@@ -14,12 +15,14 @@ public class AlignAndExtend extends CommandBase {
   private Align align;
   private SetElevatorHeight setHeight;
   private Elevator elevator;
+  private CANdleLEDSystem leds;
   private boolean forget; //forget about align command
   private double height;
 
   //Assumes is already at correct location
-  public AlignAndExtend(SwerveDrivetrain swerve, Localization localization, Elevator elevator, Pose2d poseToGoTo, double height) {
-    align = new Align(swerve, localization, () -> poseToGoTo);
+  public AlignAndExtend(SwerveDrivetrain swerve, Localization localization, Elevator elevator, Pose2d poseToGoTo, double height, CANdleLEDSystem leds) {
+    this.leds = leds;
+    align = new Align(swerve, localization, () -> poseToGoTo, leds);
     this.elevator = elevator;
     this.height = height;
   }

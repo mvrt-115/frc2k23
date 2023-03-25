@@ -5,20 +5,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.CANdleLEDSystem;
 import frc.robot.subsystems.Elevator;
 
 public class ElevateDown extends CommandBase {
   private Elevator elevator;
+  private CANdleLEDSystem leds;
   /** Creates a new ElevateDown. */
-  public ElevateDown(Elevator e) {
+  public ElevateDown(Elevator e, CANdleLEDSystem l) {
     elevator = e;
-    addRequirements(elevator);
+    leds = l;
+    addRequirements(elevator, leds);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    leds.setAligning(false);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
