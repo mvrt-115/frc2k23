@@ -148,8 +148,7 @@ public final class Constants {
 
                 // Motor ID
                 public static final int m_frontRightDriveID = 1;
-                public static 
-                final int m_frontLeftDriveID = 3;
+                public static final int m_frontLeftDriveID = 3;
                 public static final int m_backLeftDriveID = 5;
                 public static final int m_backRightDriveID = 7;
 
@@ -168,10 +167,10 @@ public final class Constants {
                 public static final boolean isCompBot = true;
                 public static final String canivore_name = (isCompBot)? "Drivetrain" : "rio";
 
-                public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(131.835); // 128.32// + Math.PI/2.0;
+                public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(221.40); // 128.32// + Math.PI/2.0;
                 public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(274.57); // 115.04// + Math.PI/2.0;
-                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(213.222); //214.8 // + Math.PI/2.0;
-                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(78.574); // 341.81// + Math.PI/2.0;
+                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(281.25); //214.8 // + Math.PI/2.0;
+                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(71.10); // 341.81// + Math.PI/2.0;
 
                 // Practice Bot Encoder Offsets
                 public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(33.62);// + Math.PI/2.0;
@@ -359,8 +358,8 @@ public final class Constants {
                 public static final double yTolerance = 0.03;
                 public static final double thetaTolerance = 0.05;
                 // Camera position on robot
-                public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(Units.inchesToMeters(5), Units.inchesToMeters(9), 0), new Rotation3d(0, Units.degreesToRadians(15), 0));// new Transform3d(new
-                public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(Units.inchesToMeters(5), Units.inchesToMeters(9), 0), new Rotation3d(0, Units.degreesToRadians(15), 0));// new Transform3d(new                
+                public static final Transform3d cam1ToRobot = new Transform3d(new Translation3d(Units.inchesToMeters(5), Units.inchesToMeters(9.5), 0), new Rotation3d(0, Units.degreesToRadians(15), 0));// new Transform3d(new
+                public static final Transform3d cam2ToRobot = new Transform3d(new Translation3d(Units.inchesToMeters(5), Units.inchesToMeters(9.5), 0), new Rotation3d(0, Units.degreesToRadians(15), 0));// new Transform3d(new                
 
                 public static final Map<Integer, Pose2d> kRedHPLocs = Map.of(
                         1,
