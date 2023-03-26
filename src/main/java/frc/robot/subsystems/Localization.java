@@ -29,6 +29,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -92,16 +93,16 @@ public class Localization extends SubsystemBase {
     //camera2Estimator.setReferenceTheta(swerveDrivetrain.getPose().getRotation().getRadians());
     //Optional<EstimatedRobotPose> result1 = camera1Estimator.update();
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
-    Pose2d result =
-     combinePoses(null, result2);
+    Pose2d result = combinePoses(null, result2);
 
     if(swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
       Pose2d curr = getCurrentPose();
+
       if(curr!=null){
         double odometryHeadingDeg = swerveDrivetrain.getPose().getRotation().getDegrees();
         double visionHeadingDeg = curr.getRotation().getDegrees();
-        if(Math.abs(visionHeadingDeg - odometryHeadingDeg) < 10)
-          swerveDrivetrain.resetOdometry(curr);
+        //if(Math.abs(visionHeadingDeg - odometryHeadingDeg) < 10)
+        swerveDrivetrain.resetOdometry(new Pose2d(curr.getTranslation(), swerveDrivetrain.getPose().getRotation()));
       }
     }
 
@@ -151,7 +152,6 @@ public class Localization extends SubsystemBase {
    * @param pose
    */
   public void resetPoseEstimator(Pose2d pose){
-    // Rotation2d correctedAngle = Rotation2d.fromDegrees(swerveDrivetrain.getPose().getRotation().getDegrees() + 180);
     poseEstimator.resetPosition(swerveDrivetrain.getPose().getRotation(), swerveDrivetrain.getModulePositions(), pose);
   }
 
@@ -169,14 +169,13 @@ public class Localization extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-
   /**
    * @param fieldRelative FIELD RELATIVE value of gyroscope
    * @param radians radians or not
    * @return the theta value to subtractto subtract to get error in theta
    */
   public double computeThetaError(double fieldRelative, boolean radians){
-    if(fieldRelative<0){
+    if(DriverStation.getAlliance() == Alliance.Blue && fieldRelative<0){
       fieldRelative += radians ? 2*Math.PI : 360;
     }
     return fieldRelative;
@@ -374,6 +373,8 @@ public class Localization extends SubsystemBase {
     SmartDashboard.putNumber("chicken robo theta", robotPose.getRotation().getDegrees());
     SmartDashboard.putNumber("chicken score theta",  (poseToGoTo.getRotation().getDegrees()));
     SmartDashboard.putNumber("chicken error theta", poseToGoTo.getRotation().getDegrees() - computeThetaError(robotPose.getRotation().getDegrees(), false));
+    SmartDashboard.putNumber("chicken error theta 2", poseToGoTo.getRotation().getDegrees() - robotPose.getRotation().getDegrees());
+    SmartDashboard.putString("chicken error theta cool thing", DriverStation.getAlliance().toString());
     SmartDashboard.putNumber("chicken scoring x", poseToGoTo.getX());
     SmartDashboard.putNumber("chicken scoring y", poseToGoTo.getY());
     SmartDashboard.putNumber("chicken robo x", robotPose.getX());

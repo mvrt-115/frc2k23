@@ -95,13 +95,13 @@ public class AutonRunner extends SequentialCommandGroup {
 
     
     HashMap<String, Command> eventMap = new HashMap<>();
-    eventMap.put("ScoreHigh", new AutoScoreCone(elevator, intake));
+    eventMap.put("ScoreHigh", new AutoScoreCone(elevator, intake, candleLEDs));
     eventMap.put("Sit", new PrintCommand("sittin pretty"));
     eventMap.put("IntakeDown", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1, 1),
       new SetGroundIntakePosition(groundIntake, 180),
       new InstantCommand(() -> groundIntake.setRollerOutput(0.3)),
-      new ElevateDown(elevator)
+      new ElevateDown(elevator, candleLEDs)
     ));
     eventMap.put("IntakeUp", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 20, 1, 1),
@@ -112,12 +112,12 @@ public class AutonRunner extends SequentialCommandGroup {
       new SetElevatorHeight(elevator, 15, 1, 0.75),
       new SetGroundIntakePosition(groundIntake, 120, 0.5),
       new InstantCommand(() -> groundIntake.setRollerOutput(-0.8)),
-      new ElevateDown(elevator),
+      new ElevateDown(elevator, candleLEDs),
       new BetterWaitCommand(0.5),
       new SetElevatorHeight(elevator, 20, 0, 0.5),
       new SetGroundIntakePosition(groundIntake, 40),
       new InstantCommand(() -> groundIntake.stopRoller()),
-      new ElevateDown(elevator)
+      new ElevateDown(elevator, candleLEDs)
     ));
     eventMap.put("LevelForwards", new AutoLevel(drivetrain, 2.5, candleLEDs));
     
@@ -143,12 +143,12 @@ public class AutonRunner extends SequentialCommandGroup {
 
     addCommands(
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
-      new InstantCommand(() -> localization.resetPoseEstimator(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
       new InstantCommand(() -> swerveDrivetrain.resetModules()),
       new InstantCommand(() -> swerveDrivetrain.resetModuleDrive()),
       new InstantCommand(() -> swerveDrivetrain.setModes(NeutralMode.Brake)),
       new InstantCommand(() -> swerveDrivetrain.resetOdometry(trajectory.getInitialHolonomicPose())),
+      new InstantCommand(() -> localization.resetPoseEstimator(trajectory.getInitialHolonomicPose())),
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
       autoEventsCommand,
       new InstantCommand(() -> swerveDrivetrain.stopModules()),

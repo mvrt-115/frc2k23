@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.subsystems.CANdleLEDSystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake2;
 
@@ -16,7 +17,7 @@ import frc.robot.subsystems.Intake2;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoScoreCone extends SequentialCommandGroup {
   /** Creates a new AutoScoreCone. */
-  public AutoScoreCone(Elevator elevator, Intake2 intake ) {
+  public AutoScoreCone(Elevator elevator, Intake2 intake, CANdleLEDSystem leds ) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -25,7 +26,7 @@ public class AutoScoreCone extends SequentialCommandGroup {
       new BetterWaitCommand(0.2),
       intake.runOut(),
       new BetterWaitCommand(0.35),
-      new ElevateDown(elevator),
+      new ElevateDown(elevator, leds),
       intake.stop()
     );
   }

@@ -12,9 +12,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.CANdleLEDSystem;
 import frc.robot.subsystems.Localization;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -24,16 +26,18 @@ public class Align extends CommandBase {
 
   private Supplier<Pose2d> poseSup;
   private Pose2d poseToGoTo;
+  private CANdleLEDSystem leds;
 
   private PIDController pidX;
   private PIDController pidY;
   private PIDController pidTheta;
 
   /** Creates a new Align. */
-  public Align(SwerveDrivetrain swerve, Localization localization, Supplier<Pose2d> poseSup) {
+  public Align(SwerveDrivetrain swerve, Localization localization, Supplier<Pose2d> poseSup, CANdleLEDSystem leds) {
     this.swerve = swerve;
     this.localization = localization;
     this.poseSup = poseSup;
+    this.leds = leds;
 
     pidX = new PIDController(2.7, 0, 0.0); // pid x-coor 1.2
     pidY = new PIDController(2.7, 0, 0.0); // pid y-coor 1.2
@@ -47,6 +51,7 @@ public class Align extends CommandBase {
   public void initialize() {
     // localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
+    leds.setAligning(true);
     poseToGoTo = poseSup.get();
     SmartDashboard.putString("chicken align initialize scoring loc", poseToGoTo.toString());
     SmartDashboard.putString("chicken align currPose", localization.getCurrentPose().toString());
@@ -59,19 +64,30 @@ public class Align extends CommandBase {
     double outX = pidX.calculate(robotPose.getX(), poseToGoTo.getX()); // pos, setpoint
     double outY = pidY.calculate(robotPose.getY(), poseToGoTo.getY());
     double theta = robotPose.getRotation().getRadians();
-    // double outTheta = pidTheta.calculate(localization.computeThetaError(theta, true),
-    //                      poseToGoTo.getRotation().getRadians());
+    double outTheta = pidTheta.calculate(localization.computeThetaError(theta, true),
+                          poseToGoTo.getRotation().getRadians());
+
+    // if(DriverStation.getAlliance() == Alliance.Red) {
+    //   outX *= -1;
+    // }
 
     // swerve screwed up field oriented switched y axis; shoud be -outX
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, 0, new Rotation2d(-theta));
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(outX, outY, outTheta, new Rotation2d(-theta));
     SwerveModuleState[] states = swerve.getKinematics().toSwerveModuleStates(speeds);
     swerve.setModuleStates(states);
+
+    double errorY = poseToGoTo.getY() - robotPose.getY();
+    double errorX = poseToGoTo.getX() - robotPose.getX();
+
+    double straightLineError = Math.sqrt(Math.pow(errorX, 2) + Math.pow(errorY, 2));
+    leds.setError(straightLineError);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     localization.setAligning(false);
+    // leds.setAligning(false);
   }
 
   // Returns true when the command should end.

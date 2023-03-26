@@ -60,7 +60,7 @@ public final class Constants {
                 // public static final boolean invertJoystickY = false;
                 // public static final boolean invertJoystickW = true;
                 
-                public static final double kPJoystick = 0.001;
+                public static final double kPJoystick = 0.000;
                 public static final double kIJoystick = 0.0;
                 public static final double kDJoystick = 0.0;
                 public static final double kFJoystick = 0.0;
@@ -169,7 +169,7 @@ public final class Constants {
 
                 public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(221.40); // 128.32// + Math.PI/2.0;
                 public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(274.57); // 115.04// + Math.PI/2.0;
-                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(281.25); //214.8 // + Math.PI/2.0;
+                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(213.05); //214.8 // + Math.PI/2.0;
                 public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(71.10); // 341.81// + Math.PI/2.0;
 
                 // Practice Bot Encoder Offsets
@@ -386,7 +386,7 @@ public final class Constants {
                                         new Rotation2d(0)));
 
 
-                private static double redScoringOffsetsInches = 0;
+                private static double redScoringOffsetsInches = 15 + Units.metersToInches(0.08);
                 private static double blueScoringOffsetInches = 0;
 
                 /**
