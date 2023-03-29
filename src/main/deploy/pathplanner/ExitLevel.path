@@ -26,12 +26,12 @@
     },
     {
       "anchorPoint": {
-        "x": 5.39498137329608,
-        "y": 2.999775324203426
+        "x": 5.449370235233363,
+        "y": 2.7069111010259936
       },
       "prevControl": {
-        "x": 5.595503750035277,
-        "y": 5.38319658757373
+        "x": 5.64989261197256,
+        "y": 5.0903323643963
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -43,7 +43,7 @@
         "names": [
           "LevelForwards"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }

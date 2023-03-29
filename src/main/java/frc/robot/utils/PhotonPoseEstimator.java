@@ -416,7 +416,7 @@
      private Optional<EstimatedRobotPose> lowestAmbiguityStrategy(PhotonPipelineResult result) {
          PhotonTrackedTarget lowestAmbiguityTarget = null;
  
-         double lowestAmbiguityScore = 10;
+         double lowestAmbiguityScore = 8;
          for (PhotonTrackedTarget target : result.targets) {
              double targetPoseAmbiguity = target.getPoseAmbiguity();
              // Make sure the target is a Fiducial target.

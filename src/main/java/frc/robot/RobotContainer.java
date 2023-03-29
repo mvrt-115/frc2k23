@@ -90,7 +90,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driveJoystick.button(3).onTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc, leds));
+    driveJoystick.button(3).whileTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc, leds)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel"));
@@ -105,7 +105,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auton Selector", autonSelector);
   
     //Align to nearest column on click
-    driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc(), leds)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    //driveJoystick.button(6).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getClosestScoringLoc(), leds)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     //SHIFT LEFT
     //driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getLeftScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
@@ -145,7 +145,7 @@ public class RobotContainer {
     // SHOOT CONE AND DOWN
     operatorJoystick.b().onTrue(new SequentialCommandGroup(
       intake.runOut(),
-      new BetterWaitCommand(0.25),
+      new BetterWaitCommand(0.45),
       new ParallelCommandGroup(
         new ElevateDown(elevator, leds),
         intake.stop()
@@ -160,12 +160,12 @@ public class RobotContainer {
     // ELEV HIGH
     operatorJoystick.a().onTrue(
       new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25)
-    ).onFalse(intake.runOut());
+    );
 
     // SHOOT CUBE AND DOWN
     operatorJoystick.rightBumper().onTrue(new SequentialCommandGroup(
       intake.runOutCube(),
-      new BetterWaitCommand(0.25),
+      new BetterWaitCommand(0.45),
       new ParallelCommandGroup(
         new ElevateDown(elevator, leds),
         intake.stop()
@@ -207,7 +207,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return autonSelector.getSelected();
-    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "DONOTHING");
+    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "Exit");
   }
 
   public void putTestCommand() {

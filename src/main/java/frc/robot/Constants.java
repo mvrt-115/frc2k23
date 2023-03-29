@@ -60,7 +60,7 @@ public final class Constants {
                 // public static final boolean invertJoystickY = false;
                 // public static final boolean invertJoystickW = true;
                 
-                public static final double kPJoystick = 0.000;
+                public static final double kPJoystick = 0.001;
                 public static final double kIJoystick = 0.0;
                 public static final double kDJoystick = 0.0;
                 public static final double kFJoystick = 0.0;
@@ -78,7 +78,7 @@ public final class Constants {
 
                 public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
 
-                public static final double kOuttakeRPM = isCompBot?  0.1 :  0.08;
+                public static final double kOuttakeRPM = isCompBot?  0.075 :  0.08;
 
                 public static final double outtakeCube = 0.2;
         }
@@ -387,7 +387,7 @@ public final class Constants {
 
 
                 private static double redScoringOffsetsInches = 15 + Units.metersToInches(0.08);
-                private static double blueScoringOffsetInches = 0;
+                private static double blueScoringOffsetInches =  -3;//15 + Units.metersToInches(0.08);
 
                 /**
                  * Key:
@@ -454,7 +454,7 @@ public final class Constants {
                         8, // Cube - 6
                         new Pose2d(
                                         Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(174.9),
+                                        Units.inchesToMeters(17.9),
                                         new Rotation2d(Math.PI)),
                         7, // Cone
                         new Pose2d(
