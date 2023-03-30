@@ -293,7 +293,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     logger.recordOutput("Robot Pose X", getPose().getX());
     logger.recordOutput("Robot Pose Y", getPose().getY());
     logger.recordOutput("Robot Location W deg", getPose().getRotation().getDegrees());
-    // logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
+    logger.recordOutput("TrueSwerveDrivetrainModuleStates", getOutputModuleStates());
   }
 
   public void simulationPeriodic() {
@@ -334,9 +334,9 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param states
    */
   public void setModuleStates(SwerveModuleState[] states) {
-    // Logger.getInstance().recordOutput("SwerveModuleStatesDesired", states);
+    Logger.getInstance().recordOutput("SwerveModuleStatesDesired", states);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.SwerveDrivetrain.kMaxSpeedMPS);
-    // Logger.getInstance().recordOutput("SwerveModuleStatesDesiredNorm", states);
+    Logger.getInstance().recordOutput("SwerveModuleStatesDesiredNorm", states);
     for (int i = 0; i < modules.length; i++)
     {
       modules[i].setDesiredState(states[i]);

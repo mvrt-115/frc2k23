@@ -386,7 +386,7 @@ public final class Constants {
                                         new Rotation2d(0)));
 
 
-                private static double redScoringOffsetsInches = 15 + Units.metersToInches(0.08);
+                private static double redScoringOffsetsInches = 20;
                 private static double blueScoringOffsetInches =  -3;//15 + Units.metersToInches(0.08);
 
                 /**
@@ -454,7 +454,7 @@ public final class Constants {
                         8, // Cube - 6
                         new Pose2d(
                                         Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(17.9),
+                                        Units.inchesToMeters(174.9),
                                         new Rotation2d(Math.PI)),
                         7, // Cone
                         new Pose2d(

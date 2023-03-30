@@ -35,6 +35,8 @@ import frc.robot.subsystems.SwerveDrivetrain;
 public class AutonRunner extends SequentialCommandGroup {
   /** Creates a new AutonPathExample. */
   private final SwerveDrivetrain swerveDrivetrain;
+  private final CANdleLEDSystem leds;
+
   // private BetterSwerveControllerCommand swerveControllerCommand;
   private PathPlannerTrajectory trajectory;
   private PathConstraints constraints = new PathConstraints(
@@ -45,7 +47,7 @@ public class AutonRunner extends SequentialCommandGroup {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrivetrain = drivetrain;
     addRequirements(swerveDrivetrain);
-
+    leds = candleLEDs;
     // trajectory = TrajectoryGenerator.generateTrajectory(
     //   new Pose2d(0, 0, new Rotation2d(0)),
     //   List.of(
@@ -98,23 +100,23 @@ public class AutonRunner extends SequentialCommandGroup {
     eventMap.put("ScoreHigh", new AutoScoreCone(elevator, intake, candleLEDs));
     eventMap.put("Sit", new PrintCommand("sittin pretty"));
     eventMap.put("IntakeDown", new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1, 1),
+      new SetElevatorHeight(elevator, 20, 1, 1, leds),
       new SetGroundIntakePosition(groundIntake, 180),
       new InstantCommand(() -> groundIntake.setRollerOutput(0.3)),
       new ElevateDown(elevator, candleLEDs)
     ));
     eventMap.put("IntakeUp", new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1, 1),
+      new SetElevatorHeight(elevator, 20, 1, 1, leds),
       new SetGroundIntakePosition(groundIntake, 40),
       new InstantCommand(() -> groundIntake.stopRoller())
     ));
     eventMap.put("GIScore", new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 15, 1, 0.75),
+      new SetElevatorHeight(elevator, 15, 1, 0.75, leds),
       new SetGroundIntakePosition(groundIntake, 120, 0.5),
       new InstantCommand(() -> groundIntake.setRollerOutput(-0.8)),
       new ElevateDown(elevator, candleLEDs),
       new BetterWaitCommand(0.5),
-      new SetElevatorHeight(elevator, 20, 0, 0.5),
+      new SetElevatorHeight(elevator, 20, 0, 0.5, leds),
       new SetGroundIntakePosition(groundIntake, 40),
       new InstantCommand(() -> groundIntake.stopRoller()),
       new ElevateDown(elevator, candleLEDs)

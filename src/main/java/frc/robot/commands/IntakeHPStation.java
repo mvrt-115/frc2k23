@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
+import frc.robot.subsystems.CANdleLEDSystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake2;
 
@@ -14,9 +15,9 @@ import frc.robot.subsystems.Intake2;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeHPStation extends ParallelCommandGroup {
   /** Creates a new IntakeHPStation. */
-  public IntakeHPStation(Elevator elevator, Intake2 intake) {
+  public IntakeHPStation(Elevator elevator, Intake2 intake, CANdleLEDSystem leds) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SetElevatorHeight(elevator, Constants.Elevator.INTAKE_HEIGHT, 0.25), intake.runIn());
+    addCommands(new SetElevatorHeight(elevator, Constants.Elevator.INTAKE_HEIGHT, 0.25, leds), intake.runIn());
   }
 }

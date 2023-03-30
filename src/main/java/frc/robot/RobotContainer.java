@@ -114,30 +114,32 @@ public class RobotContainer {
     //driveJoystick.button(-1).whileTrue(new Align(swerveDrivetrain, localization, () -> localization.getRightScoreLoc())).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
 
     // AUTO LEVEL
-    driveJoystick.button(2).onTrue(
-      new SequentialCommandGroup(
-        new DriveForward(swerveDrivetrain, Constants.Leveling.driveForwardMPS, Constants.Leveling.driveForwardTime),
-        new Leveling(swerveDrivetrain, leds) 
-      )
-    ).onFalse( 
-      new InstantCommand(() -> swerveDrivetrain.stopModules())
-    );
+    // driveJoystick.button(2).onTrue(
+    //   new SequentialCommandGroup(
+    //     new DriveForward(swerveDrivetrain, Constants.Leveling.driveForwardMPS, Constants.Leveling.driveForwardTime),
+    //     new Leveling(swerveDrivetrain, leds) 
+    //   )
+    // ).onFalse( 
+    //   new InstantCommand(() -> swerveDrivetrain.stopModules())
+    // );
+
+
 
     // GROUND INTAKE DOWN / UP
     driveJoystick.button(6).onTrue(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1),
+      new SetElevatorHeight(elevator, 20, 1, leds),
       new SetGroundIntakePosition(gi, 180),
       new InstantCommand(() -> gi.setRollerOutput(0.3)),
       new ElevateDown(elevator, leds)
     )).onFalse(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1),
+      new SetElevatorHeight(elevator, 20, 1, leds),
       new SetGroundIntakePosition(gi, 40),
       new InstantCommand(() -> gi.stopRoller())
     ));
 
     // HP INTAKE
     operatorJoystick.x().onTrue(
-      new IntakeHPStation(elevator, intake)
+      new IntakeHPStation(elevator, intake, leds)
     ).onFalse(
       new ElevateDown(elevator, leds).alongWith(intake.stop())
     );
@@ -155,11 +157,11 @@ public class RobotContainer {
     );
 
     // ELEV MID 
-    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT, 0.25));
+    operatorJoystick.y().onTrue(new SetElevatorHeight(elevator, Constants.Elevator.CONE_MID_HEIGHT, 0.25, leds));
 
     // ELEV HIGH
     operatorJoystick.a().onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25)
+      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25, leds)
     );
 
     // SHOOT CUBE AND DOWN
@@ -182,12 +184,12 @@ public class RobotContainer {
 
     // GROUND INTAKE SHOOT LOW
     operatorJoystick.leftTrigger().onTrue(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1),
+      new SetElevatorHeight(elevator, 20, 1, leds),
       new SetGroundIntakePosition(gi, 120),
       new InstantCommand(() -> gi.setRollerOutput(-0.8)),
       new ElevateDown(elevator, leds)
     )).onFalse(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 0),
+      new SetElevatorHeight(elevator, 20, 0, leds),
       new SetGroundIntakePosition(gi, 40),
       new InstantCommand(() -> gi.stopRoller())
     ));
@@ -207,7 +209,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return autonSelector.getSelected();
-    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "Exit");
+    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreLevel");
   }
 
   public void putTestCommand() {

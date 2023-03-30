@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.CANdleLEDSystem;
 import frc.robot.subsystems.Elevator;
 import org.littletonrobotics.junction.Logger;
 
@@ -18,21 +19,23 @@ public class SetElevatorHeight extends CommandBase
   private Logger logger;
   private double heightThreshold;
   private double maxRunTime;
+  private CANdleLEDSystem leds;
   
 
   /** Creates a new SetElevatorHeight. */
-  public SetElevatorHeight(Elevator elevator2, double height, double heightThreshold)
+  public SetElevatorHeight(Elevator elevator2, double height, double heightThreshold, CANdleLEDSystem _leds)
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator2;
     this.height = height; 
     this.heightThreshold = heightThreshold;
+    this.leds = _leds;
     logger = Logger.getInstance();
     maxRunTime = 2;
-    addRequirements(elevator2);
+    addRequirements(elevator2, leds);
   }
 
-  public SetElevatorHeight(Elevator elevator2, double height, double heightThreshold, double maxRunTime)
+  public SetElevatorHeight(Elevator elevator2, double height, double heightThreshold, double maxRunTime, CANdleLEDSystem _leds)
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator2;
@@ -40,7 +43,8 @@ public class SetElevatorHeight extends CommandBase
     this.heightThreshold = heightThreshold;
     logger = Logger.getInstance();
     this.maxRunTime = maxRunTime;
-    addRequirements(elevator2);
+    this.leds = _leds;
+    addRequirements(elevator2, leds);
   }
 
   // Called when the command is initially scheduled.
@@ -71,6 +75,7 @@ public class SetElevatorHeight extends CommandBase
   public void end(boolean interrupted)
   {
    // elevator.keepAtHeight();
+   leds.setAligning(false);
   }
 
   // Returns true when the command should end.

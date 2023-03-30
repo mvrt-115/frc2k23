@@ -51,6 +51,7 @@ public class Align extends CommandBase {
   public void initialize() {
     // localization.resetCameraEstimators(); //reset estimators before getting the closest scoring location
     localization.setAligning(true);
+    leds.setFinAligning(false);
     leds.setAligning(true);
     poseToGoTo = poseSup.get();
     SmartDashboard.putString("chicken align initialize scoring loc", poseToGoTo.toString());
@@ -87,7 +88,7 @@ public class Align extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     localization.setAligning(false);
-    // leds.setAligning(false);
+    leds.setFinAligning(true);
   }
 
   // Returns true when the command should end.
