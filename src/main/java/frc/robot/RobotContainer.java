@@ -45,7 +45,7 @@ public class RobotContainer {
   GroundIntake gi = new GroundIntake();
   private final JoystickIO driveJoystick = new JoystickIO(Constants.SwerveDrivetrain.kDriveJoystickPort, true, false);
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
-  private final CommandXboxController testJoystick = new CommandXboxController(2);
+  // private final CommandXboxController testJoystick = new CommandXboxController(2);
   private final SendableChooser<Command> autonSelector = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

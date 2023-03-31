@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.SimWaitCommand;
 import frc.robot.utils.JoystickIO;
 
 /** Add your docs here. 
@@ -48,6 +51,12 @@ public class DriveSimulationData {
     private double elev_z = 0;
     private double ground_rot = 0;
     private double elev_angle = Math.toRadians(39.8);
+    private static double extention_ratio = 0;
+    private static double ground_rot_ratio = -1.0;
+    private static double curr_extention_ratio = 0;
+    private static double curr_ground_rot_ratio = 0;
+    private double kp_elev_sim = 0.1;
+    private double kp_ground_sim = 0.1;
     
     /**
      * Create a new SimulationData container
@@ -80,6 +89,29 @@ public class DriveSimulationData {
         // simJoystick.button(3).onTrue(new InstantCommand(() -> offsetPose = offsetPose.plus(new Translation3d(-0.01, 0, 0))));
         // simJoystick.button(2).onTrue(new InstantCommand(() -> offsetPose = offsetPose.plus(new Translation3d(0, 0, 0.01))));
         // simJoystick.button(4).onTrue(new InstantCommand(() -> offsetPose = offsetPose.plus(new Translation3d(0, 0, -0.01))));
+
+        simJoystick.button(1).onTrue(new InstantCommand(() -> setElevator(1)));
+        simJoystick.button(3).onTrue(new InstantCommand(() -> setElevator(0.5)));
+        simJoystick.button(4).onTrue(new InstantCommand(() -> setElevator(0.5)));
+        simJoystick.button(2).onTrue(new InstantCommand(() -> setElevator(0)));
+
+        simJoystick.button(6).onTrue(
+            new SequentialCommandGroup(
+                new InstantCommand(() -> setElevator(0.4)),
+                new SimWaitCommand(0.5),
+                new InstantCommand(() -> setGroundRot(1)),
+                new SimWaitCommand(0.5),
+                new InstantCommand(() -> setElevator(0))
+            )
+        ).onFalse(
+            new SequentialCommandGroup(
+                new InstantCommand(() -> setElevator(0.4)),
+                new SimWaitCommand(0.5),
+                new InstantCommand(() -> setGroundRot(0)),
+                new SimWaitCommand(0.5),
+                new InstantCommand(() -> setElevator(0))
+            )
+        );
     }
 
     /**
@@ -94,13 +126,20 @@ public class DriveSimulationData {
         m_odometry.update(new Rotation2d(headingAngle), modulePositions);
         // m_field2d.setRobotPose(m_odometry.getPoseMeters());
         m_field2d.setRobotPose(
-            m_odometry.getPoseMeters().getX(), 
+            m_odometry.getPoseMeters().getX(),
             m_odometry.getPoseMeters().getY(),
             m_odometry.getPoseMeters().getRotation());
         
-        elev_x = Math.max(0, simJoystick.getX()) * 0.55 * Math.cos(elev_angle);
-        elev_z = Math.max(0, simJoystick.getX()) * 0.55 * Math.sin(elev_angle);
-        ground_rot = 0.83 * Math.PI * (Math.min(simJoystick.getRawAxis(1), 0));
+        // elev_x = Math.max(0, simJoystick.getX()) * 0.55 * Math.cos(elev_angle);
+        // elev_z = Math.max(0, simJoystick.getX()) * 0.55 * Math.sin(elev_angle);
+        // ground_rot = 0.83 * Math.PI * (Math.min(simJoystick.getRawAxis(1), 0));
+
+        curr_extention_ratio += (extention_ratio - curr_extention_ratio) * kp_elev_sim;
+        curr_ground_rot_ratio += (ground_rot_ratio - curr_ground_rot_ratio) * kp_ground_sim;
+
+        elev_x = Math.max(0, curr_extention_ratio) * 0.55 * Math.cos(elev_angle);
+        elev_z = Math.max(0, curr_extention_ratio) * 0.55 * Math.sin(elev_angle);
+        ground_rot = 0.83 * Math.PI * (Math.min(curr_ground_rot_ratio, 0));
 
         Rotation3d R = new Rotation3d(0.0, ground_rot, 0.0);
         Pose3d newGroundPose = rotateAroundPoint(groundIntakePose, R, offsetPose);
@@ -176,5 +215,21 @@ public class DriveSimulationData {
      */
     public static Pose3d rotateAroundPoint(Pose3d p, Rotation3d R, Translation3d o) {
         return new Pose3d(p.getTranslation().minus(o).rotateBy(R).plus(o), p.getRotation().rotateBy(R));
+    }
+
+    /**
+     * Set the elevator pose (scaled as a fraction of max extention 0 to 1)
+     * @param frac
+     */
+    public static void setElevator(double frac) {
+        extention_ratio = frac;
+    }
+
+    /**
+     * Set the groundintake pose (scaled as a fraction of max rotation 0 to 1)
+     * @param frac
+     */
+    public static void setGroundRot(double frac) {
+        ground_rot_ratio = -1 + frac;
     }
 }

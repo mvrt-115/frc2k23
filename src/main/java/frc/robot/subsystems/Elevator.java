@@ -151,6 +151,9 @@ public class Elevator extends SubsystemBase {
   /* updates the height  */
   public void updateHeight() {
     currentHeight = getHeight();
+    // double frac = currentHeight / Constants.Elevator.MAX_HEIGHT;
+    // DriveSimulationData.setElevator(frac);
+    // logger.recordOutput("Elevator Height Value", currentHeight);
   }
 
   /* updates the state */
@@ -219,7 +222,7 @@ public class Elevator extends SubsystemBase {
     currentHeight = getHeight();
 
     elev_motor.set(ControlMode.Position, targetHeight, DemandType.ArbitraryFeedForward, feedforward/10.0);
-
+    elevMotorSim.setIntegratedSensorRawPosition((int)targetHeight);
   }
 
   /** returns the height of the elevator
@@ -327,6 +330,7 @@ public class Elevator extends SubsystemBase {
 
   public void runMotor(double speed) {
     elev_motor.set(ControlMode.PercentOutput, speed);
+    elevMotorSim.setIntegratedSensorVelocity(2048);
   }
 
   public double ticksToInches(double ticks) {
@@ -339,10 +343,10 @@ public class Elevator extends SubsystemBase {
 
   public void stopMotors() {
     elev_motor.set(ControlMode.PercentOutput, 0);
+    elevMotorSim.setIntegratedSensorVelocity(0);
   }
-}
 
-  /* public void simulationPeriodic() {
+  public void simulationPeriodic() {
     super.simulationPeriodic();
 
     sim.update(0.020);
@@ -352,6 +356,7 @@ public class Elevator extends SubsystemBase {
 
     
     SmartDashboard.putNumber("Elevator Level", getLevel());
-    SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition() * Constants.Elevator.INCHES_PER_TICK);
+    // SmartDashboard.putNumber("Elevator Height", elev_motor.getSelectedSensorPosition() * Constants.Elevator.INCHES_PER_TICK);
     //SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
-  } */
+  }
+}
