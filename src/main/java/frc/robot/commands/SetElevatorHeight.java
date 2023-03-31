@@ -31,7 +31,7 @@ public class SetElevatorHeight extends CommandBase
     this.heightThreshold = heightThreshold;
     this.leds = _leds;
     logger = Logger.getInstance();
-    maxRunTime = 2;
+    maxRunTime = 1000000;
     addRequirements(elevator2, leds);
   }
 

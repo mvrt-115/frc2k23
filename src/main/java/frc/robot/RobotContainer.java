@@ -127,15 +127,15 @@ public class RobotContainer {
 
     // GROUND INTAKE DOWN / UP
     driveJoystick.button(6).onTrue(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1, leds),
+      new SetElevatorHeight(elevator, 20, 1, 0.7, leds),
       new SetGroundIntakePosition(gi, 180),
-      new InstantCommand(() -> gi.setRollerOutput(0.3)),
-      new ElevateDown(elevator, leds)
+      new InstantCommand(() -> gi.setRollerOutput(0.3))
     )).onFalse(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1, leds),
+      new SetElevatorHeight(elevator, 20, 1, 0.7, leds),
       new SetGroundIntakePosition(gi, 40),
-      new InstantCommand(() -> gi.stopRoller())
-    ));
+      new InstantCommand(() -> gi.stopRoller()),
+      new ElevateDown(elevator, leds)
+      ));
 
     // HP INTAKE
     operatorJoystick.x().onTrue(
@@ -183,16 +183,17 @@ public class RobotContainer {
     operatorJoystick.back().onTrue(intake.runOutCube()).onFalse(intake.stop());
 
     // GROUND INTAKE SHOOT LOW
-    operatorJoystick.leftTrigger().onTrue(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 1, leds),
+    driveJoystick.button(5).onTrue(new SequentialCommandGroup(
+      new SetElevatorHeight(elevator, 20, 1,0.7, leds),
       new SetGroundIntakePosition(gi, 120),
       new InstantCommand(() -> gi.setRollerOutput(-0.8)),
       new ElevateDown(elevator, leds)
     )).onFalse(new SequentialCommandGroup(
-      new SetElevatorHeight(elevator, 20, 0, leds),
-      new SetGroundIntakePosition(gi, 40),
-      new InstantCommand(() -> gi.stopRoller())
-    ));
+      new SetElevatorHeight(elevator, 20, 1,0.7, leds),
+      new SetGroundIntakePosition(gi, 30),
+      new InstantCommand(() -> gi.stopRoller()),
+      new ElevateDown(elevator, leds)
+      ));
 
     // LED TOGGLE
     operatorJoystick.leftBumper().onTrue(new SetLEDCC(leds));
