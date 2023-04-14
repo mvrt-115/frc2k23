@@ -386,8 +386,8 @@ public final class Constants {
                                         new Rotation2d(0)));
 
 
-                private static double redScoringOffsetsInches = 20;
-                private static double blueScoringOffsetInches =  -3;//15 + Units.metersToInches(0.08);
+                private static double redScoringOffsetsInches = -30;
+                private static double blueScoringOffsetInches =  30;//15 + Units.metersToInches(0.08);
 
                 /**
                  * Key:
@@ -399,48 +399,48 @@ public final class Constants {
                 public static final Map<Integer, Pose2d> kRedScoreCols = Map.of(
                         1, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(598.89 - redScoringOffsetsInches),
-                                        Units.inchesToMeters(20.6),
+                                        Units.inchesToMeters(610.69999999999999999999999 + redScoringOffsetsInches),
+                                        Units.inchesToMeters(20.19),
                                         new Rotation2d(0)),
                         2, // Cube - 1
                         new Pose2d(
-                                        Units.inchesToMeters(598.89 - redScoringOffsetsInches),
-                                        Units.inchesToMeters(41.9),
+                                        Units.inchesToMeters(610.69999999999999999999999 + redScoringOffsetsInches),
+                                        Units.inchesToMeters(42.19),
                                         new Rotation2d(0)),
                         3, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(598.89 - redScoringOffsetsInches), // 597.1
-                                        Units.inchesToMeters(64.6),
+                                        Units.inchesToMeters(610.69999999999999999999999 + redScoringOffsetsInches), // 597.1
+                                        Units.inchesToMeters(64.19),
                                         new Rotation2d(0)),
                         4, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(598.89 - redScoringOffsetsInches),
-                                        Units.inchesToMeters(86.5),
+                                        Units.inchesToMeters(610.69999999999999999999999 + redScoringOffsetsInches),
+                                        Units.inchesToMeters(86.19),
                                         new Rotation2d(0)),
                         5, // Cube - 2
                         new Pose2d(
-                                        Units.inchesToMeters(598.89 - redScoringOffsetsInches), // 597.1
-                                        Units.inchesToMeters(108.9),
+                                        Units.inchesToMeters(610.699999999999999999999998 + redScoringOffsetsInches), // 597.1
+                                        Units.inchesToMeters(108.19),
                                         new Rotation2d(0)),
                         6, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(598.89 - redScoringOffsetsInches),
-                                        Units.inchesToMeters(130.6),
+                                        Units.inchesToMeters(610.699999999999999999999998 + redScoringOffsetsInches),
+                                        Units.inchesToMeters(130.19),
                                         new Rotation2d(0)),
                         7, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(598.89 - redScoringOffsetsInches),
-                                        Units.inchesToMeters(157.6),
+                                        Units.inchesToMeters(610.699999999999999999999998 + redScoringOffsetsInches),
+                                        Units.inchesToMeters(152.19),
                                         new Rotation2d(0)),
                         8, // Cube - 3
                         new Pose2d(
-                                        Units.inchesToMeters(598.89 - redScoringOffsetsInches),
-                                        Units.inchesToMeters(174.9),
+                                        Units.inchesToMeters(610.699999999999999999999998 + redScoringOffsetsInches),
+                                        Units.inchesToMeters(174.19),
                                         new Rotation2d(0)),
                         9, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(598.89 - redScoringOffsetsInches),
-                                        Units.inchesToMeters(196.6),
+                                        Units.inchesToMeters(610.699999999999999999999998 + redScoringOffsetsInches),
+                                        Units.inchesToMeters(196.19),
                                         new Rotation2d(0)));
 
         
@@ -448,48 +448,48 @@ public final class Constants {
                 public static final Map<Integer, Pose2d> kBlueScoreCols = Map.of(
                         9, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(196.6),
+                                        Units.inchesToMeters(40.45 + blueScoringOffsetInches),
+                                        Units.inchesToMeters(196.19),
                                         new Rotation2d(Math.PI)),
                         8, // Cube - 6
                         new Pose2d(
-                                        Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(174.9),
+                                        Units.inchesToMeters(40.45 + blueScoringOffsetInches),
+                                        Units.inchesToMeters(174.19),
                                         new Rotation2d(Math.PI)),
                         7, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(157.6),
+                                        Units.inchesToMeters(40.45 + blueScoringOffsetInches),
+                                        Units.inchesToMeters(152.19),
                                         new Rotation2d(Math.PI)),
                         6, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(130.6),
+                                        Units.inchesToMeters(40.45 + blueScoringOffsetInches),
+                                        Units.inchesToMeters(130.19),
                                         new Rotation2d(Math.PI)),
                         5, // Cube - 7
                         new Pose2d(
-                                        Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(108.9),
+                                        Units.inchesToMeters(40.45 + blueScoringOffsetInches),
+                                        Units.inchesToMeters(108.19),
                                         new Rotation2d(Math.PI)),
                         4, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(86.5),
+                                        Units.inchesToMeters(40.45 + blueScoringOffsetInches),
+                                        Units.inchesToMeters(86.19),
                                         new Rotation2d(Math.PI)),
                         3, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(64.6),
+                                        Units.inchesToMeters(40.45 + blueScoringOffsetInches),
+                                        Units.inchesToMeters(64.19),
                                         new Rotation2d(Math.PI)),
                         2, // Cube - 8
                         new Pose2d(
-                                        Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(41.9),
+                                        Units.inchesToMeters(40.45 + blueScoringOffsetInches),
+                                        Units.inchesToMeters(42.19),
                                         new Rotation2d(Math.PI)),
                         1, // Cone
                         new Pose2d(
-                                        Units.inchesToMeters(70.08 + blueScoringOffsetInches),
-                                        Units.inchesToMeters(20.6),
+                                        Units.inchesToMeters(40.45 + blueScoringOffsetInches),
+                                        Units.inchesToMeters(20.18888889),
                                         new Rotation2d(Math.PI)));
 
                 /**

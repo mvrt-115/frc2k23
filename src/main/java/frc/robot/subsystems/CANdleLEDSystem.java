@@ -30,7 +30,6 @@ public class CANdleLEDSystem extends SubsystemBase {
   boolean prevCubeCone = false;
   boolean cubeCone = false;
   boolean leveling = false;
-
   boolean aligning = false;
   boolean finisehdAligning = false;
   double alignError = 0;
