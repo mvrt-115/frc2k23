@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.ColorFlowAnimation;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 
@@ -13,8 +15,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CANdleLEDSystem extends SubsystemBase {
   private final CANdle candle = new CANdle(0);
-  private final StrobeAnimation yell = new StrobeAnimation(200, 150, 0, 0, 1, 300);
-  private final StrobeAnimation purp = new StrobeAnimation(255, 0, 255, 20, 1, 300);
+  // private final FireAnimation yell = new FireAnimation(1, .8, 200, .8, .5);
+  // private final LarsonAnimation yell = new LarsonAnimation(200, 150, 0, 20, .5, 120, BounceMode.Front, 7);
+  private final ColorFlowAnimation yell = new ColorFlowAnimation(200, 120, 0, 50, 0.3, 120, Direction.Backward);
+  private final ColorFlowAnimation purp = new ColorFlowAnimation(255, 0, 255, 50, 0.3, 120, Direction.Backward);
+  // private final StrobeAnimation purp = new StrobeAnimation(255, 0, 255, 20, 1, 300);
+  // private final StrobeAnimation yell = new StrobeAnimation(200, 150, 0, 0, 1, 300);
+  // private final StrobeAnimation purp = new StrobeAnimation(255, 0, 255, 20, 1, 300);
   private final StrobeAnimation green = new StrobeAnimation(0, 200, 200, 20, 0.5, 300);
   private final StrobeAnimation greenFin = new StrobeAnimation(0, 200, 200, 20, 1, 300);
   RainbowAnimation whileLeveling = new RainbowAnimation(.8, 0.8, 300);
@@ -108,30 +115,20 @@ public class CANdleLEDSystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // you have to compare prev network tables state to new one to see if it changed
-    // because
-    // CANdle cannot be set periodically or else it will lag
-    // if(prevCubeCone != cubeCone){
-    // updateLEDCubeCone();
-    // // System.out.println("UPDATED TO: " + cubeCone);
-    // }
-    // prevCubeCone = cubeCone;
-    // candle.get
     if (leveling) {
       candle.animate(whileLeveling);
     } else if (aligning) {
-      // setAlignLED();
       if (finisehdAligning) {
-        
         candle.animate(greenFin);
       }
       candle.animate(green);
     } else {
-
       if (cubeCone) {
-        setPrupMethod();
+        // setPrupMethod();
+        candle.animate(purp);
       } else {
-        setYellowMethod();
+        // setYellowMethod();
+        candle.animate(yell);
       }
     }
   

@@ -89,6 +89,7 @@ public class Align extends CommandBase {
   public void end(boolean interrupted) {
     localization.setAligning(false);
     leds.setFinAligning(true);
+    leds.setAligning(false);
   }
 
   // Returns true when the command should end.

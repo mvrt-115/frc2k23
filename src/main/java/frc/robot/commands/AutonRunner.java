@@ -124,6 +124,10 @@ public class AutonRunner extends SequentialCommandGroup {
     eventMap.put("LevelForwards", new AutoLevel(drivetrain, 2.5, candleLEDs));
     
     eventMap.put("LevelBackwards", new AutoLevel(drivetrain, -2.5, candleLEDs));
+    eventMap.put("MobilityBackwards", new SequentialCommandGroup(
+      new DriveForward(drivetrain, -3, 2.25),
+      new AutoLevel(drivetrain, 2.5, candleLEDs)
+    ));
 
     List<PathPlannerTrajectory> fullTrajectoriesWithStopEvents = PathPlanner.loadPathGroup(
       pathName, 
