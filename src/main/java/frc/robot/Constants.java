@@ -78,7 +78,7 @@ public final class Constants {
 
                 public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
 
-                public static final double kOuttakeRPM = isCompBot?  0.075 :  0.08;
+                public static final double kOuttakeRPM = isCompBot?  0.0725 :  0.08;
 
                 public static final double outtakeCube = 0.2;
         }
@@ -313,11 +313,11 @@ public final class Constants {
                 public static final double CUBE_HIGH_HEIGHT = 49;
 
                 // feed forward constants
-                public static final double kS = isCompBot ? 0.15639 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
+                public static final double kS = isCompBot ? 0.12073 : 0.38161; // oggg 0.15639 //-0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = isCompBot ? 0.48098 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
-                public static final double kV = isCompBot ? 0.024236 : 0.039238; // 0.035258;
-                public static final double kA = isCompBot ? 0.0034545 : 0.012817;//0.0031226; // 0.0053228;
+                public static final double kG = isCompBot ? 0.53487 : 0.79635; //old good one 0.48098 //0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
+                public static final double kV = isCompBot ? 0.025692 : 0.039238; // og 0.024236 0.035258;
+                public static final double kA = isCompBot ? 0.0039338 : 0.012817; //og 0.0034545 //0.0031226; // 0.0053228;
                 // public static final double kA = 0;
                 // Game Object Heights
                 public static final double CONE_HEIGHT = 6;

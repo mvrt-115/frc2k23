@@ -71,7 +71,7 @@ public class Elevator extends SubsystemBase {
 
     elev_motor2.follow(elev_motor);
     double forwardLimit = inchesToTicks(60);
-    int reverseLimit = -50;
+    int reverseLimit = 10;
     elev_motor.configForwardSoftLimitThreshold(forwardLimit);
     elev_motor.configReverseSoftLimitThreshold(reverseLimit);
     elev_motor.configForwardSoftLimitEnable(true, 0);
@@ -126,13 +126,14 @@ public class Elevator extends SubsystemBase {
   public void log() {
     // SmartDashboard.putNumber("Elevator Level", getLevel());
     // SmartDashboard.putNumber("Elevator Target Height", targetHeight);
-    logger.recordOutput("Elevator Target Height", targetHeight);
+    logger.recordOutput("Elevator Target Height", ticksToInches(targetHeight));
    // System.out.println("Elevator Target Height: " + targetHeight + " Level: " + getLevel());
    // SmartDashboard.putNumber("elev 2 height", elev_motor2.getSelectedSensorPosition());
    // SmartDashboard.putNumber("Motor Velocity", elev_motor.getSelectedSensorVelocity());
 //    logger.recordOutput("Elevator/motor1/position_ticks", elev_motor.getSelectedSensorPosition());
 // //    logger.recordOutput("Elevator/motor2/position_ticks", elev_motor2.getSelectedSensorPosition());
    logger.recordOutput("Elevator/motor1/position_inches", getHeightInches());
+   SmartDashboard.putNumber("elev height", getHeightInches());
 // //   logger.recordOutput("Elevator/motor2/position_inches", ticksToInches(elev_motor2.getSelectedSensorPosition()));
 //    logger.recordOutput("Elevator/motor1/velocity", elev_motor.getSelectedSensorVelocity());
 // //    logger.recordOutput("Elevator/motor1/closed_loop_error", elev_motor.getClosedLoopError());
