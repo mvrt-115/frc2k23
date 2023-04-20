@@ -40,7 +40,7 @@ public class Leveling extends CommandBase {
   @Override
   public void execute() {
 
-    double currentPitch = swerveDt.getPitchAngle();
+    double currentPitch = swerveDt.getRoll();
     double currentYaw = swerveDt.getYaw();
     double currentRoll = swerveDt.getRoll();
 

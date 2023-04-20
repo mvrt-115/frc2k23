@@ -17,8 +17,8 @@ public class CANdleLEDSystem extends SubsystemBase {
   private final CANdle candle = new CANdle(0);
   // private final FireAnimation yell = new FireAnimation(1, .8, 200, .8, .5);
   // private final LarsonAnimation yell = new LarsonAnimation(200, 150, 0, 20, .5, 120, BounceMode.Front, 7);
-  private final ColorFlowAnimation yell = new ColorFlowAnimation(200, 120, 0, 50, 0.3, 120, Direction.Backward);
-  private final ColorFlowAnimation purp = new ColorFlowAnimation(255, 0, 255, 50, 0.3, 120, Direction.Backward);
+  private final ColorFlowAnimation yell = new ColorFlowAnimation(200, 120, 0, 50, 0.8, 120, Direction.Backward);
+  private final ColorFlowAnimation purp = new ColorFlowAnimation(255, 0, 255, 50, 0.8, 120, Direction.Backward);
   // private final StrobeAnimation purp = new StrobeAnimation(255, 0, 255, 20, 1, 300);
   // private final StrobeAnimation yell = new StrobeAnimation(200, 150, 0, 0, 1, 300);
   // private final StrobeAnimation purp = new StrobeAnimation(255, 0, 255, 20, 1, 300);

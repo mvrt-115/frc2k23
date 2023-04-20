@@ -13,11 +13,11 @@ import frc.robot.subsystems.SwerveDrivetrain;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoLevel extends SequentialCommandGroup {
   /** Creates a new AutoLevel. */
-  public AutoLevel(SwerveDrivetrain drivetrain, double driveSpeed, CANdleLEDSystem cc) {
+  public AutoLevel(SwerveDrivetrain drivetrain, double driveSpeed, CANdleLEDSystem cc, double time) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new DriveForward(drivetrain, driveSpeed, 1.5),
+      new DriveForward(drivetrain, driveSpeed, time),
       new Leveling(drivetrain, cc)
     );
   }

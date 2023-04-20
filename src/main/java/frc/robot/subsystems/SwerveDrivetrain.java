@@ -274,6 +274,8 @@ public class SwerveDrivetrain extends SubsystemBase {
        m.logMeasuredData();
     }
 
+    SmartDashboard.putNumber("pitch", getPitchAngle());
+
     // logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
     // logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
     // logger.recordOutput("OdometryHeadingRad", getPose().getRotation().getRadians());

@@ -33,7 +33,9 @@
  import edu.wpi.first.math.geometry.Transform3d;
  import edu.wpi.first.math.geometry.Translation3d;
  import edu.wpi.first.wpilibj.DriverStation;
- import java.util.ArrayList;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.ArrayList;
  import java.util.HashSet;
  import java.util.List;
  import java.util.Optional;
@@ -438,16 +440,23 @@
              reportFiducialPoseError(targetFiducialId);
              return Optional.empty();
          }
- 
+         SmartDashboard.putString("chicken relative pose", lowestAmbiguityTarget.getBestCameraToTarget().toString());
          return Optional.of(
                  new EstimatedRobotPose(
                          targetPosition
                                  .get()
-                                 .transformBy(lowestAmbiguityTarget.getBestCameraToTarget().inverse())
+                                .transformBy(lowestAmbiguityTarget.getBestCameraToTarget().inverse()) // why r u inversing, just make it work the first time. 
                                  .transformBy(robotToCamera.inverse()),
                          result.getTimestampSeconds(),
                          result.getTargets()));
      }
+      /*private int robot()
+      {
+        robot.auton(robot.scoreLevel);
+        robot.teleop(54); 
+        robot.endgame("level");
+        robot.win();
+      }*/
  
      /**
       * Return the estimated position of the robot using the target with the lowest delta height
