@@ -45,8 +45,8 @@ public class Localization extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator;
   private SwerveDrivetrain swerveDrivetrain;
   private AprilTagFieldLayout fieldLayout;
-  private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
-  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.9, 0.9, Units.degreesToRadians(5));
+  private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(5));
+  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.8, 0.8, Units.degreesToRadians(5));
   private final Field2d field;
   private Logger logger = Logger.getInstance();
   
@@ -95,7 +95,7 @@ public class Localization extends SubsystemBase {
     Optional<EstimatedRobotPose> result2 = camera2Estimator.update();
     Pose2d result = combinePoses(null, result2);
 
-    if(swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
+    /*if(swerveDrivetrain.getState() != DrivetrainState.AUTON_PATH && result != null) {
       Pose2d curr = getCurrentPose();
 
       if(curr!=null){
@@ -104,7 +104,7 @@ public class Localization extends SubsystemBase {
         //if(Math.abs(visionHeadingDeg - odometryHeadingDeg) < 10)
         swerveDrivetrain.resetOdometry(new Pose2d(curr.getTranslation(), swerveDrivetrain.getPose().getRotation()));
       }
-    }
+    }*/
 
     SmartDashboard.putBoolean("chicken robot present", result != null);
     if(result != null) {

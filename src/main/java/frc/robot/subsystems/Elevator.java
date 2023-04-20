@@ -240,7 +240,7 @@ public class Elevator extends SubsystemBase {
   public double getVelocity() {
     return elev_motor.getSelectedSensorVelocity();
   }
-
+  //hehehehe
   /* resets the encoder */
   public void resetEncoder() {
     // if(isZeroed())
@@ -279,7 +279,7 @@ public class Elevator extends SubsystemBase {
   {
     switch(currState)
     {
-      case ZEROED:
+      case ZEROED: ///hehehehehhe
         return 0;
       case ZEROING: 
         return 1;
@@ -300,7 +300,7 @@ public class Elevator extends SubsystemBase {
     switch(level)
     {
       case 0:
-        currState = ElevatorState.ZEROED;
+        currState = ElevatorState.ZEROED;//hahahahahaha
       case 1:
         currState = ElevatorState.ZEROING;
       case 2:
@@ -328,7 +328,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void runMotor(double speed) {
-    elev_motor.set(ControlMode.PercentOutput, speed);
+    elev_motor.set(ControlMode.PercentOutput, speed);// ur mom
   }
 
   public double ticksToInches(double ticks) {

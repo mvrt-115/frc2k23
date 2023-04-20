@@ -149,6 +149,7 @@ public class AutonRunner extends SequentialCommandGroup {
     SmartDashboard.putNumber("Trajectory Y init", trajectory.getInitialHolonomicPose().getY());
 
     addCommands(
+      
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
       new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
       new InstantCommand(() -> swerveDrivetrain.resetModules()),

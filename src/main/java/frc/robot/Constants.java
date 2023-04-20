@@ -80,7 +80,7 @@ public final class Constants {
 
                 public static final double kOuttakeRPM = isCompBot?  0.0725 :  0.08;
 
-                public static final double outtakeCube = 0.2;
+                public static final double outtakeCube = 0.15;
         }
 
         public static class GroundIntake {
@@ -198,7 +198,7 @@ public final class Constants {
                 public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
                 public static final double kDriveMaxAccelerationNormal = 3;
                 public static final double kTurnMaxAccelerationNormal = 0.5 * Math.PI;
-                public static final double kDriveMaxSpeedMPSNormal = 3.5;
+                public static final double kDriveMaxSpeedMPSNormal = 3;
                 public static final double kTurnMaxSpeedRPSNormal = 1 * Math.PI;
                 public static final double kDriveMaxSpeedCap = 10;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;

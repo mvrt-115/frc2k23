@@ -167,7 +167,7 @@ public class RobotContainer {
     // SHOOT CUBE AND DOWN
     operatorJoystick.rightBumper().onTrue(new SequentialCommandGroup(
       intake.runOutCube(),
-      new BetterWaitCommand(0.45),
+      new BetterWaitCommand(0.45),//heaheahehaheaheheaheha
       new ParallelCommandGroup(
         new ElevateDown(elevator, leds),
         intake.stop()
@@ -211,7 +211,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // return autonSelector.getSelected();
     return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "MobilityLevel");
-  }
+  } // hehehehe
 
   public void putTestCommand() {
     swerveDrivetrain.setupTests();
