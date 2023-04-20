@@ -103,7 +103,7 @@ public final class Constants {
 
         public static class Leveling {
                 // Leveling PID
-                public static final double levelkP = 0.05;
+                public static final double levelkP = 0.03; // 0.05
                 public static final double levelkI = 0;
                 public static final double levelkD = 0;
                 public static final double rotatekP = 0;

@@ -127,7 +127,7 @@ public class AutonRunner extends SequentialCommandGroup {
     eventMap.put("MobilityBackwards", new SequentialCommandGroup(
       new MobileCharge(drivetrain),
       new BetterWaitCommand(0.5),
-      new AutoLevel(drivetrain, 4, candleLEDs,1.5)
+      new AutoLevel(drivetrain, 3, candleLEDs,1.5)
     ));
 
     List<PathPlannerTrajectory> fullTrajectoriesWithStopEvents = PathPlanner.loadPathGroup(
@@ -149,7 +149,7 @@ public class AutonRunner extends SequentialCommandGroup {
     SmartDashboard.putNumber("Trajectory Y init", trajectory.getInitialHolonomicPose().getY());
 
     addCommands(
-      
+
       new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)),
       new InstantCommand(() -> swerveDrivetrain.setAutonomous()),
       new InstantCommand(() -> swerveDrivetrain.resetModules()),

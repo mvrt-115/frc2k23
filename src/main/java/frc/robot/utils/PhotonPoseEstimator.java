@@ -441,7 +441,11 @@ import java.util.ArrayList;
              return Optional.empty();
          }
          SmartDashboard.putString("chicken relative pose", lowestAmbiguityTarget.getBestCameraToTarget().toString());
+         targetPosition.get().transformBy(lowestAmbiguityTarget.getBestCameraToTarget().inverse()) // why r u inversing, just make it work the first time. 
+        .transformBy(robotToCamera.inverse());
+        
          return Optional.of(
+
                  new EstimatedRobotPose(
                          targetPosition
                                  .get()

@@ -48,11 +48,11 @@ public class Intake2 extends SubsystemBase {
     isIntakingOrScoring = false;
 
     motor = TalonFactory.createTalonFX(Constants.Intake.kMotorPort, false);
-    motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 15, 80, 1.5));
+    motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 110, 1.5)); // old current limit: 15, trigger threshold: 80
     // encoder = motor.getEncoder(); 
 
     prox = new DigitalInput(Constants.Intake.kProximityPort); 
-
+  
     // pidController = motor.getPIDController();
     // pidController.setP(Constants.Intake.kP);
     // pidController.setI(Constants.Intake.kI);
