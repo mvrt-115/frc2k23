@@ -47,8 +47,8 @@ public class MobileCharge extends CommandBase {
       groundStart = -1;
 
     
-    Logger.getInstance().recordOutput("onCharge", onCharge);
-    Logger.getInstance().recordOutput("groundst", groundStart);
+    //Logger.getInstance().recordOutput("onCharge", onCharge);
+   // Logger.getInstance().recordOutput("groundst", groundStart);
   }
 
   // Called once the command ends or is interrupted.

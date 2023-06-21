@@ -170,13 +170,13 @@ public final class Constants {
                 public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(221.04); // 128.32// + Math.PI/2.0;
                 public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(273.42); // 115.04// + Math.PI/2.0;
                 public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(213.398); //214.8 // + Math.PI/2.0;
-                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(79.18); // 341.81// + Math.PI/2.0;
+                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(304.277); // 341.81// + Math.PI/2.0;
 
                 // Practice Bot Encoder Offsets
                 public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(33.62);// + Math.PI/2.0;
                 public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(182.180);// + Math.PI/2.0;
                 public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(341.54);// + Math.PI/2.0;
-                public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(146.86);// + Math.PI/2.0;
+                public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(304.277);// + Math.PI/2.0;
 
                 // Abs Encoder Offsets
                 public static final double m_frontLeftEncoderOffset = isCompBot ? m_frontLeftEncoderOffset_Comp
@@ -196,7 +196,7 @@ public final class Constants {
                 public static final double kWheelNonlinearity = 0.05;
 
                 public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
-                public static final double kDriveMaxAccelerationNormal = 3;
+                public static final double kDriveMaxAccelerationNormal = 3.5;
                 public static final double kTurnMaxAccelerationNormal = 0.5 * Math.PI;
                 public static final double kDriveMaxSpeedMPSNormal = 3;
                 public static final double kTurnMaxSpeedRPSNormal = 1 * Math.PI;
@@ -386,8 +386,8 @@ public final class Constants {
                                         new Rotation2d(0)));
 
 
-                private static double redScoringOffsetsInches = -30;
-                private static double blueScoringOffsetInches =  30;//15 + Units.metersToInches(0.08);
+                private static double redScoringOffsetsInches = -30; //initial values -30
+                private static double blueScoringOffsetInches =  30;//initial values 30
 
                 /**
                  * Key:

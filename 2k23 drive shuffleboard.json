@@ -89,7 +89,8 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false
+              "Visuals/Show Outside Circles": false,
+              "Colors/traj": "#FFFFFFFF"
             }
           },
           "3,0": {
@@ -799,7 +800,8 @@
               "_showGlyph": false,
               "Game/Game": "A2023_Charged_Up",
               "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false
+              "Visuals/Show Outside Circles": false,
+              "Colors/traj": "#FFFFFFFF"
             }
           },
           "6,0": {
@@ -1195,9 +1197,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -6.5,
-    "y": -6.5,
-    "width": 1293.0,
-    "height": 685.0
+    "x": -6.666666507720947,
+    "y": -6.666666507720947,
+    "width": 1293.3333740234375,
+    "height": 685.3333129882812
   }
 }

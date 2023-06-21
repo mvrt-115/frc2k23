@@ -286,7 +286,8 @@ public class SwerveModule {
    * @param state
    */
   public void setDesiredState(SwerveModuleState state) {
-    // logger.recordOutput(swerveID+"/DesiredStatePreOptimized", state);
+    logger.recordOutput(swerveID+"/desired_vel", state.speedMetersPerSecond);
+    logger.recordOutput(swerveID+"/real_vel", getDriveVelocity());
     if (Math.abs(state.speedMetersPerSecond) < 0.001) {
       disableModule();
       return;
