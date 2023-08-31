@@ -154,10 +154,10 @@ public class SwerveJoystickCommand extends CommandBase {
     logger.recordOutput("SwerveModule/Field_Oriented", drivetrain.fieldOriented);
 
     if (drivetrain.fieldOriented) {
-      drivetrain.setSpeedsFieldOriented(vX, vY, vW);
+      drivetrain.setSpeedsFieldOriented(vX*0.5, vY*0.5, vW);
     }
     else {
-      drivetrain.setSpeeds(vX, vY, vW, Constants.SwerveDrivetrain.rotatePoints[0]);
+      drivetrain.setSpeeds(vX*0.5, vY*0.5, vW, Constants.SwerveDrivetrain.rotatePoints[0]);
     }
     
     SmartDashboard.putNumber("vX", vX);

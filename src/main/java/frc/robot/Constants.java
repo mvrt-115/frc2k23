@@ -74,9 +74,9 @@ public final class Constants {
 
                 public static final double kP = 0, kI = 0, kD = 0;
 
-                public static final double kCompressedSpeed = isCompBot? -0.105 : -0.07;
+                public static final double kCompressedSpeed = isCompBot? -0.35 : -0.07;
 
-                public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
+                public static final double kGoalRPM = isCompBot ? -0.4 : 0.3;
 
                 public static final double kOuttakeRPM = isCompBot?  0.0725 :  0.08;
 
@@ -167,16 +167,16 @@ public final class Constants {
                 public static final boolean isCompBot = true;
                 public static final String canivore_name = (isCompBot)? "Drivetrain" : "rio";
 
-                public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(221.04); // 128.32// + Math.PI/2.0;
-                public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(273.42); // 115.04// + Math.PI/2.0;
-                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(213.398); //214.8 // + Math.PI/2.0;
-                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(304.277); // 341.81// + Math.PI/2.0;
+                public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(222.802); // 128.32// + Math.PI/2.0;
+                public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(273.602); // 115.04// + Math.PI/2.0;
+                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(212.607); //214.8 // + Math.PI/2.0;
+                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(306.56); // 341.81// + Math.PI/2.0;
 
                 // Practice Bot Encoder Offsets
-                public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(33.62);// + Math.PI/2.0;
-                public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(182.180);// + Math.PI/2.0;
-                public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(341.54);// + Math.PI/2.0;
-                public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(304.277);// + Math.PI/2.0;
+                public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(36.21);// + Math.PI/2.0; //33.62
+                public static final double m_frontRightEncoderOffset_P = Units.degreesToRadians(87.89);// + Math.PI/2.0; //182.180
+                public static final double m_backLeftEncoderOffset_P = Units.degreesToRadians(212.51);// + Math.PI/2.0; //341.54
+                public static final double m_backRightEncoderOffset_P = Units.degreesToRadians(314.38);// + Math.PI/2.0; //304.277
 
                 // Abs Encoder Offsets
                 public static final double m_frontLeftEncoderOffset = isCompBot ? m_frontLeftEncoderOffset_Comp
@@ -195,8 +195,8 @@ public final class Constants {
                 public static final double kWheelGain = 0.05;
                 public static final double kWheelNonlinearity = 0.05;
 
-                public static final double kMaxSpeedMPS = 10; // optimize max speed to prioritize translation
-                public static final double kDriveMaxAccelerationNormal = 3.5;
+                public static final double kMaxSpeedMPS = 3; //3; // optimize max speed to prioritize translation
+                public static final double kDriveMaxAccelerationNormal = 2; //2;
                 public static final double kTurnMaxAccelerationNormal = 0.5 * Math.PI;
                 public static final double kDriveMaxSpeedMPSNormal = 3;
                 public static final double kTurnMaxSpeedRPSNormal = 1 * Math.PI;
@@ -327,8 +327,8 @@ public final class Constants {
                 public static final double KDt = 0.01;
 
                 // constraints
-                public static final double MAX_VELOCITY = 6; // 10//50;
-                public static final double MAX_ACCELERATION = 2; //2 //25;
+                public static final double MAX_VELOCITY = 6; //6 // 10//50;
+                public static final double MAX_ACCELERATION = 2; //2 //2 //25;
 
                 // initial elevator stages
                 public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;

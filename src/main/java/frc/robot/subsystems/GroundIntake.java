@@ -40,8 +40,8 @@ public class GroundIntake extends SubsystemBase{
     }
 
     public void log(){
-        // logger.recordOutput("GroundIntake/armMotor/position_ticks", getArmCurrentPositionTicks());
-        // logger.recordOutput("GroundIntake/armMotor/position_degrees", getArmCurrentPositionDegrees());
+       //  logger.recordOutput("GroundIntake/armMotor/position_ticks", getArmCurrentPositionTicks());
+         logger.recordOutput("GroundIntake/armMotor/position_degrees", getArmCurrentPositionDegrees());
         // SmartDashboard.putNumber("gi - arm pos deg", getArmCurrentPositionDegrees());
         // SmartDashboard.putNumber("gi - arm output", armMotor.getAppliedOutput());
         // logger.recordOutput("GroundIntake/armMotor/percent_output", armMotor.getAppliedOutput());

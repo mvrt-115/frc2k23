@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
@@ -50,6 +51,7 @@ public class Intake2 extends SubsystemBase {
     motor = TalonFactory.createTalonFX(Constants.Intake.kMotorPort, false);
     motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 110, 1.5)); // old current limit: 15, trigger threshold: 80
     // encoder = motor.getEncoder(); 
+    motor.setNeutralMode(NeutralMode.Brake);
 
     prox = new DigitalInput(Constants.Intake.kProximityPort); 
   

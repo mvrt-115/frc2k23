@@ -1,0 +1,95 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.849653367553181,
+        "y": 4.786958578656494
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": -0.021463675220881218,
+        "y": 4.7869585786564945
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": ["ScoreHigh"],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.886275184872645,
+        "y": 4.777460644968683
+      },
+      "prevControl": {
+        "x": 4.556564468579174,
+        "y": 4.777460644968683
+      },
+      "nextControl": {
+        "x": 4.556564468579174,
+        "y": 4.777460644968683
+      },
+      "holonomicAngle": 0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "GIScore"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.849653367553181,
+        "y": 4.796456512344305
+      },
+      "prevControl": {
+        "x": 0.8998599987721307,
+        "y": 4.758464777593062
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": ["GIFrScore"],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0.5
+      }
+    }
+  ],
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "event"
+      ]
+    },
+    {
+      "position": 0.0,
+      "names": [
+        "event"
+      ]
+    },
+    {
+      "position": 0.0,
+      "names": [
+        "event"
+      ]
+    }
+  ]
+}

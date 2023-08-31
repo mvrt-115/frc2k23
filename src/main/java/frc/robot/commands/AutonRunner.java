@@ -110,9 +110,18 @@ public class AutonRunner extends SequentialCommandGroup {
       new SetGroundIntakePosition(groundIntake, 40),
       new InstantCommand(() -> groundIntake.stopRoller())
     ));
+    eventMap.put("GIFrScore", new SequentialCommandGroup(new SetElevatorHeight(elevator, 15, 1, 0.75, leds),
+    new SetGroundIntakePosition(groundIntake, 180, 0.5),
+    new InstantCommand(() -> groundIntake.setRollerOutput(0.8)),
+    new ElevateDown(elevator, candleLEDs),
+    new BetterWaitCommand(0.5),
+    new SetElevatorHeight(elevator, 20, 0, 0.5, leds),
+    new SetGroundIntakePosition(groundIntake, 40),
+    new InstantCommand(() -> groundIntake.stopRoller()),
+    new ElevateDown(elevator, candleLEDs)));
     eventMap.put("GIScore", new SequentialCommandGroup(
       new SetElevatorHeight(elevator, 15, 1, 0.75, leds),
-      new SetGroundIntakePosition(groundIntake, 120, 0.5),
+      new SetGroundIntakePosition(groundIntake, 180, 0.5),
       new InstantCommand(() -> groundIntake.setRollerOutput(-0.8)),
       new ElevateDown(elevator, candleLEDs),
       new BetterWaitCommand(0.5),

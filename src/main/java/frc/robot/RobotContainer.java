@@ -34,8 +34,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // private final Localization localization; //Utils camera
-
   private Elevator elevator;
   private Intake2 intake = new Intake2(INTAKE_TYPE.wheeled);
   private final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
@@ -59,7 +57,6 @@ public class RobotContainer {
     driveJoystick.invertLeftStick();
     //elevator = new Elevator();
 
-  //  localization = new Localization(swerveDrivetrain);
     driveJoystick.button(0);
     elevator = new Elevator();
     swerveDrivetrain.setDefaultCommand(new SwerveJoystickCommand(
@@ -147,7 +144,7 @@ public class RobotContainer {
     // SHOOT CONE AND DOWN
     operatorJoystick.b().onTrue(new SequentialCommandGroup(
       intake.runOut(),
-      new BetterWaitCommand(0.45),
+      new BetterWaitCommand(0.9),
       new ParallelCommandGroup(
         new ElevateDown(elevator, leds),
         intake.stop()
@@ -210,8 +207,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return autonSelector.getSelected();
-    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreExit
-    ");
+    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel");
   } // hehehehe
 
   public void putTestCommand() {
