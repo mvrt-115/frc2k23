@@ -275,6 +275,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("pitch", getPitchAngle());
+    SmartDashboard.putNumber("rotation", gyro.getRotation2d().getDegrees());
 
     // logger.recordOutput("NavXHeadingRad", getRotation2d().getRadians());
     // logger.recordOutput("NavXHeadingDeg", getRotation2d().getDegrees());
@@ -445,7 +446,9 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     SmartDashboard.putBoolean("Reset Odometry", true);
+    SmartDashboard.putNumber("Reset angle", getRotation2d().getDegrees());
     odometry.resetPosition(getRotation2d(), modulePositions, pose);
+    //SmartDashboard.putNumber("Reset angle", get)
     if (Constants.DataLogging.currMode == Constants.DataLogging.Mode.SIM) {
       driveSimData.resetOdometry(getRotation2d(), modulePositions, pose);
     }

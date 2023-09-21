@@ -87,7 +87,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driveJoystick.button(3).whileTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc, leds)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
+    //driveJoystick.button(3).whileTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc, leds)).onFalse(new InstantCommand(() -> swerveDrivetrain.stopModules()));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
     autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel"));
@@ -204,10 +204,10 @@ public class RobotContainer {
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   */
+   */ 
   public Command getAutonomousCommand() {
     // return autonSelector.getSelected();
-    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreTwice");
+    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreLevel");
   } // hehehehe
 
   public void putTestCommand() {

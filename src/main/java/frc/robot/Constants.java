@@ -199,7 +199,7 @@ public final class Constants {
                 public static final double kDriveMaxAccelerationNormal = 3; //2;
                 public static final double kTurnMaxAccelerationNormal = 0.5 * Math.PI;
                 public static final double kDriveMaxSpeedMPSNormal = 4;
-                public static final double kTurnMaxSpeedRPSNormal = 1 * Math.PI;
+                public static final double kTurnMaxSpeedRPSNormal = 0.5 * Math.PI;
                 public static final double kDriveMaxSpeedCap = 10;
                 public static double kDriveMaxSpeedMPS = kDriveMaxSpeedMPSNormal;
                 public static double kTurnMaxSpeedRPS = kTurnMaxSpeedRPSNormal;
@@ -287,7 +287,7 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.0237; //prac bot: 0.025;// .1;//.01;
+                public static final double P = 0.0244;// comp" 0.0237; //prac bot: 0.025;// .1;//.01;
                 public static final double I = 0;// .000006;
                 public static final double D = 0.13; //0.1;
                 public static final double F = 0;
