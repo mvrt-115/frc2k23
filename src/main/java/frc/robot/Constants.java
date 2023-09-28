@@ -168,10 +168,10 @@ public final class Constants {
                 public static final boolean isCompBot = true;
                 public static final String canivore_name = (isCompBot)? "Drivetrain" : "rio";
 
-                public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(131.835); // 128.32// + Math.PI/2.0;
-                public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(274.57); // 115.04// + Math.PI/2.0;
-                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(213.222); //214.8 // + Math.PI/2.0;
-                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(78.574); // 341.81// + Math.PI/2.0;
+                public static final double m_frontLeftEncoderOffset_Comp = Units.degreesToRadians(221.22);//131.835); // 128.32// + Math.PI/2.0;
+                public static final double m_frontRightEncoderOffset_Comp = Units.degreesToRadians(273.69);//274.57); // 115.04// + Math.PI/2.0;
+                public static final double m_backLeftEncoderOffset_Comp = Units.degreesToRadians(213.75);//213.222); //214.8 // + Math.PI/2.0;
+                public static final double m_backRightEncoderOffset_Comp = Units.degreesToRadians(304.89);//78.574); // 341.81// + Math.PI/2.0;
 
                 // Practice Bot Encoder Offsets
                 public static final double m_frontLeftEncoderOffset_P = Units.degreesToRadians(33.62);// + Math.PI/2.0;
