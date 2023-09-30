@@ -159,8 +159,7 @@ public class RobotContainer {
 
     // ELEV HIGH
     operatorJoystick.a().onTrue(
-      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25)
-    ).onFalse(intake.runOut());
+      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25));
 
     // SHOOT CUBE AND DOWN
     operatorJoystick.rightBumper().onTrue(new SequentialCommandGroup(
@@ -207,7 +206,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return autonSelector.getSelected();
-    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel");
+    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "Exit");
   }
 
   public void putTestCommand() {

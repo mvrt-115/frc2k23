@@ -305,9 +305,9 @@ public final class Constants {
                 public static final double SHELF_HEIGHT = 0;
 
                 // MID, HIGH heights parwa cone (in ticks)
-                public static final double CONE_MID_HEIGHT = 38;
+                public static final double CONE_MID_HEIGHT = 36;
                 public static final double CONE_HIGH_HEIGHT = 58.6;
-                public static final double INTAKE_HEIGHT = 39.6;
+                public static final double INTAKE_HEIGHT = 39;
 
                 // MID, HIGH heights para cube (in inches)
                 public static final double CUBE_MID_HEIGHT = 32;
