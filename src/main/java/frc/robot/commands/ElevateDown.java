@@ -34,6 +34,6 @@ public class ElevateDown extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.getHeightInches() < 10;
+    return elevator.getHeightInches() < 5;
   }
 }
