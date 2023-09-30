@@ -207,7 +207,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return autonSelector.getSelected();
-    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitRed");
+    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel");
   }
 
   public void putTestCommand() {

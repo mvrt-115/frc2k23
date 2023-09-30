@@ -288,7 +288,7 @@ public final class Constants {
                 public static final int MOTOR_ID2 = 14;
 
                 public static final int kPIDIdx = 0;
-                public static final double P = 0.0237; //prac bot: 0.025;// .1;//.01;
+                public static final double P = 0.024; //prac bot: 0.025;// .1;//.01;
                 public static final double I = 0;// .000006;
                 public static final double D = 0.13; //0.1;
                 public static final double F = 0;
@@ -314,11 +314,11 @@ public final class Constants {
                 public static final double CUBE_HIGH_HEIGHT = 49;
 
                 // feed forward constants
-                public static final double kS = isCompBot ? 0.15639 : 0.38161;//-0.086653;// -0.55996;//-0.086653;//-0.55996;
+                public static final double kS = isCompBot ? 0.16869 : 0.38161;// OG GOOD COMP VALUE: 0.15639 -0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = isCompBot ? 0.48098 : 0.79635;//0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
-                public static final double kV = isCompBot ? 0.024236 : 0.039238; // 0.035258;
-                public static final double kA = isCompBot ? 0.0034545 : 0.012817;//0.0031226; // 0.0053228;
+                public static final double kG = isCompBot ? 0.59324 : 0.79635; // OG GOOD COMP VALUE: 0.48098 0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
+                public static final double kV = isCompBot ? 0.030721 : 0.039238; // OG GOOD COMP VALUE: 0.024236 0.035258;
+                public static final double kA = isCompBot ? 0.0014394 : 0.012817;// OG GOOD COMP VALUE: 0.0034545 0.0031226; // 0.0053228;
                 // public static final double kA = 0;
                 // Game Object Heights
                 public static final double CONE_HEIGHT = 6;

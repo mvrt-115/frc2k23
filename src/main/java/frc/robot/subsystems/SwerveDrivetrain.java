@@ -174,6 +174,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     driveSimData = new DriveSimulationData(new SwerveDriveOdometry(swerveKinematics, new Rotation2d(), modulePositions), field);
     odometry = new SwerveDriveOdometry(swerveKinematics, getRotation2d(), modulePositions);
+    setModes(NeutralMode.Brake);
   }
 
   public SwerveModulePosition[] getModulePositions(){
