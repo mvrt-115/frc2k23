@@ -220,7 +220,6 @@ public class Elevator extends SubsystemBase {
     currentHeight = getHeight();
 
     elev_motor.set(ControlMode.Position, targetHeight, DemandType.ArbitraryFeedForward, feedforward/10.0);
-
   }
 
   /** returns the height of the elevator
