@@ -76,7 +76,7 @@ public final class Constants {
 
                 public static final double kCompressedSpeed = isCompBot? -0.105 : -0.07;
 
-                public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
+                public static final double kGoalRPM = isCompBot ? -0.2 : 0.3;
 
                 public static final double kOuttakeRPM = isCompBot?  0.3 :  0.08;
 
@@ -314,7 +314,7 @@ public final class Constants {
                 public static final double CUBE_HIGH_HEIGHT = 49;
 
                 // feed forward constants
-                public static final double kS = isCompBot ? 0.16799 : 0.38161;// 0.16799OG GOOD COMP VALUE: 0.15639 -0.086653;// -0.55996;//-0.086653;//-0.55996;
+                public static final double kS = isCompBot ? 0.16869 : 0.38161;// 0.16799OG GOOD COMP VALUE: 0.15639 -0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
                 public static final double kG = isCompBot ? 0.58424 : 0.79635; // 0.58424 OG GOOD COMP VALUE: 0.48098 0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
                 public static final double kV = isCompBot ? 0.030721 : 0.039238; // OG GOOD COMP VALUE: 0.024236 0.035258;
