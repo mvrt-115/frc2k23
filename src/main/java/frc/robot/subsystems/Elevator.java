@@ -80,7 +80,7 @@ public class Elevator extends SubsystemBase {
     elev_motor2.configReverseSoftLimitThreshold(reverseLimit);
     elev_motor2.configForwardSoftLimitEnable(true, 0);
     elev_motor2.configReverseSoftLimitEnable(true, 0);
-   // elev_motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, reverseLimit, forwardLimit, reverseLimit))
+    elev_motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, forwardLimit, reverseLimit));
 
     elev_motor.setNeutralMode(NeutralMode.Brake);
     elev_motor2.setNeutralMode(NeutralMode.Brake);

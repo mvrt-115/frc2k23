@@ -76,9 +76,9 @@ public final class Constants {
 
                 public static final double kCompressedSpeed = isCompBot? -0.105 : -0.07;
 
-                public static final double kGoalRPM = isCompBot ? -0.2 : 0.3;
+                public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
 
-                public static final double kOuttakeRPM = isCompBot?  0.3 :  0.08;
+                public static final double kOuttakeRPM = isCompBot?  0.12 :  0.08;
 
                 public static final double outtakeCube = 0.2;
         }
@@ -290,10 +290,10 @@ public final class Constants {
                 public static final int kPIDIdx = 0;
                 public static final double P = 0.024; //prac bot: 0.025;// .1;//.01;
                 public static final double I = 0;// .000006;
-                public static final double D = 0.13; //0.1;
+                public static final double D = 0.1; //0.1;
                 public static final double F = 0;
 
-                // Wtvr it is
+                // Wtvr it isss
                 // public static final double METERS_PER_TICK = .500;
                 // public static final double INCHES_PER_TICK = 10.6224;
 
@@ -305,20 +305,20 @@ public final class Constants {
                 public static final double SHELF_HEIGHT = 0;
 
                 // MID, HIGH heights parwa cone (in ticks)
-                public static final double CONE_MID_HEIGHT = 36;
+                public static final double CONE_MID_HEIGHT = 37.1;
                 public static final double CONE_HIGH_HEIGHT = 58.6;
-                public static final double INTAKE_HEIGHT = 37.55;
+                public static final double INTAKE_HEIGHT = 39.6;
 
                 // MID, HIGH heights para cube (in inches)
                 public static final double CUBE_MID_HEIGHT = 32;
                 public static final double CUBE_HIGH_HEIGHT = 49;
 
                 // feed forward constants
-                public static final double kS = isCompBot ? 0.16869 : 0.38161;// 0.16799OG GOOD COMP VALUE: 0.15639 -0.086653;// -0.55996;//-0.086653;//-0.55996;
+                public static final double kS = isCompBot ? 0.114168 : 0.38161;// OG 0.15639    -0.086653;// -0.55996;//-0.086653;//-0.55996;
                 // public static final double kG = 1;
-                public static final double kG = isCompBot ? 0.58424 : 0.79635; // 0.58424 OG GOOD COMP VALUE: 0.48098 0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
-                public static final double kV = isCompBot ? 0.030721 : 0.039238; // OG GOOD COMP VALUE: 0.024236 0.035258;
-                public static final double kA = isCompBot ? 0.0014394 : 0.012817;// OG GOOD COMP VALUE: 0.0034545 0.0031226; // 0.0053228;
+                public static final double kG = isCompBot ? 0.56744 : 0.79635;//OG 0.49598      0.87635; // 0.79635: claw intake; //1.2265; //sysid value for comp bot: 0.47892
+                public static final double kV = isCompBot ? 0.03588 : 0.039238; // OG 0.024236 0.035258;
+                public static final double kA = isCompBot ? 0.0016944 : 0.012817;// OG 0.0034545 0.0031226; // 0.0053228;
                 // public static final double kA = 0;
                 // Game Object Heights
                 public static final double CONE_HEIGHT = 6;
@@ -328,8 +328,8 @@ public final class Constants {
                 public static final double KDt = 0.01;
 
                 // constraints
-                public static final double MAX_VELOCITY = 5; // 10//50;
-                public static final double MAX_ACCELERATION = 1.5; //2 //25;
+                public static final double MAX_VELOCITY = 3.5; // 10//50;
+                public static final double MAX_ACCELERATION = 0; //2 //25;
 
                 // initial elevator stages
                 public static final ElevatorState TELEOP_INIT_STATE = ElevatorState.ZEROED;
