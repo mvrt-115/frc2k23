@@ -51,7 +51,7 @@ public class Leveling extends CommandBase {
     SmartDashboard.putNumber("velocity", swerveDt.getLinearVelocity().getNorm());
 
     double vX = -Math.min(-currentPitch*Constants.Leveling.levelkP, 1) * Constants.Leveling.levelVelocityMPS;
-    double vXpid = -pidLevel.calculate(currentPitch, 0) * Constants.Leveling.levelVelocityMPS;
+    double vXpid = -pidLevel.calculate(currentRoll, 0) * Constants.Leveling.levelVelocityMPS;
     double angularSpeed = pidRotate.calculate(currentYaw, 0) * Constants.Leveling.maxAngularSpeed;
     double vY = 0;
 
@@ -69,7 +69,7 @@ public class Leveling extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(swerveDt.getPitchAngle()) < Constants.Leveling.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.Leveling.speedTolerance){
+    if (Math.abs(swerveDt.getRoll()) < Constants.Leveling.angleTolerance && Math.abs(swerveDt.getLinearVelocity().getNorm()) < Constants.Leveling.speedTolerance){
       level = false; //true;
     }
     return level; // once the speed of the robot is low enough and the angle is small enough, the command will end 

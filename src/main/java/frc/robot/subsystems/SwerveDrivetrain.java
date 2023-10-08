@@ -236,6 +236,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @return the pitch degree
    */
   public double getPitchAngle(){
+    SmartDashboard.putNumber("gyroPitch", gyro.getPitch());
     return gyro.getPitch();
   }
 
@@ -244,6 +245,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @return yaw in degrees
    */
   public double getYaw(){
+    SmartDashboard.putNumber("gyroYaw", gyro.getYaw());
     return gyro.getYaw();
   }
 
@@ -252,6 +254,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @return roll in degrees
    */
   public double getRoll(){
+    SmartDashboard.putNumber("gyroRoll", gyro.getRoll());
     return gyro.getRoll();
   }
 

@@ -93,14 +93,15 @@ public class RobotContainer {
     driveJoystick.button(3).onTrue(new Align(swerveDrivetrain, localization, localization::getClosestScoringLoc));
     driveJoystick.button(4).onTrue(new InstantCommand(() -> swerveDrivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d())))).onFalse(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Odometry", false)));
 
-    // autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, "ExitLevel"));
-    // autonSelector.addOption("ScoreExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds,"ExitLevel2"));
-    // autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
-    // autonSelector.addOption("ScoreLevel", new SequentialCommandGroup( 
-    //   new AutoScoreCone(elevator, intake), 
-    //   new AutoLevel(swerveDrivetrain, -4, leds)
-    // ));
-    // autonSelector.addOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, "ScoreTwiceLevel"));
+    autonSelector.addOption("ScoreExitLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel"));
+    autonSelector.addOption("ScoreExitLevel2", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ExitLevel2"));
+    autonSelector.addOption("DONOTHING", new PrintCommand("hi"));
+    autonSelector.addOption("ScoreLevel", new SequentialCommandGroup( 
+      new AutoScoreCone(elevator, intake), 
+      new AutoLevel(swerveDrivetrain, -4, leds)
+    ));
+    autonSelector.addOption("ScoreTwiceLevel", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreTwiceLevel"));
+    autonSelector.addOption("Exit", new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "Exit"));
     autonSelector.setDefaultOption("DONOTHING", new PrintCommand("hi"));
     SmartDashboard.putData("Auton Selector", autonSelector);
   
@@ -206,7 +207,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return autonSelector.getSelected();
-    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "Exit");
+    return new AutonRunner(swerveDrivetrain, elevator, intake, gi, leds, localization, "ScoreLevel");
   }
 
   public void putTestCommand() {

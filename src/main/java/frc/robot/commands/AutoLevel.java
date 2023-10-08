@@ -17,7 +17,7 @@ public class AutoLevel extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new DriveForward(drivetrain, driveSpeed, 1.5),
+      new DriveForward(drivetrain, driveSpeed, 1.25),
       new Leveling(drivetrain, cc)
     );
   }

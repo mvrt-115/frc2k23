@@ -19,10 +19,10 @@ public class AutoScoreCone extends SequentialCommandGroup {
   public AutoScoreCone(Elevator elevator, Intake2 intake ) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      intake.stop(),
-      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25, 0.5),
-      new BetterWaitCommand(0.2),
+    addCommands(  
+      //intake.stop(),
+      new SetElevatorHeight(elevator, Constants.Elevator.CONE_HIGH_HEIGHT, 0.25),
+      new BetterWaitCommand(0.42),
       intake.runOut(),
       new BetterWaitCommand(0.35),
       new ElevateDown(elevator),
