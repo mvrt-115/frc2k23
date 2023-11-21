@@ -78,7 +78,7 @@ public final class Constants {
 
                 public static final double kGoalRPM = isCompBot ? -0.3 : 0.3;
 
-                public static final double kOuttakeRPM = isCompBot?  0.12 :  0.08;
+                public static final double kOuttakeRPM = isCompBot?  0.1 :  0.08;
 
                 public static final double outtakeCube = 0.2;
         }

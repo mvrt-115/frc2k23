@@ -216,7 +216,7 @@ public class Elevator extends SubsystemBase {
     //  logger.recordOutput("Elevator/motor_percent_output", elev_motor.getMotorOutputPercent());
      
     // sim
-    //  elevMotorSim.setIntegratedSensorRawPosition((int)(setpoint.position));
+    elevMotorSim.setIntegratedSensorRawPosition((int)(getHeightInches()));
     currentHeight = getHeight();
 
     elev_motor.set(ControlMode.Position, targetHeight, DemandType.ArbitraryFeedForward, feedforward/10.0);
